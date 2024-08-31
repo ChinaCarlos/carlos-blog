@@ -4,6 +4,11 @@ import {
   groupIconVitePlugin,
 } from "vitepress-plugin-group-icons";
 
+import { createDetypePlugin } from "vitepress-plugin-detype";
+import { tabsMarkdownPlugin } from "vitepress-plugin-tabs";
+
+const { detypeMarkdownPlugin, detypeVitePlugin } = createDetypePlugin();
+
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   srcDir: "docs",
@@ -78,9 +83,11 @@ export default defineConfig({
   markdown: {
     config(md) {
       md.use(groupIconMdPlugin);
+      md.use(tabsMarkdownPlugin);
+      md.use(detypeMarkdownPlugin);
     },
   },
   vite: {
-    plugins: [groupIconVitePlugin()],
+    plugins: [detypeVitePlugin(), groupIconVitePlugin()],
   },
 });

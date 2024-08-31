@@ -1,5 +1,23 @@
 # Markdown Extension Examples 中文
 
+> vitepress-plugin-detype vitepress-plugin-tabs 插件的使用
+
+```ts{1-3,5},=detype{1}=
+type Foo = {
+  foo: string
+}
+
+const fooList: Foo[] = []
+for (let i = 0; i < 100; i++) {
+  const f = { foo: '' + i }
+  fooList.push(f)
+
+  const f2 = { bar: '' }
+  // @ts-expect-error ignore!
+  fooList.push(f2)
+}
+```
+
 ## Install
 
 ::: code-group

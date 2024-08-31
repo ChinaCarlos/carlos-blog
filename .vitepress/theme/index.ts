@@ -4,6 +4,7 @@ import type { Theme } from "vitepress";
 import DefaultTheme from "vitepress/theme";
 import vitepressNprogress from "vitepress-plugin-nprogress";
 import Layout from "./Layout.vue";
+import { enhanceAppWithTabs } from "vitepress-plugin-tabs/client";
 
 import "./style.css";
 import "vitepress-plugin-nprogress/lib/css/index.css";
@@ -18,7 +19,7 @@ export default {
   },
   enhanceApp(ctx) {
     const { app, router, siteData } = ctx;
-    // ...
+    enhanceAppWithTabs(app);
     vitepressNprogress(ctx);
   },
 } satisfies Theme;
