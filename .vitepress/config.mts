@@ -61,9 +61,7 @@ export default defineConfig({
       label: "目录",
     },
 
-    socialLinks: [
-      { icon: "github", link: "https://github.com/vuejs/vitepress" },
-    ],
+    socialLinks: [{ icon: "github", link: "https://github.com/ChinaCarlos" }],
 
     search: {
       provider: "local",
