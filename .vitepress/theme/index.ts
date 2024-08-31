@@ -2,8 +2,11 @@
 import { h } from "vue";
 import type { Theme } from "vitepress";
 import DefaultTheme from "vitepress/theme";
+import vitepressNprogress from "vitepress-plugin-nprogress";
 import Layout from "./Layout.vue";
+
 import "./style.css";
+import "vitepress-plugin-nprogress/lib/css/index.css";
 
 export default {
   extends: DefaultTheme,
@@ -12,7 +15,9 @@ export default {
       // https://vitepress.dev/guide/extending-default-theme#layout-slots
     });
   },
-  enhanceApp({ app, router, siteData }) {
+  enhanceApp(ctx) {
+    const { app, router, siteData } = ctx;
     // ...
+    vitepressNprogress(ctx);
   },
 } satisfies Theme;
