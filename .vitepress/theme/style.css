@@ -5,11 +5,11 @@
   --vp-c-brand-3: #7759f1;
 }
 
-/* .dark {
-  --vp-c-brand-1: #3dd68c;
-  --vp-c-brand-2: #30a46c;
-  --vp-c-brand-3: #298459;
-} */
+.dark {
+  --vp-c-brand-1: #9b85f5;
+  --vp-c-brand-2: #7759f1;
+  --vp-c-brand-3: #615ced;
+}
 /* 以前的vp-c-brand已弃用 */
 
 :root {
