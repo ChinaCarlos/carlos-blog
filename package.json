@@ -9,5 +9,6 @@
   },
   "dependencies": {
     "vue": "^3.4.38"
-  }
+  },
+  "packageManager": "pnpm@8.14.0" 
 }
