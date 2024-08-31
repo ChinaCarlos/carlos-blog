@@ -2,9 +2,10 @@ import { defineConfig } from "vitepress";
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
+  srcDir: "docs",
   title: "China Carlos's Blog",
   description: "Carlos's Blog Web Site",
-
+  head: [["link", { rel: "icon", href: "/blog.svg" }]],
   themeConfig: {
     logo: "/logo.svg",
     lastUpdated: {
@@ -23,11 +24,21 @@ export default defineConfig({
         link: "/markdown-examples",
       },
       {
-        text: "Dropdown Menu",
+        text: "前端面试",
         items: [
-          { text: "Item A", link: "/item-1" },
-          { text: "Item B", link: "/item-2" },
-          { text: "Item C", link: "/item-3" },
+          { text: "HTML基础知识", link: "/item-1" },
+          { text: "CSS", link: "/item-2" },
+          { text: "JavaScript", link: "/item-3" },
+          { text: "数据结构", link: "/item-3" },
+          { text: "算法", link: "/item-3" },
+          { text: "Vue3框架", link: "/item-3" },
+          { text: "React框架", link: "/item-3" },
+          { text: "工程构建", link: "/item-3" },
+          { text: "PWA应用", link: "/item-3" },
+          { text: "微前端", link: "/item-3" },
+          { text: "低代码", link: "/item-3" },
+          { text: "Nodejs", link: "/item-3" },
+          { text: "前端工具", link: "/item-3" },
         ],
       },
     ],
