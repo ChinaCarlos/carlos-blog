@@ -1,5 +1,27 @@
 # Markdown Extension Examples 中文
 
+## Install
+
+::: code-group
+
+```sh [npm]
+npm install vitepress-plugin-group-icons
+```
+
+```sh [yarn]
+yarn add vitepress-plugin-group-icons
+```
+
+```sh [pnpm]
+pnpm add vitepress-plugin-group-icons
+```
+
+```sh [bun]
+bun add vitepress-plugin-group-icons
+```
+
+:::
+
 <script setup>
 import { VPTeamMembers } from 'vitepress/theme'
 

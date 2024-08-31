@@ -7,6 +7,7 @@ import Layout from "./Layout.vue";
 
 import "./style.css";
 import "vitepress-plugin-nprogress/lib/css/index.css";
+import "virtual:group-icons.css";
 
 export default {
   extends: DefaultTheme,

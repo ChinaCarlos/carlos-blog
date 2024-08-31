@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@giscus/vue": "^3.0.0",
+    "vitepress-plugin-group-icons": "^1.0.4",
     "vitepress-plugin-nprogress": "^0.0.4",
     "vue": "^3.4.38"
   },
