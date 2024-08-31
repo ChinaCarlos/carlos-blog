@@ -3,9 +3,12 @@ import {
   groupIconMdPlugin,
   groupIconVitePlugin,
 } from "vitepress-plugin-group-icons";
-
 import { createDetypePlugin } from "vitepress-plugin-detype";
 import { tabsMarkdownPlugin } from "vitepress-plugin-tabs";
+import vueJsx from "@vitejs/plugin-vue-jsx";
+import { viteDemoPreviewPlugin } from "@vitepress-code-preview/plugin";
+import { fileURLToPath, URL } from "node:url";
+import { demoPreviewPlugin } from "@vitepress-code-preview/plugin";
 
 const { detypeMarkdownPlugin, detypeVitePlugin } = createDetypePlugin();
 
@@ -82,12 +85,20 @@ export default defineConfig({
   },
   markdown: {
     config(md) {
+      const docRoot = fileURLToPath(new URL("../", import.meta.url));
+
       md.use(groupIconMdPlugin);
       md.use(tabsMarkdownPlugin);
       md.use(detypeMarkdownPlugin);
+      md.use(demoPreviewPlugin, { docRoot });
     },
   },
   vite: {
-    plugins: [detypeVitePlugin(), groupIconVitePlugin()],
+    plugins: [
+      detypeVitePlugin(),
+      groupIconVitePlugin(),
+      viteDemoPreviewPlugin(),
+      vueJsx(),
+    ],
   },
 });

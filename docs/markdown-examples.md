@@ -1,5 +1,19 @@
 # Markdown Extension Examples 中文
 
+:::demo
+
+```vue
+<template>
+  <div>{{ title }}</div>
+</template>
+<script lang="ts" setup>
+import { ref, defineComponent } from "vue";
+const title = ref("hello vue components");
+</script>
+```
+
+:::
+
 > vitepress-plugin-detype vitepress-plugin-tabs 插件的使用
 
 ```ts{1-3,5},=detype{1}=
