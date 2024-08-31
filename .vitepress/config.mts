@@ -62,5 +62,4 @@ export default defineConfig({
       copyright: "Copyright © 2023-present China Carlos",
     },
   },
-  base: "/carlos-blog/",
 });
