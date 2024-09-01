@@ -22,7 +22,16 @@ export default defineConfig({
   srcDir: "docs",
   title: "China Carlos's Blog",
   description: "Carlos's Blog Web Site",
-  head: [["link", { rel: "icon", href: "/blog.svg" }]],
+  head: [
+    ["link", { rel: "icon", href: "/blog.svg" }],
+    [
+      "script",
+      {
+        src: "https://cloud.umami.is/script.js",
+        "data-website-id": "a389c094-c38f-4892-a805-600abb846e29",
+      },
+    ],
+  ],
   //启用深色模式
   appearance: "dark",
   themeConfig: {
@@ -59,6 +68,10 @@ export default defineConfig({
         ],
       },
       // { text: "关于我", link: "/" },
+      {
+        text: "博客统计",
+        link: "https://us.umami.is/share/Y2BYxCAm7R0DG2Xi/carlosme.fun",
+      },
     ],
 
     sidebar: generateSidebar(sideBarData),
