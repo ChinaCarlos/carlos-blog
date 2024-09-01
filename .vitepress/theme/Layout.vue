@@ -1,5 +1,8 @@
 <template>
   <Layout>
+    <template #doc-footer-before>
+      <backTop></backTop>
+    </template>
     <template #doc-after>
       <div style="margin-top: 24px">
         <Giscus
@@ -25,6 +28,7 @@
 <script lang="ts" setup>
 import Giscus from "@giscus/vue";
 import DefaultTheme from "vitepress/theme";
+import backTop from './components/backTop.vue'
 import { watch } from "vue";
 import { inBrowser, useData } from "vitepress";
 

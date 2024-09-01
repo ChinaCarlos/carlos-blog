@@ -86,6 +86,9 @@ export default defineConfig({
     },
   },
   markdown: {
+    image: {
+      lazyLoading: true,
+    },
     config(md) {
       const docRoot = fileURLToPath(new URL("../", import.meta.url));
 

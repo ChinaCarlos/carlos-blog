@@ -29,3 +29,202 @@
   );
   --vp-home-hero-image-filter: blur(76px);
 }
+
+/* 深浅色卡 */
+:root {
+  --vp-custom-block-info: #cccccc;
+  --vp-custom-block-info-bg: #fdfdfe;
+
+  --vp-custom-block-tip: #009400;
+  --vp-custom-block-tip-bg: #e6f6e6;
+
+  --vp-custom-block-warning: #e6a700;
+  --vp-custom-block-warning-bg: #fff8e6;
+
+  --vp-custom-block-danger: #e13238;
+  --vp-custom-block-danger-bg: #ffebec;
+
+  --vp-custom-block-note: #4cb3d4;
+  --vp-custom-block-note-bg: #eef9fd;
+
+  --vp-custom-block-important: #a371f7;
+  --vp-custom-block-important-bg: #f4eefe;
+}
+
+.dark {
+  --vp-custom-block-info: #cccccc;
+  --vp-custom-block-info-bg: #474748;
+
+  --vp-custom-block-tip: #009400;
+  --vp-custom-block-tip-bg: #003100;
+
+  --vp-custom-block-warning: #e6a700;
+  --vp-custom-block-warning-bg: #4d3800;
+
+  --vp-custom-block-danger: #e13238;
+  --vp-custom-block-danger-bg: #4b1113;
+
+  --vp-custom-block-note: #4cb3d4;
+  --vp-custom-block-note-bg: #193c47;
+
+  --vp-custom-block-important: #a371f7;
+  --vp-custom-block-important-bg: #230555;
+}
+
+
+/* 标题字体大小 */
+.custom-block-title {
+  font-size: 16px;
+}
+
+/* 注释容器:背景色、左侧 */
+.custom-block.info {
+  background-color: var(--vp-custom-block-info-bg);
+  border-left: 5px solid var(--vp-custom-block-info);
+}
+
+/* 提示容器:边框色、背景色、左侧 */
+.custom-block.tip {
+  /* border-color: var(--vp-custom-block-tip); */ 
+  background-color: var(--vp-custom-block-tip-bg);
+  border-left: 5px solid var(--vp-custom-block-tip);
+}
+
+/* 警告容器:背景色、左侧 */
+.custom-block.warning {
+  background-color: var(--vp-custom-block-warning-bg);
+  border-left: 5px solid var(--vp-custom-block-warning);
+}
+
+/* 危险容器:背景色、左侧 */
+.custom-block.danger {
+  background-color: var(--vp-custom-block-danger-bg);
+  border-left: 5px solid var(--vp-custom-block-danger);
+}
+
+/* NOTE容器:背景色、左侧 */
+.custom-block.note {
+  background-color: var(--vp-custom-block-note-bg);
+  border-left: 5px solid var(--vp-custom-block-note);
+}
+
+/* IMPORTANT容器:背景色、左侧 */
+.custom-block.important {
+  background-color: var(--vp-custom-block-important-bg);
+  border-left: 5px solid var(--vp-custom-block-important);
+}
+
+/* CAUTION容器:背景色、左侧 */
+.custom-block.caution {
+  background-color: var(--vp-c-red-soft);
+  border-left: 5px solid var(--vp-c-red-3);
+}
+
+/* .vitepress/theme/style/blur.css */
+:root {
+
+  /* 首页导航 */
+  .VPNavBar {
+      background-color: rgba(255, 255, 255, 0);
+      backdrop-filter: blur(10px);
+  }
+
+  /* 文档页导航两侧 */
+  .VPNavBar:not(.home) {
+      background-color: rgba(255, 255, 255, 0);
+      backdrop-filter: blur(10px);
+  }
+
+  @media (min-width: 960px) {
+
+      /* 文档页导航两侧 */
+      .VPNavBar:not(.home) {
+          background-color: rgba(255, 255, 255, 0);
+          backdrop-filter: blur(10px);
+      }
+
+      /* 首页下滑后导航两侧 */
+      .VPNavBar:not(.has-sidebar):not(.home.top) {
+          background-color: rgba(255, 255, 255, 0);
+          backdrop-filter: blur(10px);
+      }
+  }
+
+  @media (min-width: 960px) {
+
+      /* 文档页导航中间 */
+      .VPNavBar:not(.home.top) .content-body {
+          background-color: rgba(255, 255, 255, 0);
+          backdrop-filter: blur(10px);
+      }
+
+      /* 首页下滑后导航中间 */
+      .VPNavBar:not(.has-sidebar):not(.home.top) .content-body {
+          background-color: rgba(255, 255, 255, 0);
+          backdrop-filter: blur(10px);
+      }
+  }
+
+
+  /* 分割线 */
+
+  @media (min-width: 960px) {
+
+      /* 文档页分割线 */
+      .VPNavBar:not(.home.top) .divider-line {
+          background-color: rgba(255, 255, 255, 0);
+          backdrop-filter: blur(10px);
+      }
+
+      /* 首页分割线 */
+      .VPNavBar:not(.has-sidebar):not(.home.top) .divider {
+          background-color: rgba(255, 255, 255, 0);
+          backdrop-filter: blur(10px);
+      }
+  }
+
+  /* 搜索框 VPNavBarSearchButton.vue */
+  .DocSearch-Button {
+      background-color: rgba(255, 255, 255, 0);
+      backdrop-filter: blur(10px);
+  }
+
+
+  /* 移动端大纲栏 */
+  .VPLocalNav {
+      background-color: rgba(255, 255, 255, 0);
+      backdrop-filter: blur(10px);
+      /* 隐藏分割线 */
+      /* border-bottom: 5px solid var(--vp-c-gutter); */
+      border-bottom: 0px;
+  }
+}
+
+
+/* .vitepress/theme/style/vp-code-group.css */
+
+/* 代码块tab */
+.vp-code-group .tabs {
+  padding-top: 30px;
+}
+
+/* 代码块tab-顶部小圆点 */
+.vp-code-group .tabs::before {
+  background: #fc625d;
+  border-radius: 50%;
+  box-shadow: 20px 0 #fdbc40, 40px 0 #35cd4b;
+  content: ' ';
+  height: 12px;
+  width: 12px;
+  left: 12px;
+  margin-top: -15px;
+  position: absolute;
+}
+
+
+/* 代码组 */
+.vp-code-group {
+  color: var(--vp-c-black-soft);
+  border-radius: 8px;
+  box-shadow: 0 10px 30px 0 rgb(0 0 0 / 40%);
+}

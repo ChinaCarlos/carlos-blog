@@ -2,6 +2,19 @@
 outline: deep
 ---
 
+[![](https://img.shields.io/badge/just_do_it-blue?style=for-the-badge&logo=alipay&logoColor=1677FF&label=%E6%94%AF%E4%BB%98%E5%AE%9D&labelColor=lightgrey)](https://shields.io/badges)
+
+![](https://img.shields.io/badge/any_text-you_like-blue)
+
+![](http://github-profile-summary-cards.vercel.app/api/cards/profile-details?username=ChinaCarlos&theme=aura_dark)
+
+![](http://github-profile-summary-cards.vercel.app/api/cards/repos-per-language?username=ChinaCarlos&theme=aura_dark)
+
+![](http://github-profile-summary-cards.vercel.app/api/cards/most-commit-language?username=ChinaCarlos&theme=aura_dark)
+
+![](http://github-profile-summary-cards.vercel.app/api/cards/stats?username=ChinaCarlos&theme=aura_dark)
+![](http://github-profile-summary-cards.vercel.app/api/cards/productive-time?username=ChinaCarlos&theme=aura_dark&utcOffset=8)
+
 # Runtime API Examples
 
 This page demonstrates usage of some of the runtime APIs provided by VitePress.
