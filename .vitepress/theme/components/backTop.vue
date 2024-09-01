@@ -8,7 +8,7 @@
   </Transition>
 </template>
 
-<script setup>
+<script setup name="BackTop" lang="ts">
 import { onBeforeUnmount, onMounted, ref } from "vue";
 
 // 是否显示返回顶部

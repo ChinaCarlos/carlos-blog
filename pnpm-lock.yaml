@@ -31,6 +31,9 @@ devDependencies:
   '@types/node':
     specifier: ^22.5.1
     version: 22.5.1
+  busuanzi.pure.js:
+    specifier: ^1.0.3
+    version: 1.0.3
   markdown-it-container:
     specifier: ^4.0.0
     version: 4.0.0
@@ -1613,6 +1616,10 @@ packages:
     dependencies:
       base64-js: 1.5.1
       ieee754: 1.2.1
+    dev: true
+
+  /busuanzi.pure.js@1.0.3:
+    resolution: {integrity: sha512-tPULdyx+8NNb9geZYDpktKmHAYx9f2LEOBaHyWCaM7iPEMIa/43KgYAUluuU7YG9UFSOFpj4dO7Nj2Vlu3V9Rg==}
     dev: true
 
   /call-bind@1.0.7:
