@@ -1,5 +1,7 @@
 # Markdown Extension Examples 中文
 
+[![沙漠中的岩石图片](https://markdown.com.cn/assets/img/shiprock.c3b9a023.jpg "Shiprock")]()
+
 ::: sandbox {template=vue3-ts}
 
 ```js /src/person.ts

@@ -11,6 +11,8 @@ import { Sandbox } from "vitepress-plugin-sandpack";
 import busuanzi from "busuanzi.pure.js";
 
 import VisitorPanel from "./components/VisitorPanel.vue";
+import confetti from "./components/confetti.vue";
+
 import "vitepress-plugin-nprogress/lib/css/index.css";
 import "virtual:group-icons.css";
 import "@vitepress-code-preview/container/dist/style.css";
@@ -33,6 +35,7 @@ export default {
 
     app.component("Sandbox", Sandbox);
     app.component("VisitorPanel", VisitorPanel);
+    app.component("confetti", confetti);
 
     if (inBrowser) {
       router.onAfterRouteChanged = () => {

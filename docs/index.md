@@ -63,3 +63,4 @@ features:
 ---
 
 <VisitorPanel></VisitorPanel>
+<confetti />
