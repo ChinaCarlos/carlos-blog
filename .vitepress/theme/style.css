@@ -120,6 +120,20 @@
   border-left: 5px solid var(--vp-c-red-3);
 }
 
+/* 侧边栏 */
+.group:has([role='button']) .VPSidebarItem.level-0 .items {
+  padding-left: 16px !important;
+  border-radius: 2px;
+  transition: background-color 0.25s;
+}
+
+/* 搜索框的位置 */
+
+.VPNavBarSearch.search {
+  justify-content: flex-end!important;
+    padding-right: 32px!important;
+}
+
 /* .vitepress/theme/style/blur.css */
 :root {
 

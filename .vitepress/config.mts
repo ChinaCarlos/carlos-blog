@@ -15,6 +15,8 @@ import { generateSidebar } from "vitepress-sidebar";
 
 const { detypeMarkdownPlugin, detypeVitePlugin } = createDetypePlugin();
 
+import { sideBarData } from "./theme/sidebarOptions";
+
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   srcDir: "docs",
@@ -35,15 +37,13 @@ export default defineConfig({
 
     // https://vitepress.dev/reference/default-theme-config
     nav: [
-      { text: "Home", link: "/" },
-      {
-        text: "Examples",
-        link: "/markdown-examples",
-      },
+      { text: "首页", link: "/" },
+      // { text: "我的博客", link: "/" },
       {
         text: "前端面试",
         items: [
-          { text: "HTML基础知识", link: "/item-1" },
+          { text: "Examples", link: "/Examples/api-examples" },
+          { text: "HTML基础知识", link: "/HTML/part1" },
           { text: "CSS", link: "/item-2" },
           { text: "JavaScript", link: "/item-3" },
           { text: "数据结构", link: "/item-3" },
@@ -58,52 +58,10 @@ export default defineConfig({
           { text: "前端工具", link: "/item-3" },
         ],
       },
+      // { text: "关于我", link: "/" },
     ],
 
-    sidebar: generateSidebar({
-      /*
-       * For detailed instructions, see the links below:
-       * https://vitepress-sidebar.jooy2.com/guide/api
-       */
-      documentRootPath: "/docs", //文档根目录
-      // scanStartPath: null,
-      // resolvePath: null,
-      // useTitleFromFileHeading: true,
-      // useTitleFromFrontmatter: true,
-      // frontmatterTitleFieldName: 'title',
-      // useFolderTitleFromIndexFile: false, //是否使用层级首页文件名做分级标题
-      // useFolderLinkFromIndexFile: false, //是否链接至层级首页文件
-      // hyphenToSpace: true,
-      // underscoreToSpace: true,
-      // capitalizeFirst: false,
-      // capitalizeEachWords: false,
-      collapsed: false, //折叠组关闭
-      collapseDepth: 2, //折叠组2级菜单
-      // sortMenusByName: false,
-      // sortMenusByFrontmatterOrder: false,
-      // sortMenusByFrontmatterDate: false,
-      // sortMenusOrderByDescending: false,
-      // sortMenusOrderNumericallyFromTitle: false,
-      // sortMenusOrderNumericallyFromLink: false,
-      // frontmatterOrderDefaultValue: 0,
-      // manualSortFileNameByPriority: ['first.md', 'second', 'third.md'], //手动排序，文件夹不用带后缀
-      removePrefixAfterOrdering: false, //删除前缀，必须与prefixSeparator一起使用
-      prefixSeparator: ".", //删除前缀的符号
-      // excludeFiles: ['first.md', 'secret.md'],
-      // excludeFilesByFrontmatterFieldName: 'exclude',
-      // excludeFolders: ['secret-folder'],
-      // includeDotFiles: false,
-      // includeRootIndexFile: false,
-      // includeFolderIndexFile: false, //是否包含层级主页
-      // includeEmptyFolder: false,
-      // rootGroupText: 'Contents',
-      // rootGroupLink: 'https://github.com/jooy2',
-      // rootGroupCollapsed: false,
-      // convertSameNameSubFileToGroupIndexPage: false,
-      // folderLinkNotIncludesFileName: false,
-      // keepMarkdownSyntaxFromTitle: false,
-      // debugPrint: false,
-    }),
+    sidebar: generateSidebar(sideBarData),
 
     outline: {
       level: [2, 6],
