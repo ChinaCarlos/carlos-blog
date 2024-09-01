@@ -9,6 +9,8 @@ import vueJsx from "@vitejs/plugin-vue-jsx";
 import { viteDemoPreviewPlugin } from "@vitepress-code-preview/plugin";
 import { fileURLToPath, URL } from "node:url";
 import { demoPreviewPlugin } from "@vitepress-code-preview/plugin";
+import container from "markdown-it-container";
+import { renderSandbox } from "vitepress-plugin-sandpack";
 
 const { detypeMarkdownPlugin, detypeVitePlugin } = createDetypePlugin();
 
@@ -91,6 +93,12 @@ export default defineConfig({
       md.use(tabsMarkdownPlugin);
       md.use(detypeMarkdownPlugin);
       md.use(demoPreviewPlugin, { docRoot });
+
+      md.use(container, "sandbox", {
+        render(tokens, idx) {
+          return renderSandbox(tokens, idx, "sandbox");
+        },
+      });
     },
   },
   vite: {

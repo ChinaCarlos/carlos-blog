@@ -7,6 +7,9 @@ import Layout from "./Layout.vue";
 import { enhanceAppWithTabs } from "vitepress-plugin-tabs/client";
 import DemoPreview, { useComponents } from "@vitepress-code-preview/container";
 
+import { Sandbox } from "vitepress-plugin-sandpack";
+import "vitepress-plugin-sandpack/dist/style.css";
+
 import "./style.css";
 import "vitepress-plugin-nprogress/lib/css/index.css";
 import "virtual:group-icons.css";
@@ -24,5 +27,6 @@ export default {
     enhanceAppWithTabs(app);
     vitepressNprogress(ctx);
     useComponents(ctx.app, DemoPreview);
+    app.component("Sandbox", Sandbox);
   },
 } satisfies Theme;
