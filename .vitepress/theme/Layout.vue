@@ -28,7 +28,7 @@
 <script lang="ts" setup>
 import Giscus from "@giscus/vue";
 import DefaultTheme from "vitepress/theme";
-import BackTop from './components/BackTop.vue'
+import BackTop from './components/backTop.vue';
 import { watch } from "vue";
 import { inBrowser, useData } from "vitepress";
 
