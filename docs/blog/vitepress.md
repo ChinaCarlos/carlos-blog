@@ -1,4 +1,4 @@
-# VitePress 搭建博客系统指南（上篇）
+# VitePress 搭建博客系统指南
 
 由于大环境不好，被 N+1 了，上班的路上还想着如何优化解决开发中遇到的痛点，开了一个早会，然后公司解散了，又要重新开始找工作了。由于之前工作比较忙，一直没有时间学习，趁着空档期好好的学习一波，顺便迁移一下自己的博客，老博客是 3 年前用 `hexo` 做的，最近看 `vitePress` 比较火，`VitePress` 是由 Vue 团队开发的轻量级静态站点生成器，专注于为文档和博客提供支持。它基于 Vite 和 Vue 3，具有快速构建速度和简单的配置特性，主题简洁明了易上手，所以就选用 [vitePress](<[vitePress](https://vitepress.dev/zh/guide/what-is-vitepress)>) 来搭建此次的博客系统。
 
@@ -49,7 +49,7 @@ $ yarn vitepress init
 
 ###
 
-![vitepress init](vitepress_init.png)
+![vitepress init](images/vitepress_init.png)
 
 如果正在构建一个独立的 VitePress 站点，可以在当前目录 (`./`) 中搭建站点。但是，如果在现有项目中与其他源代码一起安装 VitePress，建议将站点搭建在嵌套目录 (例如 `./docs`) 中，以便它与项目的其余部分分开。
 
@@ -107,7 +107,7 @@ $ yarn vitepress init
 
 打开`docs/.vitepress/config.mts`文件，添加如下配置，在`/docs`下创建`public`目录,用来存放静态资源，如网站的`favicon.ico`。在`themeConfig`的`search`字段设置搜索框配置，这里使用`local`, 可以使用`algolia`,其他配置参见[siteConfig](https://vitepress.dev/reference/site-config) 和 [themeConfig](https://vitepress.dev/zh/reference/default-theme-config)
 
-```ts{9,10-42}
+```ts{9,10-42,60}
 import { defineConfig } from "vitepress";
 
 export default defineConfig({
@@ -166,6 +166,8 @@ export default defineConfig({
     ],
     // 社交链接
     socialLinks: [{ icon: "github", link: "https://github.com/ChinaCarlos" }],
+    // 部署的时候需要注意该参数避免样式丢失
+    base: "/vitepress-blog-template/",
   },
 });
 ```
@@ -208,7 +210,7 @@ export default defineConfig({
 
 运行`pnpm run dev`，打开浏览器，发现默认的颜色主题已经更改了
 
-![vitepress blog 预览图 1](vitepress-preview-1.png)
+![vitepress blog 预览图 1](images/vitepress-preview-1.png)
 
 ### 4. 修改首页
 
@@ -291,13 +293,13 @@ features:
 ```
 
 此时首页的内容发生了更改：如下图所示：
-![vitepress blog 预览图 2](vitepress-preview-2.png)
+![vitepress blog 预览图 2](images/vitepress-preview-2.png)
 
-## 四、提交代码到 github
+## 四、打包部署
 
 ### 1. 在 github 中创建一个名称为`vitepress-blog`的仓库，当然仓库的名字可以自定义
 
-![github-repo](github-repo.png)
+![github-repo](images/github-repo.png)
 
 ### 2. 在项目中初始化 git
 
@@ -327,3 +329,139 @@ git commit -m "init project"
 git remote add origin git@github.com:userName/repositoryName.git
 git push -u origin main
 ```
+
+### 5. 通过 github actions 部署到 github pages
+
+:::tip
+基本都使用 github pages 来部署博客系统，使用 github pages 有两种方式，一种是通过分支部署，通常要写一个`deploy.sh`,在提交代码之后执行该脚本，将打包之后的产物放到另一个分支上，通过 github pages `Deploy from a branch` 方式部署，另一种通过`github actions`来部署。这里展示利用`github actions` 来部署，更加快捷，每次提交完代码自动构建部署。
+:::
+![github pages](images/vitepress-repo-deploy.png)
+
+如上图所示，我们在 github`vitepress-blog`仓库的`Settings`里面，找到`Pages`, 部署方式选择`Github Actions`,下面编写 github 的`workflows`。
+
+执行下面命令创建`.github/workflows` 目录 和生成该目录下的`deploy.yml` 文件
+
+```bash
+$ mkdir .github
+$ mkdir .github/workflows/
+$ touch .github/workflows/deploy.yml
+```
+
+**修改`deploy.yml`文件，内容如下：**
+
+```yaml
+# 构建 VitePress 站点并将其部署到 GitHub Pages 的示例工作流程
+name: Deploy VitePress site to Pages
+
+on:
+  # 在针对 `main` 分支的推送上运行
+  # 如果是使用 `master` 分支作为默认分支，请将其更改为 `master`
+  push:
+    branches: [main]
+
+  # 允许你从 Actions 选项卡手动运行此工作流程
+  workflow_dispatch:
+
+# 设置 GITHUB_TOKEN 的权限，以允许部署到 GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 只允许同时进行一次部署，跳过正在运行和最新队列之间的运行队列
+# 但是，不要取消正在进行的运行，因为我们希望允许这些生产部署完成
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  # 构建工作
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # 如果未启用 lastUpdated，则不需要
+      - uses: pnpm/action-setup@v3 # 使用 pnpm
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm # 缓存设置为 pnpm
+          version: 8.14.0 # 您可以根据需要指定特定的 pnpm 版本
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+      - name: Install dependencies
+        run: pnpm install # 使用 pnpm 安装依赖
+      - name: Build with VitePress
+        run: pnpm run build # 使用 pnpm 运行构建
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/.vitepress/dist # 打包之后产物的文件夹
+
+  # 部署工作
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    needs: build
+    runs-on: ubuntu-latest
+    name: Deploy
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+```
+
+然后提交代码到 github，此时就会自动触发 github actions
+
+::: danger
+github actions 如果报错：Error: No pnpm version is specified. Please specify it by one of the following ways
+
+请在`package.json`中添加` "packageManager": "pnpm@8.14.0"`
+:::
+
+**Github Actions 位置**：
+
+![github-actions](images/github-actions.png)
+
+**Github Actions 构建部署**：
+
+![github-actions](images/github-actions1.png)
+![github-actions](images/github-actions2.png)
+
+**Github Actions 部署完成之后，访问 Github Pages 的链接，即可访问博客系统**：
+
+例如： [https://chinacarlos.github.io/vitepress-blog-template/](https://chinacarlos.github.io/vitepress-blog-template/)
+
+![github-actions](images/github-action3.png)
+
+**如果有自己的博客域名，可以将博客域名绑定到`Custom domain` 下，绑定之后，访问该域名会自动跳转定位到该博客系统**
+
+![博客系统预览](images/github-action4.png)
+
+::: warning
+
+- 如果发现博客的样式丢失，此时要检查`docs/.vitepress/config.mts`文件夹下的`base` 设置是否正确。
+- 如果使用 Github Pages 自己的链接访问如：`https://chinacarlos.github.io/vitepress-blog-template/` `base`需要设置成 `/vitepress-blog-template/` 也就是自己的博客仓库名称
+
+- 如果自己绑定了自己的博客域名如`https://carlosme.fun`, `base`需要设置为`/`
+
+:::
+
+---
+
+**至此，我们博客整体框架已经完成了，接下就是美化以及丰富博客的功能模块了 🎉🎉🎉**
+
+## 五、美化主题
+
+修改`.vitepress/theme/style.css`文件
+
+:::tabs key:ab
+== tab a
+a content 2
+== tab b
+b content 2
+:::
