@@ -1008,7 +1008,9 @@ const onLinkUmiHandle = () => {
 
 在 `.vitepress/theme/index.ts` 添加如下代码，并保存
 
-```ts
+::: code-group
+
+```ts [.vitepress/theme/index.ts]
 import DefaultTheme from "vitepress/theme";
 import mediumZoom from "medium-zoom";
 import { onMounted, watch, nextTick } from "vue";
@@ -1033,3 +1035,16 @@ export default {
   },
 };
 ```
+
+```css [.vitepress/theme/style.css]
+/* 重置样式 */
+.medium-zoom-overlay {
+  z-index: 30;
+}
+
+.medium-zoom-image {
+  z-index: 9999 !important;
+}
+```
+
+:::
