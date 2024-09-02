@@ -128,10 +128,13 @@
 }
 
 /* 搜索框的位置 */
-
 .VPNavBarSearch.search {
   justify-content: flex-end!important;
     padding-right: 32px!important;
+}
+
+.vp-doc blockquote {
+  border-left: 4px solid var(--vp-c-divider);
 }
 
 /* .vitepress/theme/style/blur.css */

@@ -21,6 +21,7 @@ export default defineConfig({
   srcDir: "docs",
   title: "China Carlos's Blog",
   description: "Carlos's Blog Web Site",
+  ignoreDeadLinks: true,
   head: [
     ["link", { rel: "icon", href: "/blog.svg" }],
     [
@@ -74,7 +75,7 @@ export default defineConfig({
     ],
 
     sidebar: generateSidebar(sideBarData),
-
+    // 文章右侧大纲目录
     outline: {
       level: [2, 6],
       label: "目录",
@@ -84,13 +85,17 @@ export default defineConfig({
       prev: "上一页",
       next: "下一页",
     },
+    // 社交链接
     socialLinks: [{ icon: "github", link: "https://github.com/ChinaCarlos" }],
+    // 主题
     darkModeSwitchLabel: "深浅模式",
-    returnToTopLabel: "返回顶部",
 
+    returnToTopLabel: "返回顶部",
+    // 搜索
     search: {
       provider: "local",
     },
+    // 页脚
     footer: {
       message: "Released under the MIT License.",
       copyright: "Copyright © 2023-present China Carlos",
