@@ -3,11 +3,20 @@
     <div class="container">
       <section class="grid">
         <span class="text">
-          本站总访问量 <span id="busuanzi_value_site_pv" class="font-bold">--</span> 次
+          本站总访问量
+          <span id="busuanzi_value_site_pv" class="font-bold">--</span> 次
         </span>
-        <img src="/heart.gif" alt="heart" width="50" height="50" />
+        <img
+          src="/heart.gif"
+          alt="heart"
+          class="heart-img"
+          width="50"
+          height="50"
+          @click="onLinkUmiHandle"
+        />
         <span class="text">
-          本站访客数 <span id="busuanzi_value_site_uv" class="font-bold">--</span> 人次
+          本站访客数
+          <span id="busuanzi_value_site_uv" class="font-bold">--</span> 人次
         </span>
       </section>
     </div>
@@ -15,6 +24,15 @@
 </template>
 
 <script setup lang="ts">
+import { inBrowser } from "vitepress";
+const onLinkUmiHandle = () => {
+  if (inBrowser) {
+    window.open(
+      "https://us.umami.is/share/Y2BYxCAm7R0DG2Xi/carlosme.fun",
+      "_blank"
+    );
+  }
+};
 </script>
 
 <style scoped>
@@ -33,6 +51,11 @@
   margin-right: auto;
 }
 
+.heart-img {
+  border-radius: 4px;
+  cursor: pointer;
+}
+
 .grid {
   font-weight: 500;
   padding-top: 12px;
@@ -46,7 +69,7 @@
 }
 
 .text {
-  font-size: .875rem;
+  font-size: 0.875rem;
   line-height: 1.25rem;
 }
 </style>

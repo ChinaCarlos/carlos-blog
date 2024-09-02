@@ -1,30 +1,39 @@
 export const sideBarData = [
+  // 博客
   {
-    documentRootPath: "/docs/", //文档根目录
-    scanStartPath: "/Examples/",
-    resolvePath: "/Examples/",
-    basePath: "/",
-    useTitleFromFileHeading: false,
-    useTitleFromFrontmatter: false,
+    documentRootPath: "/docs",
+    scanStartPath: "blog",
+    resolvePath: "blog/",
+    useTitleFromFileHeading: true,
+    useTitleFromFrontmatter: true,
     frontmatterTitleFieldName: "title",
-
     hyphenToSpace: true,
     underscoreToSpace: true,
-    collapsed: false, //折叠组关闭
-    collapseDepth: 2, //折叠组2级菜单
+    collapsed: false,
+    collapseDepth: 2,
   },
   {
-    documentRootPath: "/docs/", //文档根目录
-    scanStartPath: "/HTML/",
-    resolvePath: "/HTML/",
-    basePath: "/",
-    useTitleFromFileHeading: false,
-    useTitleFromFrontmatter: false,
+    documentRootPath: "/docs",
+    scanStartPath: "interview/Examples",
+    resolvePath: "interview/Examples/",
+    useTitleFromFileHeading: true,
+    useTitleFromFrontmatter: true,
     frontmatterTitleFieldName: "title",
-
     hyphenToSpace: true,
     underscoreToSpace: true,
-    collapsed: false, //折叠组关闭
-    collapseDepth: 2, //折叠组2级菜单
+    collapsed: false,
+    collapseDepth: 2,
+  },
+  {
+    documentRootPath: "/docs/",
+    scanStartPath: "interview/HTML",
+    resolvePath: "interview/HTML/",
+    useTitleFromFileHeading: true,
+    useTitleFromFrontmatter: true,
+    frontmatterTitleFieldName: "title",
+    hyphenToSpace: true,
+    underscoreToSpace: true,
+    collapsed: false,
+    collapseDepth: 2,
   },
 ];

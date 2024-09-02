@@ -12,10 +12,9 @@ import { demoPreviewPlugin } from "@vitepress-code-preview/plugin";
 import container from "markdown-it-container";
 import { renderSandbox } from "vitepress-plugin-sandpack";
 import { generateSidebar } from "vitepress-sidebar";
+import { sideBarData } from "./theme/sidebarOptions";
 
 const { detypeMarkdownPlugin, detypeVitePlugin } = createDetypePlugin();
-
-import { sideBarData } from "./theme/sidebarOptions";
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -47,12 +46,12 @@ export default defineConfig({
     // https://vitepress.dev/reference/default-theme-config
     nav: [
       { text: "首页", link: "/" },
-      // { text: "我的博客", link: "/" },
+      { text: "我的博客", link: "/blog/vitepress" },
       {
         text: "前端面试",
         items: [
-          { text: "Examples", link: "/Examples/api-examples" },
-          { text: "HTML基础知识", link: "/HTML/part1" },
+          { text: "Examples", link: "/interview/Examples/api-examples" },
+          { text: "HTML基础知识", link: "/interview/HTML/part1" },
           { text: "CSS", link: "/item-2" },
           { text: "JavaScript", link: "/item-3" },
           { text: "数据结构", link: "/item-3" },
@@ -67,7 +66,7 @@ export default defineConfig({
           { text: "前端工具", link: "/item-3" },
         ],
       },
-      // { text: "关于我", link: "/" },
+      { text: "关于我", link: "/pages/about" },
       {
         text: "博客统计",
         link: "https://us.umami.is/share/Y2BYxCAm7R0DG2Xi/carlosme.fun",
