@@ -457,11 +457,579 @@ github actions 如果报错：Error: No pnpm version is specified. Please specif
 
 ## 五、美化主题
 
-修改`.vitepress/theme/style.css`文件
+### 1. 更改搜索框的位置，修改代码块，给导航栏添加毛玻璃等效果，如下图：
 
-:::tabs key:ab
-== tab a
-a content 2
-== tab b
-b content 2
+![预览图](images/preview-blog.gif)
+
+修改`.vitepress/theme/style.css`文件：
+
+::: code-group
+
+```css [.vitepress/theme/style.css]
+:root {
+  --vp-c-brand-1: #5e3af2;
+  --vp-c-brand-2: #694aea;
+  --vp-c-brand-3: #7759f1;
+
+  --vp-custom-block-info: #cccccc;
+  --vp-custom-block-info-bg: #fdfdfe;
+
+  --vp-custom-block-tip: #009400;
+  --vp-custom-block-tip-bg: #e6f6e6;
+
+  --vp-custom-block-warning: #e6a700;
+  --vp-custom-block-warning-bg: #fff8e6;
+
+  --vp-custom-block-danger: #e13238;
+  --vp-custom-block-danger-bg: #ffebec;
+
+  --vp-custom-block-note: #4cb3d4;
+  --vp-custom-block-note-bg: #eef9fd;
+
+  --vp-custom-block-important: #a371f7;
+  --vp-custom-block-important-bg: #f4eefe;
+  /* hero标题渐变色 */
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: -webkit-linear-gradient(
+    120deg,
+    #5e3af2,
+    #00f6c0
+  );
+
+  /*hero logo背景渐变色 */
+  --vp-home-hero-image-background-image: linear-gradient(
+    -45deg,
+    #5f3af2c8 50%,
+    #47cbff7e 50%
+  );
+  --vp-home-hero-image-filter: blur(76px);
+}
+
+.dark {
+  --vp-custom-block-info: #cccccc;
+  --vp-custom-block-info-bg: #474748;
+
+  --vp-custom-block-tip: #009400;
+  --vp-custom-block-tip-bg: #003100;
+
+  --vp-custom-block-warning: #e6a700;
+  --vp-custom-block-warning-bg: #4d3800;
+
+  --vp-custom-block-danger: #e13238;
+  --vp-custom-block-danger-bg: #4b1113;
+
+  --vp-custom-block-note: #4cb3d4;
+  --vp-custom-block-note-bg: #193c47;
+
+  --vp-custom-block-important: #a371f7;
+  --vp-custom-block-important-bg: #230555;
+
+  --vp-c-brand-1: #9b85f5;
+  --vp-c-brand-2: #7759f1;
+  --vp-c-brand-3: #615ced;
+}
+
+/* 标题字体大小 */
+.custom-block-title {
+  font-size: 16px;
+}
+
+/* 注释容器:背景色、左侧 */
+.custom-block.info {
+  background-color: var(--vp-custom-block-info-bg);
+  border-left: 5px solid var(--vp-custom-block-info);
+}
+
+/* 提示容器:边框色、背景色、左侧 */
+.custom-block.tip {
+  /* border-color: var(--vp-custom-block-tip); */
+  background-color: var(--vp-custom-block-tip-bg);
+  border-left: 5px solid var(--vp-custom-block-tip);
+}
+
+/* 警告容器:背景色、左侧 */
+.custom-block.warning {
+  background-color: var(--vp-custom-block-warning-bg);
+  border-left: 5px solid var(--vp-custom-block-warning);
+}
+
+/* 危险容器:背景色、左侧 */
+.custom-block.danger {
+  background-color: var(--vp-custom-block-danger-bg);
+  border-left: 5px solid var(--vp-custom-block-danger);
+}
+
+/* NOTE容器:背景色、左侧 */
+.custom-block.note {
+  background-color: var(--vp-custom-block-note-bg);
+  border-left: 5px solid var(--vp-custom-block-note);
+}
+
+/* IMPORTANT容器:背景色、左侧 */
+.custom-block.important {
+  background-color: var(--vp-custom-block-important-bg);
+  border-left: 5px solid var(--vp-custom-block-important);
+}
+
+/* CAUTION容器:背景色、左侧 */
+.custom-block.caution {
+  background-color: var(--vp-c-red-soft);
+  border-left: 5px solid var(--vp-c-red-3);
+}
+
+/* 侧边栏 */
+.group:has([role="button"]) .VPSidebarItem.level-0 .items {
+  padding-left: 16px !important;
+  border-radius: 2px;
+  transition: background-color 0.25s;
+}
+
+/* 搜索框的位置 */
+.VPNavBarSearch.search {
+  justify-content: flex-end !important;
+  padding-right: 32px !important;
+}
+
+.vp-doc blockquote {
+  border-left: 4px solid var(--vp-c-divider);
+}
+
+/* .vitepress/theme/style/blur.css */
+:root {
+  /* 首页导航 */
+  .VPNavBar {
+    background-color: rgba(255, 255, 255, 0);
+    backdrop-filter: blur(10px);
+  }
+
+  /* 文档页导航两侧 */
+  .VPNavBar:not(.home) {
+    background-color: rgba(255, 255, 255, 0);
+    backdrop-filter: blur(10px);
+  }
+
+  @media (min-width: 960px) {
+    /* 文档页导航两侧 */
+    .VPNavBar:not(.home) {
+      background-color: rgba(255, 255, 255, 0);
+      backdrop-filter: blur(10px);
+    }
+
+    /* 首页下滑后导航两侧 */
+    .VPNavBar:not(.has-sidebar):not(.home.top) {
+      background-color: rgba(255, 255, 255, 0);
+      backdrop-filter: blur(10px);
+    }
+  }
+
+  @media (min-width: 960px) {
+    /* 文档页导航中间 */
+    .VPNavBar:not(.home.top) .content-body {
+      background-color: rgba(255, 255, 255, 0);
+      backdrop-filter: blur(10px);
+    }
+
+    /* 首页下滑后导航中间 */
+    .VPNavBar:not(.has-sidebar):not(.home.top) .content-body {
+      background-color: rgba(255, 255, 255, 0);
+      backdrop-filter: blur(10px);
+    }
+  }
+
+  /* 分割线 */
+
+  @media (min-width: 960px) {
+    /* 文档页分割线 */
+    .VPNavBar:not(.home.top) .divider-line {
+      background-color: rgba(255, 255, 255, 0);
+      backdrop-filter: blur(10px);
+    }
+
+    /* 首页分割线 */
+    .VPNavBar:not(.has-sidebar):not(.home.top) .divider {
+      background-color: rgba(255, 255, 255, 0);
+      backdrop-filter: blur(10px);
+    }
+  }
+
+  /* 搜索框 VPNavBarSearchButton.vue */
+  .DocSearch-Button {
+    background-color: rgba(255, 255, 255, 0);
+    backdrop-filter: blur(10px);
+  }
+
+  /* 移动端大纲栏 */
+  .VPLocalNav {
+    background-color: rgba(255, 255, 255, 0);
+    backdrop-filter: blur(10px);
+    /* 隐藏分割线 */
+    /* border-bottom: 5px solid var(--vp-c-gutter); */
+    border-bottom: 0px;
+  }
+}
+
+/* .vitepress/theme/style/vp-code-group.css */
+
+/* 代码块tab */
+.vp-code-group .tabs {
+  padding-top: 30px;
+}
+
+/* 代码块tab-顶部小圆点 */
+.vp-code-group .tabs::before {
+  background: #fc625d;
+  border-radius: 50%;
+  box-shadow: 20px 0 #fdbc40, 40px 0 #35cd4b;
+  content: " ";
+  height: 12px;
+  width: 12px;
+  left: 12px;
+  margin-top: -15px;
+  position: absolute;
+}
+
+/* 代码组 */
+.vp-code-group {
+  color: var(--vp-c-black-soft);
+  border-radius: 8px;
+  box-shadow: 0 10px 30px 0 rgb(0 0 0 / 40%);
+}
+```
+
 :::
+
+## 六、丰富功能模块（插件篇）
+
+> 为了扩展 vitepress 的功能社区提供了很多插件供我门选择， 根据我们的需求自行选择对应的插件
+
+### 1. 添加评论插件
+
+使用`giscus`来做`vitepress` 的评论模块，使用也非常的简单，具体可以参考：[giscus 文档](https://giscus.app/zh-CN)，首先安装`giscus`
+
+::: code-group
+
+```sh [pnpm]
+$ pnpm add -D @giscus/vue
+
+```
+
+```sh [npm]
+$ npm install -D @giscus/vue
+
+```
+
+:::
+
+打开[giscus 文档](https://giscus.app/zh-CN)，如下图所示，填入你的 github `用户名 + 仓库名`，勾选你需要的配置
+
+![giscus.png](images/giscus.png)
+
+**记住你的这几个参数 `repo`, `repo-id`, `category`, `category-id`**, 后面添加评论组件需要用到
+
+![giscus1.png](images/giscus1.png)
+
+在`.vitepress/theme/`目录下创建`Layout.vue`组件，添加 giscus 评论组件，在`.vitepress/config.mts`配置文件中使用自定义布局。
+
+::: code-group
+
+```vue [Layout.vue]
+<template>
+  <Layout>
+    <template #doc-footer-before> </template>
+    <template #doc-after>
+      <div style="margin-top: 24px">
+        <Giscus
+          :key="page.filePath"
+          repo="*"
+          repo-id="*"
+          category="*"
+          category-id="*"
+          mapping="pathname"
+          strict="0"
+          reactions-enabled="1"
+          emit-metadata="0"
+          input-position="bottom"
+          lang="zh-CN"
+          crossorigin="anonymous"
+          :theme="isDark ? 'dark' : 'light'"
+        />
+      </div>
+    </template>
+  </Layout>
+</template>
+
+<script lang="ts" setup>
+import Giscus from "@giscus/vue";
+import DefaultTheme from "vitepress/theme";
+import { watch } from "vue";
+import { inBrowser, useData } from "vitepress";
+
+const { isDark, page } = useData();
+
+const { Layout } = DefaultTheme;
+
+watch(isDark, (dark) => {
+  if (!inBrowser) return;
+
+  const iframe = document
+    .querySelector("giscus-widget")
+    ?.shadowRoot?.querySelector("iframe");
+
+  iframe?.contentWindow?.postMessage(
+    { giscus: { setConfig: { theme: dark ? "dark" : "light" } } },
+    "https://giscus.app"
+  );
+});
+</script>
+```
+
+```ts [.vitepress/config.mts]
+...
+import Layout from "./Layout.vue";
+...
+
+export default {
+  ...
+  Layout: () => {
+    return h(Layout, null, {
+      // https://vitepress.dev/guide/extending-default-theme#layout-slots
+    });
+  }
+  ...
+  }
+```
+
+:::
+
+添加之后效果如下：
+![giscus-preview.png](images/giscus-preview.png)
+
+---
+
+### 2. 首页添加`五彩纸屑`插件
+
+::: code-group
+
+```sh [pnpm]
+$ pnpm add canvas-confetti
+```
+
+:::
+
+创建组件`.vitepress/theme/components/confetti.vue`,在首页`index.md`中引入，需要在`.vitepress/theme/index.ts`注入该 Vue 组件
+::: code-group
+
+```vue [.vitepress/theme/components/confetti.vue]
+<script setup lang="ts">
+import confetti from "canvas-confetti";
+import { inBrowser } from "vitepress";
+
+if (inBrowser) {
+  /* 纸屑 */
+  confetti({
+    particleCount: 100,
+    spread: 170,
+    origin: { y: 0.6 },
+  });
+}
+</script>
+```
+
+```ts [.vitepress/theme/index.ts]
+...
+import confetti from "./components/confetti.vue";
+...
+  enhanceApp(ctx) {
+    const { app } = ctx;
+    app.component("confetti", confetti);
+  },
+...
+
+```
+
+```markdown [index.md]
+<!-- 添加到md文章末尾 -->
+<confetti />
+```
+
+:::
+
+添加之后的首页效果图：
+
+![confetti.gif](images/confetti.gif)
+
+### 3. 首页添加`访客统计`插件 `busuanzi`
+
+::: code-group
+
+```sh [pnpm]
+$ pnpm add busuanzi.pure.js
+```
+
+:::
+
+::: code-group
+
+```ts [.vitepress/theme/index.ts]
+...
+import busuanzi from "busuanzi.pure.js";
+
+import VisitorPanel from "./components/VisitorPanel.vue";
+
+...
+  enhanceApp(ctx) {
+    const { app, router, siteData } = ctx;
+...
+    app.component("VisitorPanel", VisitorPanel);
+    if (inBrowser) {
+      router.onAfterRouteChanged = () => {
+        busuanzi.fetch();
+      };
+    }
+  },
+
+
+```
+
+```vue [.vitepress/theme/components/VisitorPanel.vue]
+<template>
+  <div class="panel">
+    <div class="container">
+      <section class="grid">
+        <span class="text">
+          本站总访问量
+          <span id="busuanzi_value_site_pv" class="font-bold">--</span> 次
+        </span>
+        <img
+          src="/heart.gif"
+          alt="heart"
+          class="heart-img"
+          width="50"
+          height="50"
+          @click="onLinkUmiHandle"
+        />
+        <span class="text">
+          本站访客数
+          <span id="busuanzi_value_site_uv" class="font-bold">--</span> 人次
+        </span>
+      </section>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { inBrowser } from "vitepress";
+const onLinkUmiHandle = () => {
+  if (inBrowser) {
+    window.open(
+      "https://us.umami.is/share/Y2BYxCAm7R0DG2Xi/carlosme.fun",
+      "_blank"
+    );
+  }
+};
+</script>
+
+<style scoped>
+.panel {
+  margin-top: 12px;
+  margin-bottom: 8px;
+}
+
+.container {
+  background-color: var(--vp-c-bg-soft);
+  border-radius: 8px;
+  width: 100%;
+  min-height: 32px;
+  max-width: 1152px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.heart-img {
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.grid {
+  font-weight: 500;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  padding-left: 12px;
+  padding-right: 12px;
+  justify-items: center;
+  align-items: center;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  display: grid;
+}
+
+.text {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+</style>
+```
+
+```markdown [index.md]
+<!-- 添加到md文章末尾 -->
+<VisitorPanel />
+```
+
+:::
+
+安装完之后效果图：
+
+![busuanzi.png](images/busuanzi.png)
+
+### 4. 其他实用插件
+
+::: tip
+其他的插件我就不一一列举了，无脑参考对应的文档安装就可以了
+:::
+
+- sandpack 插件，实时编码 `itepress-plugin-sandpack` https://vitepress-sandbox.js-bridge.com/
+
+  ![sandpack.png](images/sandpack.png)
+
+- Vue 组件预览插件 `@vitepress-code-preview` https://welives.github.io/vitepress-code-preview/
+  ![code-preview.png](images/code-preview.png)
+
+- 根据目录自定生成侧边栏插件 `vitepress-sidebar` https://vitepress-sidebar.cdget.com/
+
+- 页面加载进度插件 `vitepress-plugin-nprogress` https://github.com/ZhongxuYang/vitepress-plugin-nprogress
+
+- 文件图标插件 `vitepress-plugin-group-icons` https://vp.yuy1n.io/
+  ![icon.png](images/icon.png)
+
+- 博客访问流量统计分析工具 `https://umami.is/`
+
+  > 例如：https://us.umami.is/share/Y2BYxCAm7R0DG2Xi/carlosme.fun
+
+- 图片放大查看 `medium-zoom` https://github.com/vuejs/vitepress/issues/854
+
+在 `.vitepress/theme/index.ts` 添加如下代码，并保存
+
+```ts
+import DefaultTheme from "vitepress/theme";
+import mediumZoom from "medium-zoom";
+import { onMounted, watch, nextTick } from "vue";
+import { useRoute } from "vitepress";
+
+export default {
+  extends: DefaultTheme,
+
+  setup() {
+    const route = useRoute();
+    const initZoom = () => {
+      // mediumZoom('[data-zoomable]', { background: 'var(--vp-c-bg)' }); // 默认
+      mediumZoom(".main img", { background: "var(--vp-c-bg)" }); // 不显式添加{data-zoomable}的情况下为所有图像启用此功能
+    };
+    onMounted(() => {
+      initZoom();
+    });
+    watch(
+      () => route.path,
+      () => nextTick(() => initZoom())
+    );
+  },
+};
+```
