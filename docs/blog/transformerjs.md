@@ -6,7 +6,7 @@ theme: channing-cyan
 # 在前端使用 Transformers.js
 
 > 在浏览器里面也可以跑模型，无需服务端，如 demo 所示：
-> ![chrome-capture-2024-9-13 (2).gif](https://p0-xtjj-private.juejin.cn/tos-cn-i-73owjymdk6/6fb132318c7f4e31aa8ed450fc6711ea~tplv-73owjymdk6-jj-mark-v1:0:0:0:0:5o6Y6YeR5oqA5pyv56S-5Yy6IEAg5Y2X55Oc5biD5LiB:q75.awebp?policy=eyJ2bSI6MywidWlkIjoiMzU0NDQ4MTIxODY5MzU5NyJ9&rk3s=e9ecf3d6&x-orig-authkey=f32326d3454f2ac7e96d3d06cdbb035152127018&x-orig-expires=1726264788&x-orig-sign=GnupAo33PTQtjmozAv%2BJPhNkarU%3D)更多 Demo 参考：[Transformers.js Demo Web Site](https://xenova.github.io/transformers.js/#demo)
+> ![chrome-capture-2024-9-13 (2).gif](https://raw.githubusercontent.com/ChinaCarlos/carlos-blog/main/docs/blog/images/transformerjs-demo.gif)更多 Demo 参考：[Transformers.js Demo Web Site](https://xenova.github.io/transformers.js/#demo)
 
 ### 简介
 
@@ -125,9 +125,9 @@ console.log(result);
 
 > 打开页面执行` await pipeline('sentiment-analysis'，'Xenova/robertuito-sentiment-analysis')` 首先会去下载`model`,存储到缓存中，第二次打开页面就不会去下载了，等待模型下载完毕之后，就可以在浏览器中运行了
 
-![image.png](https://p0-xtjj-private.juejin.cn/tos-cn-i-73owjymdk6/f96f2a30ba014ce587e7784e5d210750~tplv-73owjymdk6-jj-mark-v1:0:0:0:0:5o6Y6YeR5oqA5pyv56S-5Yy6IEAg5Y2X55Oc5biD5LiB:q75.awebp?policy=eyJ2bSI6MywidWlkIjoiMzU0NDQ4MTIxODY5MzU5NyJ9&rk3s=e9ecf3d6&x-orig-authkey=f32326d3454f2ac7e96d3d06cdbb035152127018&x-orig-expires=1726260880&x-orig-sign=Fjca56rPXaAgtPzeHbqsLIinaxQ%3D)
+![image.png](https://raw.githubusercontent.com/ChinaCarlos/carlos-blog/main/docs/blog/images/transformerjs-demo-1.png)
 
-![image.png](https://p0-xtjj-private.juejin.cn/tos-cn-i-73owjymdk6/4114916b607546f0925f5b6ee5a0c2c5~tplv-73owjymdk6-jj-mark-v1:0:0:0:0:5o6Y6YeR5oqA5pyv56S-5Yy6IEAg5Y2X55Oc5biD5LiB:q75.awebp?policy=eyJ2bSI6MywidWlkIjoiMzU0NDQ4MTIxODY5MzU5NyJ9&rk3s=e9ecf3d6&x-orig-authkey=f32326d3454f2ac7e96d3d06cdbb035152127018&x-orig-expires=1726260900&x-orig-sign=eQV80uqy8bQ%2FX5ez1Wl8SEwzLcs%3D)
+![image.png](https://raw.githubusercontent.com/ChinaCarlos/carlos-blog/main/docs/blog/images/transformerjs-demo-2.png)
 
 ### 举例实现一个简单的物体检测
 
@@ -228,7 +228,7 @@ onMounted(() => {
 });
 ```
 
-![chrome-capture-2024-9-13.gif](https://p0-xtjj-private.juejin.cn/tos-cn-i-73owjymdk6/200add42a85c4a78b278e10763a733a6~tplv-73owjymdk6-jj-mark-v1:0:0:0:0:5o6Y6YeR5oqA5pyv56S-5Yy6IEAg5Y2X55Oc5biD5LiB:q75.awebp?policy=eyJ2bSI6MywidWlkIjoiMzU0NDQ4MTIxODY5MzU5NyJ9&rk3s=e9ecf3d6&x-orig-authkey=f32326d3454f2ac7e96d3d06cdbb035152127018&x-orig-expires=1726263560&x-orig-sign=%2BDD4qQVERYWYc4VF0JVGZBCMA4Y%3D)
+![chrome-capture-2024-9-13.gif](https://raw.githubusercontent.com/ChinaCarlos/carlos-blog/main/docs/blog/images/transformerjs-demo-3.gif)
 
 2. 使用下载的`model`传入检测对象，输出检测结果：
 
@@ -252,7 +252,7 @@ const parseImgByModel = async () => {
 };
 ```
 
-![chrome-capture-2024-9-13 (1).gif](https://p0-xtjj-private.juejin.cn/tos-cn-i-73owjymdk6/225fde696669459e943c340e619e9d86~tplv-73owjymdk6-jj-mark-v1:0:0:0:0:5o6Y6YeR5oqA5pyv56S-5Yy6IEAg5Y2X55Oc5biD5LiB:q75.awebp?policy=eyJ2bSI6MywidWlkIjoiMzU0NDQ4MTIxODY5MzU5NyJ9&rk3s=e9ecf3d6&x-orig-authkey=f32326d3454f2ac7e96d3d06cdbb035152127018&x-orig-expires=1726263908&x-orig-sign=0qAQPutlaGE3axXrzUpKAjsc%2BT4%3D)
+![chrome-capture-2024-9-13 (1).gif](https://raw.githubusercontent.com/ChinaCarlos/carlos-blog/main/docs/blog/images/transformerjs-demo-4.gif)
 
 在控制台打印`items`，会得到类似下面的检测结果：
 
@@ -333,7 +333,7 @@ const parseImgByModel = async () => {
 
 `Vue` 组件 Demo 实现源码：
 
-```vue
+```html
 <template>
   <h3>对象检测</h3>
   <el-row
@@ -391,246 +391,251 @@ const parseImgByModel = async () => {
 </template>
 
 <script setup name="HomeView">
-import VueJsonPretty from "vue-json-pretty";
-import "vue-json-pretty/lib/styles.css";
-import { computed, onMounted, ref } from "vue";
-import { pipeline } from "@xenova/transformers";
-import { Chart, registerables } from "chart.js";
-import { getImageDataFromImage } from "../utils";
-import { cloneDeep } from "lodash-es";
+  import VueJsonPretty from "vue-json-pretty";
+  import "vue-json-pretty/lib/styles.css";
+  import { computed, onMounted, ref } from "vue";
+  import { pipeline } from "@xenova/transformers";
+  import { Chart, registerables } from "chart.js";
+  import { getImageDataFromImage } from "../utils";
+  import { cloneDeep } from "lodash-es";
 
-Chart.register(...registerables);
+  Chart.register(...registerables);
 
-const format = (percentage) => (percentage === 100 ? "Done" : `${percentage}%`);
+  const format = (percentage) =>
+    percentage === 100 ? "Done" : `${percentage}%`;
 
-const detector = ref();
-const img = ref();
-const svg = ref();
-const canvas = ref();
-const chartCanvas = ref();
-const downloadProgressMap = ref({});
-const checkLoading = ref(false);
-const checkResult = ref({});
-const isChecked = ref(false);
+  const detector = ref();
+  const img = ref();
+  const svg = ref();
+  const canvas = ref();
+  const chartCanvas = ref();
+  const downloadProgressMap = ref({});
+  const checkLoading = ref(false);
+  const checkResult = ref({});
+  const isChecked = ref(false);
 
-const tempProgressList = computed(() => {
-  return Object.keys(downloadProgressMap.value).map(
-    (key) => downloadProgressMap.value[key]
-  );
-});
-const isCanChecked = computed(() => {
-  const list = Object.keys(downloadProgressMap.value).map(
-    (key) => downloadProgressMap.value[key]
-  );
-  return list.every((item) => item.status === "done");
-});
-
-const COLOURS = [
-  "255, 99, 132",
-  "54, 162, 235",
-  "255, 206, 86",
-  "75, 192, 192",
-  "153, 102, 255",
-  "255, 159, 64",
-];
-
-const CHART_OPTIONS = {
-  responsive: true,
-  maintainAspectRatio: false,
-  indexAxis: "y",
-  scales: {
-    y: {
-      beginAtZero: true,
-    },
-    x: {
-      min: 0,
-      max: 1,
-    },
-  },
-  plugins: {
-    legend: {
-      display: false,
-    },
-  },
-  layout: {
-    padding: {
-      bottom: -5,
-    },
-  },
-};
-
-const downloadProgress = (progressData) => {
-  const tempProgressMap = cloneDeep(downloadProgressMap.value);
-  const name = progressData.file;
-
-  if (progressData.status === "initiate") {
-    tempProgressMap[name] = {
-      progress: 0,
-      status: progressData.status,
-      name,
-    };
-  } else if (progressData.status === "download") {
-    tempProgressMap[name] = {
-      progress: 0,
-      status: progressData.status,
-      name,
-    };
-  } else if (progressData.status === "progress") {
-    tempProgressMap[name] = {
-      status: progressData.status,
-      progress: Number(progressData.progress).toFixed(2) || 0,
-      name,
-    };
-  } else if (progressData.status === "done") {
-    tempProgressMap[name] = {
-      status: progressData.status,
-      progress: progressData.progress || 100,
-      name,
-    };
-  }
-
-  downloadProgressMap.value = tempProgressMap;
-};
-
-const downloadModel = async () => {
-  detector.value = await pipeline("object-detection", "Xenova/detr-resnet-50", {
-    progress_callback: downloadProgress,
+  const tempProgressList = computed(() => {
+    return Object.keys(downloadProgressMap.value).map(
+      (key) => downloadProgressMap.value[key]
+    );
   });
-};
+  const isCanChecked = computed(() => {
+    const list = Object.keys(downloadProgressMap.value).map(
+      (key) => downloadProgressMap.value[key]
+    );
+    return list.every((item) => item.status === "done");
+  });
 
-const generatorSvgRect = (items = []) => {
-  svg.value.innerHTML = "";
-  chartCanvas.value?.destroy();
+  const COLOURS = [
+    "255, 99, 132",
+    "54, 162, 235",
+    "255, 206, 86",
+    "75, 192, 192",
+    "153, 102, 255",
+    "255, 159, 64",
+  ];
 
-  let viewbox = svg.value.viewBox.baseVal;
-
-  let colours = [];
-  let borderColours = [];
-
-  for (let i = 0; i < items.length; ++i) {
-    const box = items[i].box;
-
-    let svgns = "http://www.w3.org/2000/svg";
-    let rect = document.createElementNS(svgns, "rect");
-
-    rect.setAttribute("x", viewbox.width * box.xmin);
-    rect.setAttribute("y", viewbox.height * box.ymin);
-    rect.setAttribute("width", viewbox.width * (box.xmax - box.xmin));
-    rect.setAttribute("height", viewbox.height * (box.ymax - box.ymin));
-
-    const colour = COLOURS[i % COLOURS.length];
-    rect.style.stroke = `rgba(${colour}, 1)`;
-    rect.style.fill = `rgba(${colour}, 0.1)`;
-
-    colours.push(`rgba(${colour}, 0.5)`);
-    borderColours.push(`rgba(${colour}, 1)`);
-    svg.value?.appendChild(rect);
-  }
-
-  const chartData = {
-    labels: items.map((x) => x.label),
-    datasets: [
-      {
-        data: items.map((x) => x.score),
-        backgroundColor: colours,
-        borderColor: borderColours,
+  const CHART_OPTIONS = {
+    responsive: true,
+    maintainAspectRatio: false,
+    indexAxis: "y",
+    scales: {
+      y: {
+        beginAtZero: true,
       },
-    ],
+      x: {
+        min: 0,
+        max: 1,
+      },
+    },
+    plugins: {
+      legend: {
+        display: false,
+      },
+    },
+    layout: {
+      padding: {
+        bottom: -5,
+      },
+    },
   };
 
-  chartCanvas.value = new Chart(canvas.value, {
-    type: "bar",
-    data: structuredClone(chartData),
-    options: CHART_OPTIONS,
-  });
-  checkLoading.value = false;
-};
+  const downloadProgress = (progressData) => {
+    const tempProgressMap = cloneDeep(downloadProgressMap.value);
+    const name = progressData.file;
 
-const mousemoveHandle = (e) => {
-  let rects = svg.value.querySelectorAll("rect");
-  let colours = [];
-  let borderColours = [];
-
-  if (!rects.length) return;
-
-  rects.forEach((rect, i) => {
-    let colour = COLOURS[i % COLOURS.length];
-
-    let toDisplay = e.target.tagName !== "rect";
-    if (!toDisplay) {
-      let bb = rect.getBoundingClientRect();
-      toDisplay =
-        e.clientX >= bb.left &&
-        e.clientX <= bb.right &&
-        e.clientY >= bb.top &&
-        e.clientY <= bb.bottom;
+    if (progressData.status === "initiate") {
+      tempProgressMap[name] = {
+        progress: 0,
+        status: progressData.status,
+        name,
+      };
+    } else if (progressData.status === "download") {
+      tempProgressMap[name] = {
+        progress: 0,
+        status: progressData.status,
+        name,
+      };
+    } else if (progressData.status === "progress") {
+      tempProgressMap[name] = {
+        status: progressData.status,
+        progress: Number(progressData.progress).toFixed(2) || 0,
+        name,
+      };
+    } else if (progressData.status === "done") {
+      tempProgressMap[name] = {
+        status: progressData.status,
+        progress: progressData.progress || 100,
+        name,
+      };
     }
 
-    if (toDisplay) {
-      // Set back to original
-      rect.style.fillOpacity = 0.1;
-      rect.style.opacity = 1;
+    downloadProgressMap.value = tempProgressMap;
+  };
+
+  const downloadModel = async () => {
+    detector.value = await pipeline(
+      "object-detection",
+      "Xenova/detr-resnet-50",
+      {
+        progress_callback: downloadProgress,
+      }
+    );
+  };
+
+  const generatorSvgRect = (items = []) => {
+    svg.value.innerHTML = "";
+    chartCanvas.value?.destroy();
+
+    let viewbox = svg.value.viewBox.baseVal;
+
+    let colours = [];
+    let borderColours = [];
+
+    for (let i = 0; i < items.length; ++i) {
+      const box = items[i].box;
+
+      let svgns = "http://www.w3.org/2000/svg";
+      let rect = document.createElementNS(svgns, "rect");
+
+      rect.setAttribute("x", viewbox.width * box.xmin);
+      rect.setAttribute("y", viewbox.height * box.ymin);
+      rect.setAttribute("width", viewbox.width * (box.xmax - box.xmin));
+      rect.setAttribute("height", viewbox.height * (box.ymax - box.ymin));
+
+      const colour = COLOURS[i % COLOURS.length];
+      rect.style.stroke = `rgba(${colour}, 1)`;
+      rect.style.fill = `rgba(${colour}, 0.1)`;
+
       colours.push(`rgba(${colour}, 0.5)`);
       borderColours.push(`rgba(${colour}, 1)`);
-    } else {
-      rect.style.fillOpacity = 0;
-      rect.style.opacity = 0;
-      colours.push(`rgba(${colour}, 0.05)`);
-      borderColours.push(`rgba(${colour}, 0.5)`);
+      svg.value?.appendChild(rect);
     }
-  });
 
-  chartCanvas.value.data.datasets[0].backgroundColor = colours;
-  chartCanvas.value.data.datasets[0].borderColor = borderColours;
-};
+    const chartData = {
+      labels: items.map((x) => x.label),
+      datasets: [
+        {
+          data: items.map((x) => x.score),
+          backgroundColor: colours,
+          borderColor: borderColours,
+        },
+      ],
+    };
 
-const parseImgByModel = async () => {
-  checkLoading.value = true;
-  isChecked.value = false;
-  try {
-    const items = await detector.value(getImageDataFromImage(img.value), {
-      threshold: 0.9,
-      percentage: true,
+    chartCanvas.value = new Chart(canvas.value, {
+      type: "bar",
+      data: structuredClone(chartData),
+      options: CHART_OPTIONS,
     });
-    checkResult.value = items;
-    generatorSvgRect(items);
-    isChecked.value = true;
-  } catch (e) {
-    console.log("error:", e);
     checkLoading.value = false;
-    isChecked.value = false;
-  }
-};
+  };
 
-onMounted(() => {
-  downloadModel();
-});
+  const mousemoveHandle = (e) => {
+    let rects = svg.value.querySelectorAll("rect");
+    let colours = [];
+    let borderColours = [];
+
+    if (!rects.length) return;
+
+    rects.forEach((rect, i) => {
+      let colour = COLOURS[i % COLOURS.length];
+
+      let toDisplay = e.target.tagName !== "rect";
+      if (!toDisplay) {
+        let bb = rect.getBoundingClientRect();
+        toDisplay =
+          e.clientX >= bb.left &&
+          e.clientX <= bb.right &&
+          e.clientY >= bb.top &&
+          e.clientY <= bb.bottom;
+      }
+
+      if (toDisplay) {
+        // Set back to original
+        rect.style.fillOpacity = 0.1;
+        rect.style.opacity = 1;
+        colours.push(`rgba(${colour}, 0.5)`);
+        borderColours.push(`rgba(${colour}, 1)`);
+      } else {
+        rect.style.fillOpacity = 0;
+        rect.style.opacity = 0;
+        colours.push(`rgba(${colour}, 0.05)`);
+        borderColours.push(`rgba(${colour}, 0.5)`);
+      }
+    });
+
+    chartCanvas.value.data.datasets[0].backgroundColor = colours;
+    chartCanvas.value.data.datasets[0].borderColor = borderColours;
+  };
+
+  const parseImgByModel = async () => {
+    checkLoading.value = true;
+    isChecked.value = false;
+    try {
+      const items = await detector.value(getImageDataFromImage(img.value), {
+        threshold: 0.9,
+        percentage: true,
+      });
+      checkResult.value = items;
+      generatorSvgRect(items);
+      isChecked.value = true;
+    } catch (e) {
+      console.log("error:", e);
+      checkLoading.value = false;
+      isChecked.value = false;
+    }
+  };
+
+  onMounted(() => {
+    downloadModel();
+  });
 </script>
 
 <style lang="scss" scoped>
-.progress-bar {
-  width: 100%;
-  box-sizing: border-box;
-  padding: 16px 24px;
-  margin-bottom: 30px;
-}
-.left-area {
-  position: relative;
+  .progress-bar {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 16px 24px;
+    margin-bottom: 30px;
+  }
+  .left-area {
+    position: relative;
 
-  img,
-  svg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    width: 702px;
-    height: 468px;
+    img,
+    svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      width: 702px;
+      height: 468px;
+    }
+    svg {
+      z-index: 10;
+    }
   }
-  svg {
-    z-index: 10;
-  }
-}
 </style>
 ```
 
