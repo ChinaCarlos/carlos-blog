@@ -3,7 +3,7 @@ highlight: ally-dark
 theme: channing-cyan
 ---
 
-## 在前端使用 Transformers.js
+# 在前端使用 Transformers.js
 
 > 在浏览器里面也可以跑模型，无需服务端，如 demo 所示：
 > ![chrome-capture-2024-9-13 (2).gif](https://p0-xtjj-private.juejin.cn/tos-cn-i-73owjymdk6/6fb132318c7f4e31aa8ed450fc6711ea~tplv-73owjymdk6-jj-mark-v1:0:0:0:0:5o6Y6YeR5oqA5pyv56S-5Yy6IEAg5Y2X55Oc5biD5LiB:q75.awebp?policy=eyJ2bSI6MywidWlkIjoiMzU0NDQ4MTIxODY5MzU5NyJ9&rk3s=e9ecf3d6&x-orig-authkey=f32326d3454f2ac7e96d3d06cdbb035152127018&x-orig-expires=1726264788&x-orig-sign=GnupAo33PTQtjmozAv%2BJPhNkarU%3D)更多 Demo 参考：[Transformers.js Demo Web Site](https://xenova.github.io/transformers.js/#demo)
