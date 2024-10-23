@@ -52,8 +52,8 @@ export default defineConfig({
         text: "前端面试",
         items: [
           { text: "Examples", link: "/interview/Examples/api-examples" },
-          { text: "HTML基础知识", link: "/interview/HTML/part1" },
-          { text: "CSS", link: "/item-2" },
+          { text: "HTML", link: "/interview/HTML/index" },
+          { text: "CSS", link: "/interview/CSS/index" },
           { text: "JavaScript", link: "/item-3" },
           { text: "数据结构", link: "/item-3" },
           { text: "算法", link: "/item-3" },
