@@ -351,6 +351,8 @@ theme: solarized-dark
 
 Flexbox（弹性布局）是一种 CSS 布局模式，专为在页面中分配空间和对齐项目而设计，特别适用于响应式布局和不同屏幕尺寸的设备。
 
+![flex.png](https://raw.githubusercontent.com/ChinaCarlos/carlos-blog/main/docs/interview/images/flex.png)
+
 #### 1. Flex 容器属性
 
 Flex 容器的属性主要用于定义容器本身的布局方式和子项的排列规则。
@@ -399,6 +401,7 @@ Flex 容器的属性主要用于定义容器本身的布局方式和子项的排
 ##### `align-content`
 
 定义多行内容在交叉轴上的对齐方式，仅当项目换行时有效。
+![flex_align_content.png](https://raw.githubusercontent.com/ChinaCarlos/carlos-blog/main/docs/interview/images/flex_align_content.png)
 
 - **`flex-start`**：从交叉轴起点对齐。
 - **`flex-end`**：从交叉轴终点对齐。
