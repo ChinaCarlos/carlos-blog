@@ -53,7 +53,7 @@ export default defineConfig({
         items: [
           { text: "Examples", link: "/interview/Examples/api-examples" },
           { text: "HTML", link: "/interview/HTML/index" },
-          { text: "CSS", link: "/interview/CSS/index" },
+          { text: "CSS", link: "/interview/CSS/prev" },
           { text: "JavaScript", link: "/item-3" },
           { text: "数据结构", link: "/item-3" },
           { text: "算法", link: "/item-3" },

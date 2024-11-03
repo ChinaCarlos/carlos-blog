@@ -12,10 +12,23 @@ export const sideBarData = [
     collapsed: false,
     collapseDepth: 2,
   },
+
   {
     documentRootPath: "/docs",
     scanStartPath: "interview/Examples",
     resolvePath: "interview/Examples/",
+    useTitleFromFileHeading: true,
+    useTitleFromFrontmatter: true,
+    frontmatterTitleFieldName: "title",
+    hyphenToSpace: true,
+    underscoreToSpace: true,
+    collapsed: false,
+    collapseDepth: 2,
+  },
+  {
+    documentRootPath: "/docs",
+    scanStartPath: "interview/CSS",
+    resolvePath: "interview/CSS/",
     useTitleFromFileHeading: true,
     useTitleFromFrontmatter: true,
     frontmatterTitleFieldName: "title",
