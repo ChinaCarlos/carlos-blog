@@ -10,8 +10,7 @@ import {
 } from 'vitepress/theme'
 const members = [
   {
-    avatar: 'https://raw.githubusercontent.com/ChinaCarlos/carlos-blog/main/docs/interview/images/avatar.png)
-    g',
+    avatar: 'https://raw.githubusercontent.com/ChinaCarlos/carlos-blog/main/docs/interview/images/avatar.png',
     name: 'Carlos',
     title: 'Develop',
     links: [
@@ -22,13 +21,18 @@ const members = [
 
 ]
 </script>
-<VPTeamPage>
+
+<style>
+
+</style>
+
+<VPTeamPage class="about_page">
   <VPTeamPageTitle>
     <template #title>
       About Me
     </template>
     <template #lead>
-      一个普通的前端开发
+     一个普通能解决问题的前端开发
     </template>
   </VPTeamPageTitle>
   <VPTeamMembers
