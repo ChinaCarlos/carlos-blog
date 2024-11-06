@@ -38,6 +38,18 @@ export const sideBarData = [
     collapseDepth: 2,
   },
   {
+    documentRootPath: "/docs",
+    scanStartPath: "interview/JavaScript",
+    resolvePath: "interview/JavaScript/",
+    useTitleFromFileHeading: true,
+    useTitleFromFrontmatter: true,
+    frontmatterTitleFieldName: "title",
+    hyphenToSpace: true,
+    underscoreToSpace: true,
+    collapsed: false,
+    collapseDepth: 2,
+  },
+  {
     documentRootPath: "/docs/",
     scanStartPath: "interview/HTML",
     resolvePath: "interview/HTML/",
