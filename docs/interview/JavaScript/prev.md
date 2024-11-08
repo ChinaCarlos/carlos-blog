@@ -178,6 +178,295 @@ console.log(shallowCopy.b.c); // 3
 
 ### 10. 如何实现一个继承
 
-### 11. JS this 的指向
+1. 通过原型链继承：
+
+```javascript
+function Parent(name) {
+  this.name = name;
+  return this;
+}
+
+Parent.prototype.getName = function () {
+  return this.name;
+};
+
+Parent.prototype.info = {
+  male: "man",
+};
+
+function Child(age) {
+  this.age = age;
+}
+
+Child.prototype = new Parent();
+
+const child1 = new Child(1);
+const child2 = new Child(2);
+
+console.log(child1.getName);
+console.log(child1.info);
+child1.info.male = "woman";
+console.log(child2.info);
+```
+
+_缺点：_ 共享父类引用类型的属性，无法传参
+
+2. 通过`call/apply`构造函数继承
+
+```javascript
+function Parent(name) {
+  this.name = name;
+  return this;
+}
+
+Parent.prototype.getName = function () {
+  return this.name;
+};
+
+Parent.prototype.info = {
+  male: "man",
+};
+
+function Child(age, name) {
+  Parent.call(this, name);
+
+  this.age = age;
+}
+
+const child1 = new Child(1, "Tom");
+const child2 = new Child(2, "Jack");
+
+console.log(child1.name);
+console.log(child2.name);
+console.log(child2.info); // undefined
+```
+
+_缺点:_ 无法继承父类原型链上的方法以及属性
+
+3. 寄生组合式继承
+
+```javascript
+function Parent(name) {
+  this.name = name;
+  return this;
+}
+
+Parent.prototype.getName = function () {
+  return this.name;
+};
+
+Parent.prototype.info = {
+  male: "man",
+};
+
+function Child(age, name) {
+  Parent.call(this, name);
+
+  this.age = age;
+}
+
+Child.prototype = Object.create(Parent.prototype);
+Child.prototype.constructor = Child;
+
+const child1 = new Child(1, "Tom");
+const child2 = new Child(2, "Jack");
+
+console.log(child1.name);
+console.log(child2.name);
+console.log(child2.info);
+console.log(child2.getName);
+```
+
+4. 通过 ES6 `extends` 实现继承
+
+```javascript
+class Parent {
+  constructor(name) {
+    this.name = name;
+  }
+
+  getName() {
+    console.log(this.name);
+  }
+}
+
+class Child extends Parent {
+  constructor(age, name) {
+    super(name);
+    this.age = age;
+  }
+  getInfo() {
+    return `${this.name}——${this.age}`;
+  }
+}
+
+const child = new Child(12, "TOM");
+
+console.log(child.getInfo());
+console.log(child.getName());
+```
+
+### JavaScript 中 `this` 的指向
+
+`this` 在 JavaScript 中的指向取决于**执行上下文**，不同的调用方式导致 `this` 指向不同对象。以下是几种常见情况：
+
+#### 1. 全局环境（普通函数中的 `this`）
+
+- 在全局作用域或普通函数中，`this` 默认指向全局对象（浏览器中是 `window`，Node.js 中是 `global`）。
+- 严格模式（`'use strict'`）下，`this` 为 `undefined`。
+
+```javascript
+function test() {
+  console.log(this); // 在非严格模式下输出：window，在严格模式下输出：undefined
+}
+test();
+```
+
+#### 2. 对象方法中的 this
+
+- 当 this 出现在对象方法中，this 指向调用该方法的对象。
+
+```javascript
+const obj = {
+  name: "Alice",
+  getName() {
+    console.log(this.name); // 输出：Alice
+  },
+};
+obj.getName();
+```
+
+#### 3. 构造函数中的 this
+
+- 使用构造函数（通过 new 关键字）调用时，this 指向新创建的实例对象。
+
+```javascript
+function Person(name) {
+  this.name = name;
+}
+const person = new Person("Bob");
+console.log(person.name); // 输出：Bob
+```
+
+#### 4. 箭头函数中的 this
+
+- 箭头函数不会创建自己的 this，它继承自定义时的词法作用域的 this 值，指向函数声明时所在的作用域。
+
+```javascript
+const obj = {
+  name: "Alice",
+  getName: () => {
+    console.log(this.name); // 输出：undefined（因为 this 继承自全局作用域）
+  },
+};
+obj.getName();
+
+function Outer() {
+  this.name = "Bob";
+  return () => console.log(this.name); // 输出：Bob
+}
+const arrowFunc = new Outer();
+arrowFunc();
+```
+
+#### 5. call、apply 和 bind 改变 this
+
+- call 和 apply 可以显式指定 this 指向，传入的第一个参数会作为 this。
+- bind 创建一个新函数并锁定 this 为指定对象。
+
+```javascript
+function greet() {
+  console.log(this.name);
+}
+const person = { name: "Alice" };
+greet.call(person); // 输出：Alice
+greet.apply(person); // 输出：Alice
+
+const boundGreet = greet.bind(person);
+boundGreet(); // 输出：Alice
+```
+
+#### 6. DOM 事件处理函数中的 this
+
+- 在事件处理函数中，this 默认指向触发事件的 DOM 元素。
+
+```javascript
+const button = document.querySelector("button");
+button.addEventListener("click", function () {
+  console.log(this); // 输出：button 元素
+});
+```
+
+#### 7. class 类中的 this
+
+- class 中定义的方法（非箭头函数）调用时，this 指向该类的实例。
+- 事件回调或箭头函数中的 this 指向外层作用域。
+
+```javascript
+class Person {
+  constructor(name) {
+    this.name = name;
+  }
+
+  sayName() {
+    console.log(this.name); // 输出：实例的 name 属性
+  }
+
+  delayedGreet() {
+    setTimeout(() => {
+      console.log(this.name); // 输出：实例的 name，因为箭头函数继承了外层 this
+    }, 1000);
+  }
+}
+
+const person = new Person("Alice");
+person.sayName(); // 输出：Alice
+person.delayedGreet(); // 输出：Alice
+```
+
+this 的指向主要取决于函数的调用方式。使用 bind、call、apply 可以显式设置 this 指向，箭头函数则适合在嵌套结构中保持外层的 this 指向，class 和构造函数通常用于面向对象编程。
 
 ### 12. bind, call, apply 区别是什么？都分别是干什么用的
+
+# `bind`、`call` 和 `apply` 的区别总结
+
+| 方法    | 作用                         | 是否立即执行 | 参数传递方式                                   | 返回值       | 使用场景                             |
+| ------- | ---------------------------- | ------------ | ---------------------------------------------- | ------------ | ------------------------------------ |
+| `bind`  | 创建一个绑定 `this` 的新函数 | 否           | 第一个参数为 `this` 指向，后续为预设参数       | 返回新函数   | 需要永久改变 `this` 指向，并稍后调用 |
+| `call`  | 调用函数并改变 `this` 指向   | 是           | 第一个参数为 `this` 指向，后续参数逐个传递     | 函数的返回值 | 立即调用函数并临时改变 `this` 指向   |
+| `apply` | 调用函数并改变 `this` 指向   | 是           | 第一个参数为 `this` 指向，第二个参数为参数数组 | 函数的返回值 | 立即调用函数，参数通过数组传递       |
+
+---
+
+_示例代码_
+
+#### 1. `bind` 示例
+
+```javascript
+const obj = { name: "Alice" };
+function greet(greeting) {
+  console.log(`${greeting}, ${this.name}`);
+}
+const boundGreet = greet.bind(obj, "Hello");
+boundGreet(); // 输出：Hello, Alice
+```
+
+#### 2. `call` 示例
+
+```javascript
+const obj = { name: "Bob" };
+function greet(greeting, punctuation) {
+  console.log(`${greeting}, ${this.name}${punctuation}`);
+}
+greet.call(obj, "Hi", "!"); // 输出：Hi, Bob!
+```
+
+#### 3. `apply` 示例
+
+```javascript
+const obj = { name: "Charlie" };
+function greet(greeting, punctuation) {
+  console.log(`${greeting}, ${this.name}${punctuation}`);
+}
+greet.apply(obj, ["Hey", "?"]); // 输出：Hey, Charlie?
+```
