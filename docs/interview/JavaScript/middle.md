@@ -144,3 +144,38 @@ js 代码在访问  localStorage  时，浏览器提供的 API 接口通常会
 ![Event event](https://raw.githubusercontent.com/ChinaCarlos/carlos-blog/main/docs/interview/images/event.png)
 
 `阻止默认事件：` event.stopPropagation `阻止事件默认行为：` event.preventDefault()
+
+## 6.自定义事件
+
+目前实现自定义事件的方式共两种
+
+1. Event()
+
+```javascript
+const sendEvent = new Event("sendMsg");
+document.addEventListener("sendMsg", print);
+document.dispatchEvent(sendEvent);
+function print() {
+  console.log("hello custom event");
+}
+// result：hello custom event。
+```
+
+2. CustomEvent()
+
+```javascript
+const sendEvent = new CustomEvent("sendMsg", {
+  detail: {
+    name: "good luck",
+  },
+});
+document.addEventListener("sendMsg", print);
+document.dispatchEvent(sendEvent);
+function print(e) {
+  console.log(e.detail.name);
+}
+```
+
+::: danger 区别：
+通过上面两个简单的例子我们可以看出，Event 和 CustomEvent 最大的区别在于，CustomEvent 可以传递数据
+:::
