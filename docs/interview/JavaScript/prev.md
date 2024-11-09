@@ -507,6 +507,10 @@ function add(a, b) {
 
 异步任务是在主线程执行的同时，通过回调函数或其他机制委托给其他线程或事件来处理的任务。在执行异步任务时，主线程不会等待任务完成，而是继续执行后续代码。
 
+#### 执行图：
+
+![Event Loop](https://raw.githubusercontent.com/ChinaCarlos/carlos-blog/main/docs/interview/images/task1.png)
+
 #### 任务队列类型
 
 任务队列分为宏任务队列（macrotask queue）和微任务队列（microtask queue）两种。JavaScript 引擎遵循事件循环的机制，在执行完当前宏任务后，会检查微任务队列，执行其中的微任务，然后再取下一个宏任务执行。这个过程不断循环，形成事件循环。
@@ -515,18 +519,51 @@ function add(a, b) {
 
 所有同步任务
 
-- I/O 操作，如文件读写、数据库数据读写等
-- setTimeout、setInterval
-- setImmediate（Node.js 环境）
-- requestAnimationFrame
-- 事件监听回调函数等
+- script: 浏览器加载和解析 JavaScript 脚本文件，整个脚本作为一个宏任务执行。
+- setTimeout: 设置一个定时器，当指定时间到达后，其回调函数作为一个宏任务被加入队列。
+- setInterval: 与 setTimeout 类似，但会周期性地重复执行回调函数，每次执行都是一个宏任务。
+- setImmediate: 在 Node.js 中，用于在当前事件循环结束后立即执行回调函数。在浏览器中，可以通过- - setTimeout(callback, 0)实现相似效果。
+- I/O: 包括文件读写、网络请求等，完成后的回调函数作为宏任务处理。
+- UI-rendering:浏览器自动更新页面元素的视觉表示，以反映最新的 DOM 和样式变更的过程。
 
 2、微任务（Microtasks）是一些较小粒度、高优先级的任务，包括：
 
 - Promise 的 then、catch、finally
-- async/await 中的代码
+- async/await 中的代码 （Promise + Generator 的语法糖）
 - Generator 函数
 - MutationObserver
 - process.nextTick（Node.js 环境）
 
-![Event Loop](https://raw.githubusercontent.com/ChinaCarlos/carlos-blog/main/docs/interview/images/task1.png)
+#### 执行过程
+
+1. 执行同步代码（宏任务 script）
+
+2. 同步执行完毕后，检查是否有异步需要执行(检查两个异步队列，微任务队列和宏任务队列)
+
+3. 执行所有的微任务
+
+4. 微任务执行完毕后，如果有需要就渲染页面
+
+5. 执行异步宏任务，也就是开启下一次事件循环
+
+### 14. JavaScript 的单线程特性
+
+JavaScript 设计之初的主要目的是在网页上添加交互功能，以增强网页的交互性和动态性，所以为了简化并发问题、提高执行效率和避免浏览器环境的限制，开发人员选择了单线程执行模型。它的优点在于：
+
+- 节约性能/内存
+- 节约上下文切换的时间
+- 减少并发问题（如死锁等）的发生
+
+当然单线程执行也存在一些局限性。例如，它不能充分利用多核 CPU 的并行处理能力，可能导致某些计算密集型任务的执行效率较低。为了解决这个问题，JavaScript 通过一些技术如事件循环机制、Promise、async/await 等来支持并发和并行处理。这些技术能让 JavaScript 代码在执行耗时任务时，不阻塞主线程的执行，从而提高了整体性能。
+
+### 15. JavaScript 的单线程特性
+
+### 栈与堆的区别
+
+| 特性         | 栈                                    | 堆                                   |
+| ------------ | ------------------------------------- | ------------------------------------ |
+| 存储数据类型 | 基本数据类型（`number`、`string` 等） | 引用类型（对象、数组、函数等）       |
+| 内存分配方式 | 自动分配和释放，遵循 LIFO 规则        | 手动分配，由垃圾回收机制自动释放     |
+| 存储位置     | 存储在栈内存中                        | 存储在堆内存中                       |
+| 存取速度     | 存取速度较快                          | 存取速度较慢                         |
+| 生命周期     | 当函数调用结束，栈内存会被释放        | 由垃圾回收机制管理，依赖引用计数机制 |
