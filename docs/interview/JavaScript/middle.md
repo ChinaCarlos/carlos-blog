@@ -454,3 +454,49 @@ HTML 是逐行解析的，浏览器的渲染引擎会将 HTML 文档解析并转
 
 - event.target 返回触发事件的元素
 - event.currentTarget 返回绑定事件的元素
+
+### 22.`requestAnimationFrame` 的优势和使用场景
+
+`requestAnimationFrame` 是一个用于执行动画和其他视觉效果的 JavaScript 方法。它允许你在浏览器下一次重绘之前执行指定的函数，通常用于创建流畅的动画效果，并且能够更好地与浏览器的渲染流程同步，提高性能。
+
+#### **优势**
+
+1. **高效的动画渲染**：
+   `requestAnimationFrame` 是浏览器为动画渲染提供的 API，能够根据屏幕刷新率自动调整更新频率，通常在 60 FPS（每秒 60 帧）时调用，从而使动画更加流畅，避免了过多的绘制和卡顿现象。
+
+2. **性能优化**：
+   由于它会在浏览器的空闲时间进行渲染，避免了无意义的重复渲染，减少了 CPU 和 GPU 的负担。它还会在浏览器窗口被最小化时停止调用，节省资源。
+
+3. **同步显示帧**：
+   `requestAnimationFrame` 确保动画帧与浏览器的绘制周期同步，使得动画呈现更加平滑，避免了 `setTimeout` 或 `setInterval` 的不准确性（特别是在不同设备和屏幕刷新率上）。
+
+4. **自动暂停**：
+   浏览器会自动停止执行不在可见区域内的页面动画，从而节省资源，这对于长时间执行动画的页面尤其重要。
+
+5. **更精确的时间控制**：
+   `requestAnimationFrame` 提供的时间戳（`timestamp` 参数）比 `setTimeout` 或 `setInterval` 更精确，可以更好地控制动画的进度。
+
+#### **使用场景**
+
+- **平滑动画**：在需要进行连续的动画渲染时，如移动元素、滚动效果、渐变变化等。
+- **游戏开发**：在浏览器中创建基于帧的动画（如角色移动、特效）。
+- **图形绘制**：在图形绘制应用中，`requestAnimationFrame` 是进行实时渲染的理想选择。
+
+#### **代码示例**
+
+```javascript
+let animationFrameId;
+function animate() {
+  // 动画逻辑，如更新位置、样式
+  // 更新动画内容
+
+  // 请求下一帧动画
+  animationFrameId = requestAnimationFrame(animate);
+}
+
+// 启动动画
+requestAnimationFrame(animate);
+
+// 取消动画
+cancelAnimationFrame(animationFrameId);
+```
