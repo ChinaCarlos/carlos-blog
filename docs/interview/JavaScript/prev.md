@@ -470,3 +470,63 @@ function greet(greeting, punctuation) {
 }
 greet.apply(obj, ["Hey", "?"]); // 输出：Hey, Charlie?
 ```
+
+### 13. JS 的事件循环(EventLop)
+
+在事件循环中，当主线程执行完当前的同步任务后，会检查事件队列中是否有待处理的事件。如果有，主线程会取出事件并执行对应的回调函数。这个循环的过程被称为事件循环（Event Loop），它由主线程和任务队列两部分组成。主线程负责执行同步任务，而异步任务则通过任务队列进行处理。这种机制保证了异步任务在适当的时机能够插入执行，从而实现了 JavaScript 的非阻塞异步执行。
+![Event Loop](https://raw.githubusercontent.com/ChinaCarlos/carlos-blog/main/docs/interview/images/task.png)
+
+事件循环流程如下：
+
+1.主线程读取 JavaScript 代码，形成相应的堆和执行栈。
+
+2.当主线程遇到异步任务时，将其委托给对应的异步进程（如 Web API）处理。
+
+3.异步任务完成后，将相应的回调函数推入任务队列。
+
+4.主线程执行完同步任务后，检查任务队列，如果有任务，则按照先进先出的原则将任务推入主线程执行。
+
+5.重复执行以上步骤，形成事件循环。
+
+#### 同步任务
+
+同步任务是按照代码的书写顺序一步一步执行的任务。当主线程执行同步任务时，会阻塞后续的代码执行，直到当前任务执行完成。典型的同步任务包括函数调用、变量赋值、算术运算等。例如：
+
+```javascript
+console.log("Step 1");
+let result = add(2, 3);
+console.log(result);
+console.log("Step 2");
+
+function add(a, b) {
+  return a + b;
+}
+```
+
+#### 异步任务
+
+异步任务是在主线程执行的同时，通过回调函数或其他机制委托给其他线程或事件来处理的任务。在执行异步任务时，主线程不会等待任务完成，而是继续执行后续代码。
+
+#### 任务队列类型
+
+任务队列分为宏任务队列（macrotask queue）和微任务队列（microtask queue）两种。JavaScript 引擎遵循事件循环的机制，在执行完当前宏任务后，会检查微任务队列，执行其中的微任务，然后再取下一个宏任务执行。这个过程不断循环，形成事件循环。
+
+1、宏任务（Macrotasks）是一些较大粒度的任务，包括：
+
+所有同步任务
+
+- I/O 操作，如文件读写、数据库数据读写等
+- setTimeout、setInterval
+- setImmediate（Node.js 环境）
+- requestAnimationFrame
+- 事件监听回调函数等
+
+2、微任务（Microtasks）是一些较小粒度、高优先级的任务，包括：
+
+- Promise 的 then、catch、finally
+- async/await 中的代码
+- Generator 函数
+- MutationObserver
+- process.nextTick（Node.js 环境）
+
+![Event Loop](https://raw.githubusercontent.com/ChinaCarlos/carlos-blog/main/docs/interview/images/task1.png)
