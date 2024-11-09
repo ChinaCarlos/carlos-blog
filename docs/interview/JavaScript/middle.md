@@ -142,3 +142,5 @@ js 代码在访问  localStorage  时，浏览器提供的 API 接口通常会
 事件委托指的是把一个元素的事件委托到另外一个元素上。一般来讲，会把一个或者一组元素的事件委托到它的父层或者更外层元素上，真正绑定事件的是外层元素，当事件响应到需要绑定的元素上时，会通过事件冒泡机制从而触发它的外层元素的绑定事件上，然后在外层元素上去执行函数。
 
 ![Event event](https://raw.githubusercontent.com/ChinaCarlos/carlos-blog/main/docs/interview/images/event.png)
+
+`阻止默认事件：` event.stopPropagation `阻止事件默认行为：` event.preventDefault()
