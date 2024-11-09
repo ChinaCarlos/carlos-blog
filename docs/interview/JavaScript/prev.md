@@ -696,7 +696,8 @@ next 方法返回又会返回一个对象，有 value 和 done 两个属性，va
 6. 数组常用 API `filter`,`some`,`every`,`map`,`reduce`，`includes`
 7. 申明变量`let`,`const`
 8. 剩余扩展运算符
-9. `Map`,`weakMap`,`Set`,`weakSet`
+9. `Class`
+10. `Map`,`weakMap`,`Set`,`weakSet`
 
 #### `Map`、`WeakMap`、`Set` 和 `WeakSet` 的区别
 
@@ -710,4 +711,4 @@ next 方法返回又会返回一个对象，有 value 和 done 两个属性，va
 | **使用场景**                     | 存储任意类型的键值对，常用于缓存、查找等场景                          | 存储对象作为键的映射，适用于需要自动垃圾回收的场景                     | 存储不重复的值，常用于去重、集合等场景   | 存储不重复的对象，适用于需要自动垃圾回收的集合操作            |
 | **插入、删除和查找的时间复杂度** | 常数时间复杂度 O(1)                                                   | 常数时间复杂度 O(1)                                                    | 常数时间复杂度 O(1)                      | 常数时间复杂度 O(1)                                           |
 
-10. `Proxy` 与 `Reflect`(Vue3)
+11. `Proxy` 与 `Reflect`(Vue3)
