@@ -726,3 +726,155 @@ next 方法返回又会返回一个对象，有 value 和 done 两个属性，va
 | **插入、删除和查找的时间复杂度** | 常数时间复杂度 O(1)                                                   | 常数时间复杂度 O(1)                                                    | 常数时间复杂度 O(1)                      | 常数时间复杂度 O(1)                                           |
 
 11. `Proxy` 与 `Reflect`(Vue3)
+
+### 23. `Proxy` 与 `Reflect` 的使用场景以及详细介绍
+
+#### **`Proxy`**
+
+`Proxy` 是一种用于定义基本操作（如属性查找、赋值、枚举等）的自定义行为的机制。通过 `Proxy`，我们可以拦截并修改对象的操作。它接受两个参数：目标对象和处理器对象，处理器对象包含了不同操作的钩子方法。
+
+##### **使用场景**
+
+- **数据绑定**：在现代前端框架（如 Vue）中，使用 `Proxy` 实现响应式数据绑定，当数据变化时自动更新视图。
+- **代理对象的访问控制**：通过 `Proxy` 可以拦截对对象属性的访问或修改，从而实现权限验证、日志记录等。
+- **对象验证**：使用 `Proxy` 进行数据验证，比如拦截对象的设置操作，确保只有符合特定条件的数据被赋值。
+- **缓存机制**：拦截对象的 getter 操作，实现计算结果的缓存，避免重复计算。
+
+##### **常用操作**
+
+- `get`：拦截对象的属性访问。
+- `set`：拦截对象的属性赋值。
+- `has`：拦截 `in` 操作符。
+- `deleteProperty`：拦截 `delete` 操作符。
+- `apply`：拦截函数调用。
+- `construct`：拦截构造函数调用。
+
+##### **代码示例**
+
+```javascript
+const handler = {
+  get(target, prop, receiver) {
+    console.log(`访问属性 ${prop}`);
+    return prop in target ? target[prop] : 37; // 如果属性不存在，返回默认值
+  },
+  set(target, prop, value, receiver) {
+    console.log(`设置属性 ${prop} 为 ${value}`);
+    target[prop] = value;
+    return true; // 必须返回 true 来表明赋值成功
+  },
+};
+
+const obj = new Proxy({}, handler);
+obj.name = "Alice"; // 设置属性 name 为 Alice
+console.log(obj.name); // 访问属性 name
+```
+
+#### **`Reflect` 介绍**
+
+`Reflect` 是 ECMAScript 2015 (ES6) 引入的一个全局对象，提供了操作对象的方法。它的设计初衷是统一和简化一些 JavaScript 内建对象操作，并补充了一些原本无法直接执行的操作。`Reflect` 包含了一些与对象操作相关的方法，这些方法和 `Proxy` 对象中的陷阱方法（如 `get`, `set`, `has` 等）非常相似。
+
+`Reflect` 的一个显著特点是，它的操作方法返回的是标准的结果。与传统的对象操作（如 `obj.property` 或 `delete obj.property`）不同，`Reflect` 的方法返回布尔值，指示操作是否成功。
+
+#### **使用场景**
+
+1. **简化对象操作**：
+   `Reflect` 提供了许多直接操作对象的标准方法，这些方法相比传统的操作方式更加简洁和一致。
+2. **与 `Proxy` 配合使用**：
+   `Reflect` 经常与 `Proxy` 一起使用，作为 `Proxy` 的陷阱方法的默认行为。例如，当我们在 `Proxy` 中定义拦截方法时，可以使用 `Reflect` 来确保执行对象的默认操作。
+
+3. **避免直接操作对象的副作用**：
+   在一些情况下，直接操作对象（如 `delete`, `get`）可能会引起副作用或者异常。通过使用 `Reflect`，可以更清晰地控制操作结果，避免这些副作用。
+
+4. **对象方法的通用实现**：
+   `Reflect` 可以用来简化对象操作的代码，例如动态访问、修改对象的属性或调用函数时提供统一的 API。
+
+5. **实现 getter/setter 和方法调用**：
+   `Reflect` 可以提供一种更简洁的方式来实现 getter/setter 和动态方法调用，它可以帮助你规避错误，特别是在动态访问属性或方法时。
+
+#### **`Reflect` 的常用方法**
+
+| 方法                                            | 说明                                          | 示例                                       |
+| ----------------------------------------------- | --------------------------------------------- | ------------------------------------------ |
+| `Reflect.get(target, prop)`                     | 获取对象的属性值。                            | `Reflect.get(obj, 'name')`                 |
+| `Reflect.set(target, prop, value)`              | 设置对象的属性值。                            | `Reflect.set(obj, 'name', 'Alice')`        |
+| `Reflect.has(target, prop)`                     | 判断对象是否具有指定的属性。                  | `Reflect.has(obj, 'name')`                 |
+| `Reflect.deleteProperty(target, prop)`          | 删除对象的指定属性。                          | `Reflect.deleteProperty(obj, 'name')`      |
+| `Reflect.apply(target, thisArg, argumentsList)` | 调用函数（类似 `Function.prototype.apply`）。 | `Reflect.apply(func, null, [1, 2])`        |
+| `Reflect.construct(target, argumentsList)`      | 使用构造函数构造对象（类似 `new`）。          | `Reflect.construct(MyClass, [arg1, arg2])` |
+
+#### **代码示例**
+
+1. **使用 `Reflect` 简化对象操作**
+
+```javascript
+const obj = {
+  name: "Alice",
+  age: 25,
+};
+
+// 获取属性值
+console.log(Reflect.get(obj, "name")); // 'Alice'
+
+// 设置属性值
+Reflect.set(obj, "name", "Bob");
+console.log(obj.name); // 'Bob'
+
+// 判断是否具有属性
+console.log(Reflect.has(obj, "age")); // true
+
+// 删除属性
+Reflect.deleteProperty(obj, "age");
+console.log(obj.age); // undefined
+```
+
+#### 与 Proxy 配合使用
+
+```javascript
+const handler = {
+  get(target, prop, receiver) {
+    if (prop in target) {
+      return Reflect.get(...arguments); // 使用 Reflect 获取属性值
+    } else {
+      return `属性 ${prop} 不存在`;
+    }
+  },
+};
+
+const proxy = new Proxy({ name: "Alice" }, handler);
+console.log(proxy.name); // 'Alice'
+console.log(proxy.age); // '属性 age 不存在'
+```
+
+#### 动态调用函数
+
+```javascript
+function greet(name) {
+  return `Hello, ${name}!`;
+}
+
+// 使用 Reflect 调用函数
+const result = Reflect.apply(greet, null, ["Alice"]);
+console.log(result); // 'Hello, Alice!'
+```
+
+### `Reflect` 与传统方法的对比
+
+| 特性                 | **传统方式**                        | **`Reflect` 方法**                        |
+| -------------------- | ----------------------------------- | ----------------------------------------- |
+| **获取属性**         | `obj.property` 或 `obj['property']` | `Reflect.get(obj, 'property')`            |
+| **设置属性**         | `obj.property = value`              | `Reflect.set(obj, 'property', value)`     |
+| **判断属性是否存在** | `'property' in obj`                 | `Reflect.has(obj, 'property')`            |
+| **删除属性**         | `delete obj.property`               | `Reflect.deleteProperty(obj, 'property')` |
+| **函数调用**         | `func.apply(thisArg, args)`         | `Reflect.apply(func, thisArg, args)`      |
+| **构造函数调用**     | `new Constructor(args)`             | `Reflect.construct(Constructor, args)`    |
+
+总结
+
+- Proxy 主要用于拦截和自定义对象操作行为，适用于需要动态修改行为、控制访问或记录日志的场景。
+- Reflect 提供了与 Proxy 操作一致的 API，用于简化对象操作，特别是当 Proxy 中需要使用默认行为时，Reflect 是一个有用的工具。
+
+- 简化对象操作：Reflect 提供了比传统方法更简洁、更一致的方式来操作对象，尤其在需要动态访问、修改属性或调用函数时非常有用。
+- 与 Proxy 配合：Reflect 可以作为 Proxy 的陷阱方法的默认实现，用来避免代理逻辑中操作的不一致性。
+- 避免副作用：相比传统的直接操作对象，Reflect 提供了更安全和更可控的方式来进行对象操作，减少了副作用。
+
+Reflect 是现代 JavaScript 中的一个强大工具，尤其在代理和反射操作中，提供了简化且一致的 API。
