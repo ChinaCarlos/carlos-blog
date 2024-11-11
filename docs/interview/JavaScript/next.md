@@ -1445,10 +1445,82 @@ _懒加载原理_： 图片进入可视区域之后再去请求图片资源。
 
 > 如果是在面试中，可以写一个简单版本的，要么就放弃，反正工作中也不会让你写 `Promise A+`
 
-![Promise](https://raw.githubusercontent.com/ChinaCarlos/carlos-blog/main/docs/interview/images/promise.png)
+> ![Promise](https://raw.githubusercontent.com/ChinaCarlos/carlos-blog/main/docs/interview/images/promise.png)
 
 ```javascript
+// 简单版本：
+const PENDING = "pending";
+const FULFILLED = "fulfilled";
+const REJECTED = "reject";
 
+class SimplePromise {
+  constructor(executor) {
+    this.status = PENDING;
+    this.value = undefined;
+    this.reason = undefined;
+
+    this.onFulFilledCallbacks = [];
+    this.onRejectedCallbacks = [];
+
+    const resolve = (value) => {
+      if (this.status === PENDING) {
+        this.status = FULFILLED;
+        this.value = value;
+        this.onFulFilledCallbacks.forEach((cb) => cb(value));
+      }
+    };
+    const reject = (reason) => {
+      if (this.status === PENDING) {
+        this.status = REJECTED;
+        this.reason = reason;
+        this.onRejectedCallbacks.forEach((cb) => cb(reason));
+      }
+    };
+
+    try {
+      executor(resolve, reject);
+    } catch (e) {
+      reject(e);
+    }
+  }
+
+  then(onFulFilled, onRejected) {
+    onFulFilled =
+      typeof onFulFilled === "function" ? onFulFilled : (value) => value;
+    onRejected =
+      typeof onRejected === "function"
+        ? onRejected
+        : (err) => {
+            throw err;
+          };
+
+    if (this.status === FULFILLED) {
+      this.onFulFilledCallbacks.push(onFulFilled);
+    }
+    if (this.status === REJECTED) {
+      this.onRejectedCallbacks.push(onRejected);
+    }
+    if (this.status === PENDING) {
+      this.onFulFilledCallbacks.push(onFulFilled);
+      this.onRejectedCallbacks.push(onRejected);
+    }
+  }
+}
+
+const promise = new SimplePromise((resolve, reject) => {
+  setTimeout(() => {
+    resolve("Promise resolved!");
+  }, 4000);
+});
+
+promise.then(
+  (value) => {
+    console.log(value); // 输出: "Promise resolved!"
+  },
+  (error) => {
+    console.log(error);
+  }
+);
 ```
 
 :::details 完全体的`Promise A+` 源码：
@@ -1845,9 +1917,92 @@ Promise.allSettled = function (promises) {
 };
 ```
 
-## 46. 带并发限制的 promise 异步调度器
+## 46. 实现一个带并发限制的 promise 异步调度器
+
+```javascript
+class Scheduler {
+  constructor(limit) {
+    this.limit = limit;
+    this.activeCount = 0;
+    this.queue = [];
+  }
+
+  add(task) {
+    // task must be promise
+    const runTask = () => {
+      return new Promise((resolve, reject) => {
+        this.activeCount = this.activeCount + 1;
+        task()
+          .then(resolve)
+          .catch(reject)
+          .finally(() => {
+            this.activeCount = this.activeCount - 1;
+            this.runNextTask();
+          });
+      });
+    };
+
+    if (this.activeCount < this.limit) {
+      runTask();
+    } else {
+      this.queue.push(runTask);
+    }
+  }
+
+  runNextTask() {
+    if (this.queue.length && this.limit > this.activeCount) {
+      const nextTask = this.queue.shift();
+      nextTask();
+    }
+  }
+}
+
+const scheduler = new Scheduler(2); // 并发限制为 2
+
+const timeout = (time) => new Promise((resolve) => setTimeout(resolve, time));
+
+// 模拟任务，打印并返回完成时间
+const addTask = (time, name) => {
+  scheduler.add(() => timeout(time).then(() => console.log(name)));
+};
+
+// 添加任务
+addTask(1000, "Task 1"); // 1 秒后输出
+addTask(500, "Task 2"); // 0.5 秒后输出
+addTask(300, "Task 3"); // 0.3 秒后输出
+addTask(400, "Task 4"); // 0.4 秒后输出
+
+// 预期输出顺序：
+// Task 2
+// Task 3
+// Task 1
+// Task 4
+```
 
 ## 47. 实现实现红黄绿循环打印
+
+```javascript
+function delay(time) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, time);
+  });
+}
+
+async function trafficLight() {
+  while (true) {
+    console.log("Red");
+    await delay(3000);
+    console.log("Green");
+    await delay(2000);
+    console.log("Yellow");
+    await delay(1000);
+  }
+}
+
+trafficLight();
+```
 
 ## 48. 实现一个`lazyMan`
 
@@ -1880,4 +2035,147 @@ Eat supper
 
 ## 49. `Proxy` 实现对象属性的拦截
 
+使用 `Proxy` 可以拦截对象的属性访问、修改、删除等操作。通过指定 `get、set` 等捕获器（handlers），可以在属性被访问或设置时执行特定逻辑。
+
+以下是一个使用 Proxy 来拦截对象属性的示例代码：
+
+```javascript
+const handler = {
+  // 拦截属性读取操作
+  get(target, property) {
+    if (property in target) {
+      console.log(`Getting property "${property}": ${target[property]}`);
+      return target[property];
+    } else {
+      console.log(`Property "${property}" does not exist.`);
+      return undefined;
+    }
+  },
+
+  // 拦截属性写入操作
+  set(target, property, value) {
+    console.log(`Setting property "${property}" to ${value}`);
+    target[property] = value;
+    return true; // 返回 true 表示设置成功
+  },
+
+  // 拦截属性删除操作
+  deleteProperty(target, property) {
+    if (property in target) {
+      console.log(`Deleting property "${property}"`);
+      delete target[property];
+      return true;
+    } else {
+      console.log(`Cannot delete non-existent property "${property}"`);
+      return false;
+    }
+  },
+};
+
+// 创建目标对象
+const targetObject = {
+  name: "Alice",
+  age: 30,
+};
+
+// 创建代理对象
+const proxy = new Proxy(targetObject, handler);
+
+// 测试属性访问
+console.log(proxy.name); // 获取属性 "name"
+console.log(proxy.age); // 获取属性 "age"
+console.log(proxy.address); // 获取不存在的属性 "address"
+
+// 测试属性写入
+proxy.name = "Bob"; // 设置属性 "name"
+proxy.city = "New York"; // 设置新的属性 "city"
+
+// 测试属性删除
+delete proxy.age; // 删除属性 "age"
+delete proxy.address; // 尝试删除不存在的属性 "address"
+```
+
 ## 50. `Reflect` 的使用
+
+`Reflect` 是 JavaScript 提供的一个内置对象，用于简化对象操作，配合 `Proxy` 使用时非常便利。`Reflect` 的方法与对象操作符类似，但提供了更灵活的控制和一致的 API。
+
+以下是 `Reflect` 的几个使用示例：
+
+### 1. 使用 `Reflect.get` 获取对象属性
+
+`Reflect.get` 方法类似于直接获取属性（`object.property`），但可以动态传递属性名，且不会因属性不存在而抛出错误。
+
+```javascript
+const obj = { name: "Alice", age: 30 };
+console.log(Reflect.get(obj, "name")); // "Alice"
+console.log(Reflect.get(obj, "nonExistent")); // undefined
+```
+
+### 2. 使用 Reflect.set 设置对象属性
+
+`Reflect.set` 用于设置对象属性，成功返回 `true`，失败返回 `false`，比直接赋值更灵活。可以将它与` Proxy` 一起使用来添加条件。
+
+```javascript
+const person = {};
+Reflect.set(person, "name", "Bob");
+console.log(person.name); // "Bob"
+```
+
+#### 与 `Proxy` 结合使用：
+
+```javascript
+const handler = {
+  set(target, property, value) {
+    if (property === "age" && typeof value !== "number") {
+      console.log("Age must be a number!");
+      return false;
+    }
+    return Reflect.set(target, property, value);
+  },
+};
+
+const personProxy = new Proxy({}, handler);
+Reflect.set(personProxy, "name", "Alice"); // 设置成功
+Reflect.set(personProxy, "age", "30"); // 输出 "Age must be a number!"
+```
+
+### 3. 使用 `Reflect.has` 检查属性是否存在
+
+Reflect.has 等同于 in 操作符，用于检查属性是否存在，返回布尔值。
+
+```javascript
+const car = { brand: "Toyota" };
+console.log(Reflect.has(car, "brand")); // true
+console.log(Reflect.has(car, "model")); // false
+```
+
+### 4. 使用 `Reflect.deleteProperty` 删除属性
+
+`Reflect.deleteProperty` 等同于 `delete` 操作符，用于删除属性。返回 `true` 表示删除成功，`false` 表示删除失败。
+
+```javascript
+const user = { name: "Charlie", age: 25 };
+Reflect.deleteProperty(user, "age");
+console.log(user); // { name: "Charlie" }
+```
+
+### 5. 使用 `Reflect.ownKeys` 获取对象的所有属性键
+
+`Reflect.ownKeys` 用于获取对象的所有属性键，包括 Symbol 类型的键。
+
+```javascript
+const data = { id: 1, [Symbol("meta")]: "info" };
+console.log(Reflect.ownKeys(data)); // ["id", Symbol(meta)]
+```
+
+### 6. 使用 `Reflect.apply` 调用函数
+
+`Reflect.apply` 用于调用函数，可以动态传递` this` 和参数列表，类似于 `Function.prototype.apply`。
+
+```javascript
+function greet(name) {
+  return `Hello, ${name}`;
+}
+
+console.log(Reflect.apply(greet, undefined, ["World"])); // "Hello, World"
+```
