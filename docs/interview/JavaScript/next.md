@@ -1443,15 +1443,166 @@ _懒加载原理_： 图片进入可视区域之后再去请求图片资源。
 
 ## 40. 实现一个`Promise.all`
 
+```javascript
+const one = new Promise((resolve) => {
+  setTimeout(() => {
+    console.log("one");
+    resolve();
+  }, 1000);
+});
+const two = new Promise((resolve) => {
+  setTimeout(() => {
+    console.log("two");
+    resolve();
+  }, 2000);
+});
+const three = new Promise((resolve) => {
+  setTimeout(() => {
+    console.log("three");
+    resolve();
+  }, 3000);
+});
+
+Promise.myAll = function (promises) {
+  let execPromiseLength = 0;
+  return new Promise((resolve, reject) => {
+    promises.forEach((promise) => {
+      promise
+        .then(() => {
+          execPromiseLength++;
+          if (execPromiseLength === promises.length) {
+            resolve();
+          }
+        })
+        .catch(() => {
+          reject();
+        });
+    });
+  });
+};
+
+Promise.myAll([one, two, three]).then(() => {
+  console.log("done");
+});
+// 输出结果：
+// one
+// two
+// three
+// done
+```
+
 ## 41. 实现一个`Promise.race`
+
+```javascript
+Promise.myRace = function (promises) {
+  return new Promise((resolve, reject) => {
+    promises.forEach((promise) => {
+      promise
+        .then(() => {
+          resolve();
+        })
+        .catch(() => {
+          reject();
+        });
+    });
+  });
+};
+
+Promise.myRace([one, two, three]).then(() => {
+  console.log("done");
+});
+// 输出结果：
+// one
+// done
+```
 
 ## 42. 实现一个`Promise.finally`
 
+```javascript
+Promise.prototype.finally = function (cb) {
+  return this.then(
+    (data) => {
+      // 如何保证Promise.then能够执行完毕
+      return Promise.resolve(cb()).then((n) => data);
+    },
+    (err) => {
+      // Promise.resolve 目的是等待cb()后的Promise执行完成
+      return Promise.resolve(cb()).then((n) => {
+        throw err;
+      });
+    }
+  );
+};
+```
+
 ## 43. 实现一个`Promise.resolve`
+
+```javascript
+Promise.resolve = function (data) {
+    // 1 参数是一个 Promise 实例,不做任何修改、原封不动地返回这个实例
+    if (data instanceOf Promise) {
+        return data
+    }
+    // 2 参数是一个thenable对象,将这个对象转为 Promise 对象，然后就立即执行thenable对象的then方法。
+    if (data.then) {
+        return new Promise((resolve, reject) => {
+            data.then(resolve, reject)
+        })
+    }
+    // 3 参数不是具有then方法的对象，或根本就不是对象
+    // 4 不带有任何参数
+    return new Promise((resolve) => {
+        resolve(data)
+    })
+}
+
+```
 
 ## 44. 实现一个`Promise.reject`
 
+```javascript
+Promise.reject = function (err) {
+  return new Promise((_, reject) => {
+    reject(err);
+  });
+};
+```
+
 ## 45. 实现一个`Promise.allSettled`
+
+`Promise.allSettled()` 静态方法将一个` Promise` 可迭代对象作为输入，并返回一个单独的` Promise`。当所有输入的` Promise` 都已敲定时（包括传入空的可迭代对象时），返回的` Promise` 将被兑现，并带有描述每个` Promise` 结果的对象数组。
+
+```javascript
+Promise.allSettled = function (promises) {
+  return new Promise(function (resolve, reject) {
+    if (!Array.isArray(promises)) {
+      return reject(new TypeError("arguments must be an array"));
+    }
+    let resolvedCounter = 0;
+    const promiseNum = promises.length;
+    // 统计所有的promise结果并最后返回
+    const resolvedResults = new Array(promiseNum);
+    for (let i = 0; i < promiseNum; i++) {
+      Promise.resolve(promises[i]).then(
+        function (value) {
+          resolvedCounter++;
+          resolvedResults[i] = value;
+          if (resolvedCounter == promiseNum) {
+            return resolve(resolvedResults);
+          }
+        },
+        function (reason) {
+          resolvedCounter++;
+          resolvedResults[i] = reason;
+          if (resolvedCounter == promiseNum) {
+            return resolve(reason);
+          }
+        }
+      );
+    }
+  });
+};
+```
 
 ## 46. 带并发限制的 promise 异步调度器
 
