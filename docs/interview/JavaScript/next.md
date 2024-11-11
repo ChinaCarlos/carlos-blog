@@ -493,7 +493,7 @@ JSONP（JSON with Padding）是一种跨域请求数据的技术。由于浏览�
 ```javascript
 function jsonp(url, callback) {
   // 创建一个随机的回调函数名称
-  const callbackName = "jsonp_callback_" + Math.round(100000 * Math.random());
+  const callbackName = "jsonp_callback";
 
   // 在全局作用域下创建一个回调函数
   window[callbackName] = function (data) {
@@ -547,41 +547,897 @@ ajaxGet("https://jsonplaceholder.typicode.com/posts", function (error, data) {
 
 ## 20. 实现一个函数`currying`
 
+```javascript
+// 函数柯里化
+function curry(func) {
+  return function curried(...args) {
+    if (args.length >= func.length) {
+      return func.apply(this, args);
+    } else {
+      return function (...nextArgs) {
+        return curried.apply(this, args.concat(nextArgs));
+      };
+    }
+  };
+}
+function sum(a, b, c) {
+  return a + b + c;
+}
+
+const curriedSum = curry(sum);
+
+// 不同的调用方式
+console.log(curriedSum(1)(2)(3)); // 输出: 6
+console.log(curriedSum(1, 2)(3)); // 输出: 6
+console.log(curriedSum(1)(2, 3)); // 输出: 6
+console.log(curriedSum(1, 2, 3)); // 输出: 6
+```
+
 ## 21. 实现一个`add(1)(2)(3)`
+
+利用 `20` 的函数`柯里化`实现
+
+```javascript
+function sum(a, b, c) {
+  return a + b + c;
+}
+
+const curriedSum = curry(sum);
+
+// 不同的调用方式
+console.log(curriedSum(1)(2)(3)); // 输出: 6
+console.log(curriedSum(1, 2)(3)); // 输出: 6
+console.log(curriedSum(1)(2, 3)); // 输出: 6
+console.log(curriedSum(1, 2, 3)); // 输出: 6
+```
 
 ## 22. 实现一个快排 `quickSort`
 
-## 23. 实现一个数组的原生方法`Map`, `Filter`,`Reduce`
+```javascript
+const arr = [4, 6, 2, 6, 2, 1, 7, 4, 8, 9];
+
+function quickSort(arr) {
+  if (arr.length <= 1) return arr;
+  let left = [];
+  let right = [];
+  let value = arr[0];
+  for (let i = 1; i < arr.length; i++) {
+    if (arr[i] >= value) {
+      right.push(arr[i]);
+    } else {
+      left.push(arr[i]);
+    }
+  }
+  return [...quickSort(left), value, ...quickSort(right)];
+}
+
+console.log(quickSort(arr)); //输出 [1, 2, 2, 4, 4,6, 6, 7, 8, 9]
+```
+
+## 23. 实现数组的原生方法`Map`, `Filter`,`Reduce`
+
+```javascript
+Array.prototype.myMap = function (callback) {
+  const result = [];
+  for (let i = 0; i < this.length; i++) {
+    if (this.hasOwnProperty(i)) {
+      result.push(callback(this[i], i, this));
+    }
+  }
+  return result;
+};
+console.log([1, 2, 3].myMap((item) => item * 2)); //[ 2, 4, 6 ]
+
+Array.prototype.myFilter = function (callback) {
+  const result = [];
+  for (let i = 0; i < this.length; i++) {
+    if (callback(this[i], i, this) && this.hasOwnProperty(i)) {
+      result.push(this[i]);
+    }
+  }
+  return result;
+};
+console.log([1, 2, 3].myFilter((item) => item === 2)); //[2]
+
+Array.prototype.myReduce = function (callback, initValue) {
+  let acc = initValue !== undefined ? initValue : this[0];
+  let startIndex = initValue !== undefined ? 0 : 1;
+
+  for (let i = startIndex; i < this.length; i++) {
+    if (this.hasOwnProperty(i)) {
+      acc = callback(acc, this[i], i, this);
+    }
+  }
+  return acc;
+};
+
+console.log([1, 2, 3].myReduce((result, item) => result + item, 0)); // 6
+```
 
 ## 24. 斐波那契数列
 
+_原始版本：_
+
+```javascript
+function finbo(n) {
+  if (n === 0) return 0;
+  if (n === 1) return 1;
+  return finbo(n - 1) + finbo(n - 2);
+}
+console.log(finbo(10)); //55
+```
+
+_优化版本 1：_
+
+使用数组存储每次的计算值
+
+```javascript
+function finbo1(n) {
+  let result = [0, 1];
+  for (let i = 2; i <= n; i++) {
+    result[i] = result[i - 1] + result[i - 2];
+  }
+  return result;
+}
+
+console.log(finbo1(10));
+```
+
+_优化版本 2：_
+
+动态规划（自底向上）此时时间复杂度为`O(n)`
+
+```javascript
+function finbo2(n) {
+  if (n <= 1) return n;
+  let a = 0,
+    b = 1,
+    sum = 0;
+  for (let i = 2; i <= n; i++) {
+    sum = a + b;
+    a = b;
+    b = sum;
+  }
+  return sum;
+}
+console.log(finbo2(10));
+```
+
 ## 25. 实现一个解析`URL`参数
+
+1. 使用自带的`URL`参数
+
+```javascript
+const urlInfo = new URL("url address");
+```
+
+2. 使用`URLSearchParams`
+
+```javascript
+function parseURLParams(url) {
+  const params = {};
+  const queryString = url.split("?")[1];
+  if (!queryString) return params;
+
+  const searchParams = new URLSearchParams(queryString);
+  searchParams.forEach((value, key) => {
+    if (params[key]) {
+      // 如果已经存在该键，则将值转为数组
+      params[key] = Array.isArray(params[key])
+        ? [...params[key], value]
+        : [params[key], value];
+    } else {
+      params[key] = value;
+    }
+  });
+
+  return params;
+}
+
+// 示例使用
+const url = "https://example.com?page=1&sort=asc&id=1&id=2";
+console.log(parseURLParams(url));
+// 输出: { page: "1", sort: "asc", id: ["1", "2"] }
+```
+
+3. 使用正则
+
+```javascript
+function parseURLParams(url) {
+  const params = {};
+  const queryString = url.split("?")[1];
+  if (!queryString) return params;
+
+  const searchParams = new URLSearchParams(queryString);
+  searchParams.forEach((value, key) => {
+    params[key] = value;
+  });
+
+  return params;
+}
+
+// 示例使用
+const url = "https://example.com?page=1&sort=asc&search=hello";
+console.log(parseURLParams(url));
+// 输出: { page: "1", sort: "asc", search: "hello" }
+```
 
 ## 26. 实现`数组乱序`
 
+```javascript
+function shuffleArray(array) {
+  return array.sort(() => Math.random() - 0.5);
+}
+
+// 示例使用
+const arr = [1, 2, 3, 4, 5];
+console.log(shuffleArray(arr)); // 输出: 一个乱序的数组，例如 [3, 1, 5, 4, 2]
+```
+
 ## 27. 实现一个深度比较 `isEqual`
 
-## 28. 实现一个`单列模式`
+```javascript
+const obj1 = { name: "obj1", info: { gender: "man", age: 23 } };
+const obj2 = { name: "obj1", info: { gender: "man", age: 233 } };
+
+function isEqual(obj1, obj2) {
+  const isObject = (obj) => {
+    return typeof obj === "object" && obj !== null;
+  };
+  if (!isObject(obj1) || !isObject(obj2)) {
+    return obj1 === obj2;
+  }
+  // 判断属性长度
+  if (Object.keys(obj1).length !== Object.keys(obj2).length) {
+    return false;
+  }
+  // 如果是对象
+  if (obj1 === obj2) {
+    return true;
+  }
+
+  // 递归比较key
+  const keys = Object.keys(obj1);
+  for (let i = 0; i < keys.length; i++) {
+    const res = isEqual(obj1[keys[i]], obj2[keys[i]]);
+    if (!res) {
+      return false;
+    }
+  }
+  return true;
+}
+
+console.log(isEqual(obj1, obj2));
+```
+
+## 28. 实现一个`单例模式`
+
+```javascript
+class Singleton {
+  constructor() {
+    if (Singleton.instance) {
+      return Singleton.instance; // 返回已有的实例
+    }
+    Singleton.instance = this; // 存储唯一实例
+    this.name = "I am the instance";
+    Object.freeze(this); // 冻结实例，防止修改
+  }
+}
+
+// 示例使用
+const instance1 = new Singleton();
+const instance2 = new Singleton();
+console.log(instance1 === instance2); // 输出: true
+```
 
 ## 29. 实现一个`观察者模式`
 
-## 30. 实现一个`发布订阅`
+```javascript
+class Subject {
+  constructor() {
+    this.observers = []; // 存储所有观察者
+  }
+
+  // 添加观察者
+  addObserver(observer) {
+    this.observers.push(observer);
+  }
+
+  // 移除观察者
+  removeObserver(observer) {
+    this.observers = this.observers.filter((obs) => obs !== observer);
+  }
+
+  // 通知所有观察者
+  notify(message) {
+    this.observers.forEach((observer) => observer.update(message));
+  }
+}
+
+class Observer {
+  constructor(name) {
+    this.name = name;
+  }
+
+  // 观察者更新方法
+  update(message) {
+    console.log(`${this.name} received message: ${message}`);
+  }
+}
+
+// 示例使用
+const subject = new Subject();
+
+const observer1 = new Observer("Observer 1");
+const observer2 = new Observer("Observer 2");
+const observer3 = new Observer("Observer 3");
+
+// 添加观察者
+subject.addObserver(observer1);
+subject.addObserver(observer2);
+
+// 发送消息
+subject.notify("Hello Observers!");
+
+// 移除观察者
+subject.removeObserver(observer1);
+
+// 再次发送消息，只有 Observer 2 会收到
+subject.notify("Another message");
+```
+
+## 30. 实现一个`发布订阅者模式`
+
+```javascript
+class EventEmitter {
+  constructor() {
+    this.events = {};
+  }
+  on(type, callback) {
+    if (!this.events[type]) {
+      this.events[type] = [callback];
+    } else {
+      this.events[type].push(callback);
+    }
+  }
+  once(type, callback) {
+    const fn = (...args) => {
+      callback(...args);
+      this.off(type, callback);
+    };
+    this.on(type, fn);
+  }
+  emit(type, ...args) {
+    if (!!this.events[type]) {
+      this.events[type].forEach((cb) => cb(...args));
+    } else {
+      return;
+    }
+  }
+  off(type, callback) {
+    if (!!this.events[type]) {
+      this.events[type] = this.events[type].filter((item) => item !== callback);
+    } else {
+      return;
+    }
+  }
+}
+
+// Example Usage
+const emitter = new EventEmitter();
+
+// Event listener for 'event1'
+const callback1 = (message) => {
+  console.log("event1 received:", message);
+};
+
+// Registering a listener for 'event1'
+emitter.on("event1", callback1);
+
+// Emit 'event1' with arguments
+emitter.emit("event1", "Hello, World!");
+
+// Remove listener
+emitter.off("event1", callback1);
+emitter.emit("event1", "This will not be logged"); // No output as callback1 was removed
+
+// Once listener
+emitter.once("event2", (msg) => {
+  console.log("Once listener triggered:", msg);
+});
+
+emitter.emit("event2", "First time"); // This will be logged
+emitter.emit("event2", "Second time"); // No output, as the listener is removed after first call
+```
 
 ## 31. 实现一个`工厂模式`
 
+```javascript
+// 1. 产品类：定义工厂需要生产的对象
+class Car {
+  drive() {
+    console.log("Driving a car");
+  }
+}
+
+class Bike {
+  drive() {
+    console.log("Riding a bike");
+  }
+}
+
+// 2. 工厂类：根据需求创建不同的对象
+class VehicleFactory {
+  static createVehicle(type) {
+    if (type === "car") {
+      return new Car();
+    } else if (type === "bike") {
+      return new Bike();
+    } else {
+      throw new Error("Unknown vehicle type");
+    }
+  }
+}
+
+// 3. 使用工厂模式创建对象
+const vehicle1 = VehicleFactory.createVehicle("car");
+vehicle1.drive(); // Output: Driving a car
+
+const vehicle2 = VehicleFactory.createVehicle("bike");
+vehicle2.drive(); // Output: Riding a bike
+```
+
 ## 32. 实现一个判断`对象循环引用`的公共方法
+
+1. `JSON.stringify`报错信息中有循环引用的报错
+2. 利用`Set`或者`WeakSet` 遍历对象，把每次访问的对象属性存起来，然后去查找是否访问过
+
+```javascript
+function hasCircularReference(obj, visitors = new WeakSet()) {
+  if (typeof obj !== "object" || obj === null) {
+    return false;
+  }
+  if (visitors.has(obj)) {
+    return true;
+  }
+
+  visitors.add(obj);
+
+  for (let key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      if (hasCircularReference(obj[key], visitors)) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+// 测试代码
+const a = {};
+const b = { a: a };
+a.b = b; // 形成循环引用
+
+console.log(hasCircularReference(a)); // true
+
+const c = { name: "John" };
+const d = { name: "Doe" };
+
+console.log(hasCircularReference(c)); // false
+```
 
 ## 33. 实现一个`LRU算法`实现
 
+在前端单页应用中，我们常遇到动态组件切换的场景。如果每次切换都卸载组件并重新加载，势必会消耗资源、降低性能，尤其是在涉及复杂组件时。`Vue` 的 `keep-alive` 功能提供了一种解决方案——在组件切换时对部分组件进行缓存，下次访问时直接从缓存中恢复，而非重新渲染。这里就用到` LRU 算法`.
+
+```javascript
+class LRUCache {
+  constructor(capacity) {
+    this.capacity = capacity; // 缓存的最大容量
+    this.cache = new Map(); // 使用 Map 存储缓存数据
+  }
+
+  // 获取缓存数据
+  get(key) {
+    if (!this.cache.has(key)) {
+      return -1; // 如果缓存中没有该数据，则返回 -1
+    }
+    // 如果数据存在，先删除再重新插入（表示该数据被访问过，更新为最近使用）
+    const value = this.cache.get(key);
+    this.cache.delete(key);
+    this.cache.set(key, value);
+    return value;
+  }
+
+  // 设置缓存数据
+  put(key, value) {
+    // 如果缓存已满，删除最旧的数据
+    if (this.cache.size >= this.capacity) {
+      // Map 的 keys() 返回插入顺序，删除第一个元素
+      this.cache.delete(this.cache.keys().next().value);
+    }
+    // 如果已经存在这个 key，删除旧值并插入新值
+    if (this.cache.has(key)) {
+      this.cache.delete(key);
+    }
+    // 插入新数据到缓存
+    this.cache.set(key, value);
+  }
+}
+
+// 测试代码
+const lru = new LRUCache(2);
+lru.put(1, 1); // 缓存 {1=1}
+lru.put(2, 2); // 缓存 {1=1, 2=2}
+console.log(lru.get(1)); // 返回 1，缓存 {2=2, 1=1}
+lru.put(3, 3); // 缓存已满，删除最久未使用的 2，缓存 {1=1, 3=3}
+console.log(lru.get(1)); // 返回 -1 (未找到)
+lru.put(4, 4); // 缓存 {3=3, 4=4}
+console.log(lru.get(2)); // 返回 -1 (未找到)
+console.log(lru.get(3)); // 返回 3
+console.log(lru.get(4)); // 返回 4
+```
+
 ## 34. 实现一个链式调用`add(5).add(3).minus(2)`功能
+
+实现链式调用的核心就是每个调用的方法中要返回`this`
+
+```javascript
+class Calculator {
+  constructor() {
+    this.result = 0; // 初始化结果为 0
+  }
+
+  // add 方法：将值加到当前结果上
+  add(value) {
+    this.result += value;
+    return this; // 返回当前对象，支持链式调用
+  }
+
+  // minus 方法：从当前结果中减去值
+  minus(value) {
+    this.result -= value;
+    return this; // 返回当前对象，支持链式调用
+  }
+
+  // 获取当前的结果
+  getResult() {
+    return this.result;
+  }
+}
+
+// 使用链式调用
+const calc = new Calculator();
+const result = calc.add(5).add(3).minus(2).getResult();
+console.log(result); // 输出 6，计算过程是 (0 + 5 + 3 - 2)
+```
 
 ## 35. 实现一个`随机字符串`
 
+```javascript
+function generateRandomString(length) {
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"; // 可选字符集
+  let result = "";
+
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length); // 随机选取一个字符
+    result += characters[randomIndex]; // 添加到结果字符串中
+  }
+
+  return result;
+}
+
+// 测试：生成一个长度为 10 的随机字符串
+const randomString = generateRandomString(10);
+console.log(randomString); // 输出例如 "A9d4F3g8R1"
+```
+
 ## 36. 实现一个对象扁平化`flatObj`
+
+```javascript
+function flattenObject(obj, parentKey = "", result = {}) {
+  for (let key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      const newKey = parentKey ? `${parentKey}.${key}` : key; // 拼接新的键
+      if (typeof obj[key] === "object" && obj[key] !== null) {
+        flattenObject(obj[key], newKey, result); // 递归处理嵌套对象
+      } else {
+        result[newKey] = obj[key]; // 将值赋给结果对象
+      }
+    }
+  }
+  return result;
+}
+
+// 示例对象
+const obj = {
+  a: 1,
+  b: {
+    b1: 2,
+    b2: {
+      b21: 3,
+      b22: 4,
+    },
+  },
+  c: 5,
+};
+
+const flatObj = flattenObject(obj);
+console.log(flatObj); // { a: 1, 'b.b1': 2, 'b.b2.b21': 3, 'b.b2.b22': 4, c: 5 }
+```
 
 ## 37. 实现一个树的查找
 
+首先构建一个树结构
+
+```javascript
+class TreeNode {
+  constructor(value) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
+}
+
+let root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+root.right.left = new TreeNode(6);
+root.right.right = new TreeNode(7);
+
+console.log("tree:", root);
+```
+
+### 1. 深度优先`(DFS)`
+
+深度优先搜索（DFS）是一种树或图的遍历算法。DFS 会尽可能深入树的分支，直到达到树的叶节点后再回溯并继续其他分支的搜索。
+
+```javascript
+// 深度优先搜索（DFS）查找方法
+function depthFirstSearch(root, target) {
+  if (root === null) {
+    return null; // 没有找到目标
+  }
+
+  if (root.value === target) {
+    return root; // 找到目标，返回节点
+  }
+
+  // 在左子树中查找
+  let leftSearch = depthFirstSearch(root.left, target);
+  if (leftSearch) {
+    return leftSearch;
+  }
+
+  // 在右子树中查找
+  return depthFirstSearch(root.right, target);
+}
+console.log(DFSSearch(root, 3));
+```
+
+### 2. 广度优先`(BFS)`
+
+广度优先搜索的特点是从根节点开始，首先访问当前节点的所有子节点，然后依次访问每个子节点的子节点，直到找到目标。
+
+```javascript
+// 广度优先搜索（BFS）查找方法
+function breadthFirstSearch(root, target) {
+  if (root === null) {
+    return null; // 如果根节点为空，直接返回 null
+  }
+
+  const queue = [root]; // 使用队列来记录需要访问的节点
+
+  while (queue.length > 0) {
+    let node = queue.shift(); // 取出队列中的第一个节点
+
+    if (node.value === target) {
+      return node; // 找到目标节点
+    }
+
+    if (node.left) queue.push(node.left); // 将左子节点加入队列
+    if (node.right) queue.push(node.right); // 将右子节点加入队列
+  }
+
+  return null; // 如果遍历完成没有找到目标节点，返回 null
+}
+```
+
 ## 38. 实现一个图片懒加载（Image LazyLoad）
+
+_懒加载原理_： 图片进入可视区域之后再去请求图片资源。
+
+1.使用 img 标签，scr 属性初始为空
+
+2.写一个自定义属性字段，该属性的值写成图片地址
+
+3.当图片在可视区域的范围内的时候，将自定义属性的值作为 src 的值
+
+> 检测元素是否可在可见区域可以用`Intersection Observer API`：这是一个现代的 API，可以异步观察目标元素与其祖先元素或顶级文档视口的交叉状态。它提供了更加简洁和高效的方式来监听元素是否进入可视区域。
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <style>
+    .box {
+      width: 400px;
+      margin: 0 auto;
+    }
+
+    .box img {
+      display: block;
+      width: 100%;
+      height: 200px;
+    }
+  </style>
+
+  <body>
+    <div class="box">
+      <img
+        src="./imgs/loading.jpg"
+        alt=""
+        class="lazyload-img"
+        data-src="./imgs/show.jpg"
+      />
+      <img
+        src="./imgs/loading.jpg"
+        alt=""
+        class="lazyload-img"
+        data-src="./imgs/show1.jpg"
+      />
+      <img
+        src="./imgs/loading.jpg"
+        alt=""
+        class="lazyload-img"
+        data-src="./imgs/show2.jpg"
+      />
+      <img
+        src="./imgs/loading.jpg"
+        alt=""
+        class="lazyload-img"
+        data-src="./imgs/show3.jpg"
+      />
+      <img
+        src="./imgs/loading.jpg"
+        alt=""
+        class="lazyload-img"
+        data-src="./imgs/show.jpg"
+      />
+      <img
+        src="./imgs/loading.jpg"
+        alt=""
+        class="lazyload-img"
+        data-src="./imgs/show1.jpg"
+      />
+      <img
+        src="./imgs/loading.jpg"
+        alt=""
+        class="lazyload-img"
+        data-src="./imgs/show2.jpg"
+      />
+      <img
+        src="./imgs/loading.jpg"
+        alt=""
+        class="lazyload-img"
+        data-src="./imgs/show3.jpg"
+      />
+      <img
+        src="./imgs/loading.jpg"
+        alt=""
+        class="lazyload-img"
+        data-src="./imgs/show.jpg"
+      />
+      <img
+        src="./imgs/loading.jpg"
+        alt=""
+        class="lazyload-img"
+        data-src="./imgs/show1.jpg"
+      />
+      <img
+        src="./imgs/loading.jpg"
+        alt=""
+        class="lazyload-img"
+        data-src="./imgs/show2.jpg"
+      />
+      <img
+        src="./imgs/loading.jpg"
+        alt=""
+        class="lazyload-img"
+        data-src="./imgs/show3.jpg"
+      />
+      <img
+        src="./imgs/loading.jpg"
+        alt=""
+        class="lazyload-img"
+        data-src="./imgs/show.jpg"
+      />
+      <img
+        src="./imgs/loading.jpg"
+        alt=""
+        class="lazyload-img"
+        data-src="./imgs/show1.jpg"
+      />
+      <img
+        src="./imgs/loading.jpg"
+        alt=""
+        class="lazyload-img"
+        data-src="./imgs/show2.jpg"
+      />
+      <img
+        src="./imgs/loading.jpg"
+        alt=""
+        class="lazyload-img"
+        data-src="./imgs/show3.jpg"
+      />
+    </div>
+    <script>
+      // 获取根元素节点
+      let viewport = document.documentElement;
+      // 把DOM节点数组转为真正的数组,即伪数组转数组
+      // let imgArr = [].slice.call(document.querySelectorAll('.lazyload-img'));
+      let imgArr = Array.from(document.querySelectorAll(".lazyload-img"));
+      // 该函数用来判断某一个元素是否在可视区域
+      function isVisible(element) {
+        // 获取当前元素节点的大小、位置等信息
+        let rect = element.getBoundingClientRect();
+        // 用户不管是从上向下、从下向上、从左向右、从右向左滑动，都可以判断当前元素是否在可视区域
+        return (
+          rect.top < viewport.clientHeight &&
+          rect.bottom > 0 &&
+          rect.left < viewport.clientWidth &&
+          rect.right > 0
+        );
+      }
+      //防抖处理
+      let timer = null;
+      // 该函数动态设置图片的src属性，动态加载图片
+      function lazyloadImg() {
+        for (let i = 0; i < imgArr.length; i++) {
+          let img = imgArr[i];
+          // 如果元素在可视区域内
+          if (isVisible(img)) {
+            // 则把data-src属性赋值给data-src
+            img.src = img.getAttribute("data-src");
+            // 当前元素从未加载数组中移除
+            imgArr.splice(i, 1);
+            // 后一下标前移至当前下标，自减再循环
+            i--;
+          }
+        }
+        // 可视区域内加载完成后,防抖限制解除
+        timer = null;
+      }
+      // 一开始先执行一次，把当前时间在可视区域的图片加载出来
+      lazyloadImg();
+
+      // 监听页面滚动
+      document.addEventListener("scroll", function () {
+        // 如果已触发滚动期间再触发
+        console.log(timer);
+        if (timer) {
+          // 则清除现有执行
+          return clearTimeout(timer);
+        }
+        // 重新赋值
+        timer = setTimeout(() => {
+          // 页面滚动的时候，不断有新的图片进入可视区域，此时再调用lazyloadImg函数
+          lazyloadImg();
+        }, 100);
+      });
+    </script>
+  </body>
+</html>
+```
 
 ## 39. 实现一个`Promise A+`
 
@@ -630,12 +1486,6 @@ Eat supper
 
 ```
 
-## 49. `Proxy` 实现对象属性的拦
+## 49. `Proxy` 实现对象属性的拦截
 
 ## 50. `Reflect` 的使用
-
-## 51. 实现一个树的遍历
-
-1. 深度优先
-
-2. 广度优先
