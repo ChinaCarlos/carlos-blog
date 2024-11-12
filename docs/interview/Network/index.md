@@ -6,12 +6,6 @@ theme: solarized-dark
 
 # 浏览器与网络
 
-## 8. HTTPS 加密的过程
-
-## 15. 如何实现 token 无感刷新
-
-## 18. 说一下 HTTP 3.0
-
 ## 1.`GET` 与 `POST`请求有什么区别？
 
 `GET` 和 `POST` 是 HTTP 协议中常用的两种请求方法，它们之间有一些关键区别：
@@ -1657,6 +1651,53 @@ HTTPS 在传输加密的过程中，证书的验证是非常关键的一步。�
 5. **检查撤销状态：**
    - 客户端检查证书是否被撤销，通常通过在线证书状态协议（OCSP）或证书撤销列表（CRL）进行检查。如果证书已被撤销，客户端会警告并阻止连接。
 
+### Nginx 配置
+
+```shell
+# ----------HTTPS配置-----------
+server {
+    # 监听HTTPS默认的443端口
+    listen 443;
+    # 配置自己项目的域名
+    server_name www.xxx.com;
+    # 打开SSL加密传输
+    ssl on;
+    # 输入域名后，首页文件所在的目录
+    root html;
+    # 配置首页的文件名
+    index index.html index.htm index.jsp index.ftl;
+    # 配置 数字证书
+    ssl_certificate  certificate/xxx.pem;
+    # 配置 服务器私钥
+    ssl_certificate_key certificate/xxx.key;
+    # 停止通信时，加密会话的有效期，在该时间段内不需要重新交换密钥
+    ssl_session_timeout 5m;
+    # TLS握手时，服务器采用的密码套件
+    ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:ECDHE:ECDH:AES:HIGH:!NULL:!aNULL:!MD5:!ADH:!RC4;
+    # 服务器支持的TLS版本
+    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+    # 开启由服务器决定采用的密码套件
+    ssl_prefer_server_ciphers on;
+
+
+    location / {
+        try_files $uri $uri/ /html/index.html;
+    }
+
+}
+
+# ---------HTTP请求转HTTPS-------------
+server {
+    # 监听HTTP默认的80端口
+    listen 80;
+    # 如果80端口出现访问该域名的请求
+    server_name www.xxx.com;
+    # 将请求改写为HTTPS（这里写你配置了HTTPS的域名）
+    rewrite ^(.*)$ https://www.xxx.com;
+}
+
+```
+
 ### 总结
 
 HTTPS 的加密过程确保了数据在传输过程中是保密的、完整的，并且通信双方是经过认证的。通过使用 SSL/TLS 协议，客户端和服务器能够安全地交换信息。在验证证书的合法性时，客户端需要确保证书有效、签名正确、证书链完整、域名匹配以及证书未被撤销。
@@ -1697,3 +1738,119 @@ HTTPS 的加密过程确保了数据在传输过程中是保密的、完整的�
 **前向安全问题**: 前向安全指的是密钥泄漏也不会让之前加密的数据被泄漏，影响的只有当前数据，对之前的数据无影响。
 
 > PS: QUIC 含义：Quick UDP Internet Connections 的缩写，直译为快速 UDP 互联网连接。
+
+## 28. 如何实现 token 无感刷新
+
+无感刷新 Token 机制（自动刷新 Token）常用于基于 JWT（JSON Web Token）身份认证的系统中，通过使用 Refresh Token 来在 Access Token 过期时自动获取新的 Token，确保用户体验不受影响。
+
+### 1. 流程概述
+
+#### 1.1 用户登录/首次请求时获取 Token
+
+- 用户登录时，服务器返回 **Access Token** 和 **Refresh Token**。
+- 这两个 Token 通常被存储在客户端（如 localStorage 或 sessionStorage，或者使用 HttpOnly cookies 增强安全性）。
+
+#### 1.2 请求数据时使用 Access Token
+
+- 客户端在发起 API 请求时，使用 **Access Token** 作为身份验证凭证，将其放入请求头中。
+
+#### 1.3 自动检测 Token 是否过期
+
+- 客户端会定期检查 **Access Token** 是否已过期。可以通过解码 JWT 来获取 **exp（过期时间）** 字段，检测是否接近过期。
+
+#### 1.4 Access Token 过期时自动刷新
+
+- 当检测到 **Access Token** 即将过期时，客户端会在不打扰用户的情况下，使用 **Refresh Token** 向服务器请求新的 **Access Token**。
+
+#### 1.5 刷新 Access Token 请求
+
+- 客户端向服务器发送请求，携带 **Refresh Token**，服务器验证该 Token 是否有效。如果有效，服务器返回新的 **Access Token**（以及可选的新的 **Refresh Token**）。
+
+#### 1.6 更新 Token 并重试请求
+
+- 客户端收到新的 **Access Token** 后，更新本地存储的 Token，并重试之前因 Token 过期失败的请求。
+
+#### 1.7 错误处理
+
+- 如果刷新 **Refresh Token** 失败（例如 Token 已失效），客户端应处理用户登出，或提示用户重新登录。
+
+### 2. 关键要点
+
+#### 2.1 Refresh Token 存储
+
+- **Refresh Token** 应存储在更安全的地方，如 **HttpOnly cookies**，避免 JavaScript 访问，防止 XSS 攻击。
+
+#### 2.2 过期检测和刷新
+
+- 客户端需要定期或在每次请求前检查 **Access Token** 是否过期，并在过期前主动刷新 Token。
+
+#### 2.3 服务器处理
+
+- 服务器需要处理刷新 Token 请求，验证 **Refresh Token** 的有效性，并返回新的 **Access Token**，如果需要，还可以返回新的 **Refresh Token**。
+
+### 3. 总结
+
+通过结合 **JWT** 和 **Refresh Token**，可以实现 **无感刷新 Token**。该机制确保了在 **Access Token** 过期时，客户端能够在后台自动获取新 Token，从而让用户体验保持流畅，避免频繁的重新登录。
+
+#### 示例 DEMO：
+
+````javascript
+// 假设你已经有了以下函数来获取和设置 tokens
+function getAccessToken() {
+  return localStorage.getItem('access_token');
+}
+
+function setAccessToken(token) {
+  localStorage.setItem('access_token', token);
+}
+
+function getRefreshToken() {
+  return localStorage.getItem('refresh_token');
+}
+
+function setRefreshToken(token) {
+  localStorage.setItem('refresh_token', token);
+}
+
+// 发送请求并自动刷新 token
+async function requestWithToken(url, options = {}) {
+  // 1. 获取当前的 Access Token
+  let accessToken = getAccessToken();
+
+  // 2. 设置请求头
+  options.headers = options.headers || {};
+  options.headers['Authorization'] = `Bearer ${accessToken}`;
+
+  try {
+    // 3. 尝试发送请求
+    const response = await axios(url, options);
+    return response;
+  } catch (error) {
+    if (error.response && error.response.status === 401) {
+      // 4. 如果收到 401 错误（Access Token 过期），尝试刷新 token
+      const refreshToken = getRefreshToken();
+
+      try {
+        // 5. 使用 Refresh Token 获取新的 Access Token
+        const refreshResponse = await axios.post('/refresh-token', { refresh_token: refreshToken });
+        const newAccessToken = refreshResponse.data.access_token;
+
+        // 6. 更新新的 Access Token
+        setAccessToken(newAccessToken);
+
+        // 7. 重新发送之前的请求
+        options.headers['Authorization'] = `Bearer ${newAccessToken}`;
+        const retryResponse = await axios(url, options);
+        return retryResponse;
+      } catch (refreshError) {
+        // 如果刷新失败（例如 Refresh Token 失效），处理登出或重新登录
+        alert("Session expired. Please log in again.");
+        // 重定向用户到登录页面
+        window.location.href = '/login';
+      }
+    }
+    throw error; // 其他错误抛出
+  }
+}
+```
+````
