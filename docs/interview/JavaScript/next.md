@@ -2179,3 +2179,19 @@ function greet(name) {
 
 console.log(Reflect.apply(greet, undefined, ["World"])); // "Hello, World"
 ```
+
+### 用`setTimeout` 实现一个`setInterval`
+
+```javascript
+function newSetInterval(callback, timer) {
+  function fn() {
+    callback();
+    setTimeout(fn, timer);
+  }
+  setTimeout(fn, timer);
+}
+
+newSetInterval(() => {
+  console.log(Date.now());
+}, 1000);
+```
