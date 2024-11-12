@@ -13,10 +13,10 @@ const members = [
     avatar: 'https://raw.githubusercontent.com/ChinaCarlos/carlos-blog/main/docs/interview/images/avatar.png',
     name: 'Carlos',
     title: '没有人能回到过去 但你可以现在开始',
-    // links: [
-    //   { icon: 'github', link: 'https://github.com/ChinaCarlos' },
-    //   { icon: 'twitter', link: 'https://juejin.cn/post/7409865546197893171'}
-    //   ]
+    links: [
+      { icon: 'github', link: 'https://github.com/ChinaCarlos' },
+      { icon: 'facebook', link: 'https://juejin.cn/post/7409865546197893171'}
+      ]
   },
 
 ]
@@ -42,8 +42,8 @@ const members = [
 
 .title {
   padding-top: 20px!important;
-
 }
+
 </style>
 
 <VPTeamPage class="about_page">
@@ -59,9 +59,7 @@ const members = [
   <VPTeamMembers
     :members="members"
   >
-  <div>
-   <img src="https://raw.githubusercontent.com/ChinaCarlos/carlos-blog/main/docs/interview/images/github.png" />
-  </div>
+
   </VPTeamMembers>
 
 <div class="github">
