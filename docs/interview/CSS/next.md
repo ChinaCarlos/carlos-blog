@@ -437,3 +437,156 @@ Flex 项目的属性用于控制每个子元素在弹性布局中的行为。
 ##### `align-self`
 
 允许单个项目在交叉轴上独立对齐，覆盖 `align-items` 的设定。可选值与 `align-items` 一致。
+
+### 4. 如何用 CSS 实现一个瀑布流
+
+![waterfall](https://raw.githubusercontent.com/ChinaCarlos/carlos-blog/main/docs/interview/images/waterfall.png)
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>实现瀑布流</title>
+  </head>
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+    }
+
+    .page {
+      width: 100vw;
+      display: flex;
+      flex-wrap: nowrap;
+      justify-content: space-around;
+    }
+
+    .column {
+      width: 200px;
+
+      display: flex;
+      flex-direction: column;
+    }
+
+    .item {
+      width: 200px;
+      height: 100px;
+      background-color: antiquewhite;
+      border-radius: 16px;
+      margin-bottom: 20px;
+    }
+
+    .item1 {
+      height: 200px;
+      background-color: aqua;
+    }
+
+    .item2 {
+      height: 300px;
+      background-color: blueviolet;
+    }
+  </style>
+
+  <body>
+    <div class="page">
+      <div class="column">
+        <div class="item"></div>
+        <div class="item item1 "></div>
+        <div class="item item2"></div>
+        <div class="item item1 "></div>
+        <div class="item item2"></div>
+        <div class=" item item1 "></div>
+        <div class=" item item1 "></div>
+        <div class="item item2"></div>
+        <div class=" item item1 "></div>
+        <div class="item item2"></div>
+        <div class=" item item1 "></div>
+        <div class="item item2"></div>
+        <div class=" item item1 "></div>
+        <div class="item item2"></div>
+        <div class=" item item1 "></div>
+      </div>
+      <div class="column">
+        <div class="item"></div>
+        <div class="item item2"></div>
+        <div class="item"></div>
+        <div class=" itemitem1 "></div>
+        <div class="item"></div>
+        <div class="item item2"></div>
+        <div class="item"></div>
+        <div class=" itemitem1 "></div>
+        <div class="item"></div>
+        <div class="item item2"></div>
+        <div class="item"></div>
+        <div class=" itemitem1 "></div>
+        <div class="item"></div>
+        <div class="item item2"></div>
+        <div class="item"></div>
+        <div class=" itemitem1 "></div>
+      </div>
+
+      <div class="column">
+        <div class="item item2"></div>
+        <div class=" itemitem1 "></div>
+        <div class="item"></div>
+        <div class=" itemitem1 "></div>
+        <div class="item"></div>
+        <div class="item item2"></div>
+        <div class="item"></div>
+        <div class=" itemitem1 "></div>
+        <div class="item"></div>
+        <div class="item item2"></div>
+        <div class="item"></div>
+        <div class=" itemitem1 "></div>
+        <div class="item"></div>
+        <div class="item item2"></div>
+        <div class="item"></div>
+        <div class=" itemitem1 "></div>
+        <div class="item item2"></div>
+      </div>
+
+      <div class="column">
+        <div class="item"></div>
+        <div class=" itemitem1 "></div>
+        <div class="item item2"></div>
+        <div class=" itemitem1 "></div>
+        <div class=" itemitem1 "></div>
+        <div class="item"></div>
+        <div class="item item2"></div>
+        <div class="item"></div>
+        <div class=" itemitem1 "></div>
+        <div class="item"></div>
+        <div class="item item2"></div>
+        <div class="item"></div>
+        <div class=" itemitem1 "></div>
+        <div class="item"></div>
+        <div class="item item2"></div>
+        <div class="item"></div>
+        <div class=" itemitem1 "></div>
+      </div>
+
+      <div class="column">
+        <div class="item"></div>
+        <div class="item item2"></div>
+        <div class="item"></div>
+        <div class=" itemitem1 "></div>
+        <div class="item"></div>
+        <div class="item item2"></div>
+        <div class="item"></div>
+        <div class=" itemitem1 "></div>
+        <div class="item"></div>
+        <div class="item item2"></div>
+        <div class="item"></div>
+        <div class=" itemitem1 "></div>
+        <div class="item"></div>
+        <div class="item item2"></div>
+        <div class="item"></div>
+        <div class=" itemitem1 "></div>
+        <div class=" itemitem1 "></div>
+      </div>
+    </div>
+  </body>
+</html>
+```
