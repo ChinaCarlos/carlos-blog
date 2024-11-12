@@ -15,7 +15,7 @@ const members = [
     title: '没有人能回到过去 但你可以现在开始',
     links: [
       { icon: 'github', link: 'https://github.com/ChinaCarlos' },
-      { icon: 'facebook', link: 'https://juejin.cn/post/7409865546197893171'}
+      { icon: 'instagram', link: 'https://juejin.cn/post/7409865546197893171'}
       ]
   },
 
