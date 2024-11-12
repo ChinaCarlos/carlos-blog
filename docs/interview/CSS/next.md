@@ -440,6 +440,8 @@ Flex 项目的属性用于控制每个子元素在弹性布局中的行为。
 
 ### 4. 如何用 CSS 实现一个瀑布流
 
+> 实现效果图：
+
 ![waterfall](https://raw.githubusercontent.com/ChinaCarlos/carlos-blog/main/docs/interview/images/waterfall.png)
 
 ```html
