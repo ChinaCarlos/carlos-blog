@@ -51,7 +51,7 @@ export default defineConfig({
       {
         text: "前端面试",
         items: [
-          { text: "Examples", link: "/interview/Examples/api-examples" },
+          { text: "我的掘金", link: "https://juejin.cn/user/3544481218693597" },
           { text: "HTML", link: "/interview/HTML/index" },
           { text: "CSS", link: "/interview/CSS/prev" },
           { text: "JavaScript", link: "/interview/JavaScript/prev" },
