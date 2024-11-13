@@ -497,38 +497,341 @@ export default App;
 
 ![react_lifecycle](https://raw.githubusercontent.com/ChinaCarlos/carlos-blog/main/docs/interview/images/redux.png)
 
-## 15.
+### 1. 单一数据源（Store）
 
-## 16.
+Redux 使用一个单一的、不可变的状态树（store）来存储整个应用的状态。这个状态树存放在一个对象中，所有组件都可以通过 `store` 获取和更新应用的状态。
 
-## 17.
+### 2. Action
 
-## 18.
+Action 是描述“发生了什么”的普通 JavaScript 对象。每个 Action 至少包含一个 `type` 字段，`type` 字段是唯一标识 Action 的字符串。
 
-## 19.
+### 3. Reducer
 
-## 20.
+Reducer 是一个纯函数，它接收当前的状态和 Action，并返回一个新的状态。Reducer 不能直接修改原始状态，而是返回一个新的状态对象。
 
-## 21.
+### 4. Dispatch
 
-## 22.
+`dispatch` 是用于发送 Action 到 Redux store 的方法。它会触发相应的 reducer 更新状态。
 
-## 23.
+### 5. 订阅（Subscribe）
 
-## 24.
+组件可以订阅 store 的变化，当 store 状态变化时，`subscribe` 方法会通知订阅者，从而让组件重新渲染。
 
-## 25.
+### 6. Store
 
-## 26.
+Redux 的 `store` 是核心对象，管理状态和提供接口方法：
 
-## 27.
+- `getState()`: 获取当前的应用状态。
+- `dispatch(action)`: 派发 Action。
+- `subscribe(listener)`: 订阅状态的变化。
 
-## 28.
+### 7. 中间件（Middleware）
 
-## 29.
+中间件允许在 Action 被发出之前或之后执行额外的代码，例如异步操作。Redux 中常用的中间件包括 `redux-thunk` 和 `redux-saga`。
 
-## 30.
+---
 
+#### Redux 流程概述
+
+1. 组件通过 `dispatch` 派发 Action。
+2. `store` 收到 Action 后，会将当前状态和 Action 传递给 Reducer。
+3. Reducer 计算并返回新的状态。
+4. Redux 更新 store 的状态并通知所有订阅者。
+
+## 15. React useMemo,useCallback 分别有什么作用？
+
+`useMemo` 和 `useCallback` 都是 React 中的性能优化 Hook，旨在减少不必要的计算和渲染，尤其在处理昂贵的计算和传递回调函数时。
+
+### 1. `useMemo`
+
+#### 作用
+
+`useMemo` 用于缓存计算的值，只有在依赖项变化时才重新计算。它帮助避免在每次渲染时进行昂贵的计算，从而提高组件的性能。
+
+#### 使用场景
+
+- 当组件内部有复杂或计算密集型的操作时，使用 `useMemo` 缓存计算结果，避免不必要的重复计算。
+- 当计算的结果需要传递给子组件时，使用 `useMemo` 可以确保只有在相关的依赖项变化时才会重新计算，避免子组件因父组件的每次渲染而重新计算。
+
+#### 总结
+
+- `useMemo` 缓存计算结果，并且只有在其依赖项变化时才会重新计算。
+
+### 2. `useCallback`
+
+#### 作用
+
+`useCallback` 用于缓存函数，只有在依赖项发生变化时才会重新创建该函数。它主要用于避免在每次渲染时重新创建函数，尤其是当回调函数作为 props 传递给子组件时。
+
+#### 使用场景
+
+- 当回调函数被传递给子组件时，`useCallback` 可以确保只有在回调函数的依赖项发生变化时，才重新创建函数，从而避免因函数引用的变化而触发不必要的子组件重新渲染。
+
+#### 总结
+
+- `useCallback` 缓存函数，并且只有在其依赖项变化时才会重新创建该函数。
+
+### `useMemo` 与 `useCallback` 的区别
+
+- **`useMemo`** 用于缓存计算结果，减少重复计算。
+- **`useCallback`** 用于缓存函数，减少不必要的函数重新创建。
+
+它们的核心作用都是优化渲染性能，减少不必要的计算和渲染，尤其是在函数组件中使用时。
+
+## 16. 在 React 如何避免不必要的渲染
+
+React 提供了多种方法和技术来优化渲染，减少不必要的组件更新。以下是一些常用的优化策略。
+
+### 1. `shouldComponentUpdate`（类组件）
+
+#### 作用
+
+`shouldComponentUpdate` 是类组件中的生命周期方法，允许你手动控制组件是否需要重新渲染。默认情况下，React 会重新渲染组件及其子组件，每次 `state` 或 `props` 更新时。如果你希望在某些情况下跳过重新渲染，可以通过该方法返回 `false` 来阻止更新。
+
+#### 使用场景
+
+- 当组件的 `props` 或 `state` 没有发生变化时，返回 `false` 来避免不必要的渲染。
+
+### 2. `React.memo`（函数组件）
+
+#### 作用
+
+`React.memo` 是一个高阶组件（HOC），它用于优化函数组件。当组件的 `props` 没有变化时，`React.memo` 会跳过该组件的渲染，直接使用之前的渲染结果。
+
+#### 使用场景
+
+- 用于包裹函数组件，只有在组件的 `props` 发生变化时才重新渲染。
+
+### 3. `useMemo`（函数组件）
+
+#### 作用
+
+`useMemo` 用于缓存值，只有当依赖项发生变化时才重新计算。它可以避免在每次渲染时进行昂贵的计算。
+
+#### 使用场景
+
+- 用于缓存计算结果，尤其是当某些值的计算开销较高时，避免在每次渲染时重复计算。
+
+### 4. `useCallback`（函数组件）
+
+#### 作用
+
+`useCallback` 用于缓存函数，只有在依赖项发生变化时才重新创建该函数。它防止函数在每次渲染时都被重新创建，尤其在将回调函数传递给子组件时非常有用。
+
+#### 使用场景
+
+- 用于缓存函数，避免因函数引用的变化导致子组件的重新渲染。
+
+```jsx
+const MyComponent = React.memo(
+  function MyComponent(props) {
+    return <div>{props.value}</div>;
+  },
+  (prevProps, nextProps) => {
+    // 只有当 `value` 改变时才重新渲染
+    return prevProps.value === nextProps.value;
+  }
+);
 ```
 
+## 17. Redux 中间件是什么？
+
+Redux 中间件是指在 action 和 reducer 之间的处理层，用于扩展 dispatch 的功能，允许在 action 到达 reducer 之前对其进行拦截和处理。中间件可以改变数据流，实现如异步 action、action 过滤、日志输出等等。它本质上是一个函数，对 store.dispatch 进行了改造，在发出 action 和执行 reducer 之间添加了其他功能。
+如： Redux-thunk
+
+允许 action 创建函数返回一个函数，使得可以在函数中执行异步逻辑，如 API 调用等。
+
+## 18. 对 React 的插槽(Portals)的理解，如何使用，有哪些使用场景?
+
+React 官方对 Portals 的定义：
+
+Portal 提供了一种将子节点渲染到存在于父组件以外的 DOM 节点的优秀的方案
+
+Portals 是 React 16 提供的官方解决方案，使得组件可以脱离父组件层级挂载在 DOM 树的任何位置。通俗来讲，就是我们 render 一个组件，但这个组件的 DOM 结构并不在本组件内。
+
+- 弹出层级方便管理,统一挂载到 document 下面， z-index
+- 弹窗方便调试
+
+## 19. React 的 diff 算法
+
+### 概念与重要性：
+
+`概念`：React Diff 算法用于比较虚拟 DOM 树之间的差异，高效找出需更新的最小部分。
+`重要性`：减少不必要的 DOM 操作，提高渲染性能。
+
+### 原理与策略：
+
+`树的层级比较`：根节点类型不同则销毁旧树，创建新树；类型相同则比较子节点。
+`key的作用`：帮助识别变化的子元素，提高比较效率。
+`优化策略`：跨层级操作不优化；同类组件继续 diff；不同类组件直接替换；同层子节点需唯一 key。
+
+### 实现过程：
+
+`render阶段`：可中断，生成 fiber 树，发生 diff。
+`commit阶段`：不可中断，执行 DOM 操作等。
+`双缓存技术`：current fiber 树与 workInProgress fiber 树。
+`节点对比逻辑`：在 reconcileChildFibers 方法中实现，分单节点与多节点 diff。
+
+React 的 Diff 算法通过高效比较和最小化 DOM 操作，显著提高了应用的性能和响应速度。
+
+## 20. useRef 和 createRef 的区别
+
+### 1. 用途和使用场景
+
+- **`createRef`**: 适用于类组件，用于创建一个新的引用对象，并且每次组件重新渲染时都会创建一个新的引用。
+- **`useRef`**: 适用于函数组件，用于创建持久化的引用对象。`useRef` 在组件的每次渲染中保持相同的引用，只有在组件的生命周期内保持不变。
+
+#### 适用组件
+
+- `createRef` 用于 **类组件**。
+- `useRef` 用于 **函数组件**。
+
+### 2. 生命周期和引用的持久性
+
+- **`createRef`**：每次组件渲染时，`createRef` 会返回一个新的 `ref` 对象。如果你想在渲染之间保持对同一元素的引用，需要在每次渲染时重新创建 `ref`。
+
+  - **示例（类组件）**:
+
+    ```js
+    class MyClassComponent extends React.Component {
+      constructor(props) {
+        super(props);
+        this.myRef = React.createRef(); // 每次组件重新渲染时都会创建一个新的 ref
+      }
+
+      render() {
+        return <div ref={this.myRef}>Hello</div>;
+      }
+    }
+    ```
+
+- **`useRef`**：在函数组件中，`useRef` 返回的引用对象在整个组件的生命周期内保持不变。即使组件重新渲染，引用对象的 `.current` 属性依然保留上次的值。它不会触发重新渲染，因此非常适合用于存储不需要触发渲染的值（如 DOM 节点或任意可变值）。
+
+  - **示例（函数组件）**:
+
+    ```js
+    function MyFunctionComponent() {
+      const myRef = useRef(); // 组件渲染时保持相同的 ref
+
+      return <div ref={myRef}>Hello</div>;
+    }
+    ```
+
+### 3. 性能和优化
+
+- **`createRef`**: 由于每次组件渲染时都会创建新的 `ref`，这可能会导致不必要的性能开销，特别是在父组件渲染时频繁重新渲染子组件的情况下。
+
+- **`useRef`**: `useRef` 更加高效，因为它保持同一个引用对象，组件的重新渲染不会影响 `ref` 的值，避免了不必要的性能损失。
+
+### 4. 访问更新的 `ref` 值
+
+- **`createRef`**: 需要在每次渲染时重新创建 `ref`，因此每次 `ref` 的值都是最新的，但如果想在渲染间持久化引用，则需要额外的代码来管理它。
+
+- **`useRef`**: 由于 `useRef` 在整个组件生命周期内保持引用不变，可以非常方便地访问和更新引用对象，而不会导致组件重新渲染。
+
+#### 示例：
+
+```js
+// 在函数组件中使用 useRef
+function Timer() {
+  const countRef = useRef(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      countRef.current += 1; // 使用 current 属性访问和更新值
+      console.log(countRef.current);
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  return <div>Count: {countRef.current}</div>;
+}
 ```
+
+### `createRef` 和 `useRef` 的区别总结
+
+| 特性                   | `createRef`                                      | `useRef`                                      |
+| ---------------------- | ------------------------------------------------ | --------------------------------------------- |
+| **适用组件**           | 类组件                                           | 函数组件                                      |
+| **生命周期**           | 每次渲染时都会重新创建 `ref`                     | 在整个组件生命周期内保持相同的 `ref`          |
+| **更新时是否触发渲染** | 每次渲染都会创建新的 `ref`，并且更新时会重新渲染 | 更新 `ref` 时不会触发组件重新渲染             |
+| **典型用途**           | 引用 DOM 元素、管理类组件的实例                  | 引用 DOM 元素、存储任何持久化值（不触发渲染） |
+
+## 21.useLayoutEffect 的作用
+
+useLayoutEffect 是 React 中的一个钩子函数，其功能与 useEffect 类似，但在执行时机上有所不同。useLayoutEffect 时机更提前一些
+
+useEffect 的回调函数在浏览器完成页面渲染后异步执行，不会阻塞页面的更新显示。而 useLayoutEffect 的回调函数会在浏览器进行布局和绘制之前同步执行，这意味着它可能会阻塞页面的更新，导致用户能感觉到短暂的卡顿。
+
+一般来说，如果你的副作用操作涉及到对 DOM 的测量、样式计算等可能会影响页面布局的操作，使用 useLayoutEffect 可以避免一些视觉上的闪烁或不一致。但由于它可能会阻塞页面渲染，所以要谨慎使用，避免在其中执行耗时过长的操作。
+
+例如，如果需要根据 DOM 元素的尺寸立即更新样式，可能就适合使用 useLayoutEffect ：
+总的来说，useEffect 适用于大多数常见的副作用操作，而 useLayoutEffect 则更适用于那些对页面布局有即时性要求且执行较快的操作。
+
+## 22.避免 React Context 导致的重复渲染
+
+### 1. 使用多个 React Context
+
+这是防止不必要重新渲染的首选方法。通过创建多个 context，将相关的数据分开存储，只有使用特定 context 的组件会因更新而重新渲染。
+
+### 2.拆分组件并传递所需的值
+
+通过将组件拆分，并将所需的值作为 props 从 context 中传递，并将子组件包装在 React.memo 中。React.memo 是一个高阶组件（HOC），用于优化函数组件，通过缓存组件防止不必要的重新渲染。只有当其 props 发生变化时，组件才会重新渲染。
+
+示例代码：
+
+```jsx
+const Card = () => {
+  const appContextValue = useContext(AppContext);
+  const theme = appContextValue.theme;
+
+  return (
+    <div>
+      <CardTitle theme={theme} />
+      <CardDescription theme={theme} />
+    </div>
+  );
+};
+
+const CardTitle = React.memo(({ theme }) => {
+  return <h2 style={{ color: theme.text }}>Carlo test </h2>;
+});
+
+const CardDescription = React.memo(({ theme }) => {
+  return <p style={{ color: theme.text }}>hello Carlos</p>;
+});
+```
+
+### 3.使用 React.useMemo
+
+通过将组件包装在 `useMemo` 中，并将`theme`作为依赖项，只有当`theme`更改时才会触发回调函数重新渲染组件。
+
+示例代码:
+
+```jsx
+const Card = () => {
+  const appContextValue = useContext(AppContext);
+  const theme = appContextValue.theme;
+
+  return useMemo(
+    () => (
+      <div>
+        <CardTitle theme={theme} />
+        <CardDescription theme={theme} />
+      </div>
+    ),
+    [theme]
+  );
+};
+
+const CardTitle = ({ theme }) => {
+  return <h2 style={{ color: theme.text }}>Carlos </h2>;
+};
+
+const CardDescription = ({ theme }) => {
+  return <p style={{ color: theme.text }}>hello Carlos</p>;
+};
+```
+
+### 3.使用第三方库 如：`use-context-selector` `react-tracked`
