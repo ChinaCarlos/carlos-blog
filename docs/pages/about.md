@@ -40,9 +40,7 @@ const members = [
   justify-content: center;
  }
 
-.title {
-  padding-top: 20px!important;
-}
+
 
 </style>
 
