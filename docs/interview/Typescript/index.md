@@ -1,5 +1,5 @@
 ---
-title: 前端面试TypeScript篇
+title: TypeScript 面试题全覆盖：从基础到进阶应答技巧
 tags: front interview
 theme: solarized-dark
 ---

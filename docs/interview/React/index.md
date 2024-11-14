@@ -63,7 +63,7 @@ React 16 引入了新的错误处理方法，用于捕获组件中的错误。
 
 ### React 16+ 新的生命周期方法
 
-React 16 引入了 `static  getDerivedStateFromProps(nextProps, prevState)` 和 `getSnapshotBeforeUpdate(prevProps, prevState)`，并逐步弃用了 `componentWillMount`、`componentWillReceiveProps` 和 `componentWillUpdate`。旧方法依然可用，但在使用时会
+React 16 引入了 `static  getDerivedStateFromProps(nextProps, prevState)` 和 `getSnapshotBeforeUpdate(prevProps, prevState)`，并逐步弃用了 `componentWillMount`、`componentWillReceiveProps` 和 `componentWillUpdate`。旧方法依然可用，但在使用时会有提示。
 
 ## 2. 什么是 JSX？
 
@@ -881,3 +881,182 @@ const CardDescription = ({ theme }) => {
 ### 11. `Navigate`
 
 - **功能**：用于在渲染时直接执行页面跳转，类似于 `<Redirect />`，但用于函数组件中。
+
+## 24. Redux 的原理
+
+![redux](https://raw.githubusercontent.com/ChinaCarlos/carlos-blog/main/docs/interview/images/redux.png)
+
+`Redux` 应用中只有一个全局的状态对象（`store`），它作为单一的数据源存储应用的所有状态。应用中的每个组件都从这个唯一的 `store` 中读取数据，并且只能通过 `dispatching actions` 来更新状态，而不是直接修改数据。这种设计保证了数据的唯一性和集中管理，符合单一数据源的原则，方便追踪和调试。’
+
+`Redux` 的数据流遵循发布-订阅模式。`store` 充当发布者，组件作为订阅者注册到 `store` 上。一旦有 `action` 被 `dispatch` 到 `store` 中，`store` 会根据 `reducer` 的处理结果发布状态更新的通知，所有订阅的组件会被通知到并重新渲染。
+
+1. `状态管理`：`Redux store` 存储应用状态，React 组件通过 Provider 连接到 store。
+2. `数据流`：
+
+- 组件触发 `action` 事件。
+- `action` 被 `dispatch` 到 `Redux store`。
+- `store` 调用 `reducer`，根据 `action` 更新状态。
+- `Provider` 使相关组件获取到最新的状态，触发重新渲染。
+
+##### 优势
+
+- `状态集中管理`：`react-redux` 能集中管理全局状态，实现跨组件共享和管理。
+- `性能优化`：通过` useSelector` 和 `connect` 的浅比较，避免不必要的重新渲染。
+- `易于扩展`：`react-redux` 可以配合中间件（如 `redux-thunk` 和 `redux-saga`），管理复杂异步逻辑。
+
+## 25. Redux-Thunk 与 Redux-Saga 的区别及使用场景
+
+`redux-thunk` 和 `redux-saga` 都是中间件，用于处理 Redux 中的异步操作，但它们的实现方式和适用场景有所不同。以下是它们的详细对比和使用场景。
+
+### 1. **Redux-Thunk**
+
+#### **概述**
+
+`redux-thunk` 是 Redux 的一个中间件，它允许你在 `action creators` 中返回一个函数，而不是一个普通的 action 对象。这个函数可以接受 `dispatch` 和 `getState` 作为参数，通常用于处理异步操作，比如 API 请求。
+
+#### **工作原理**
+
+- `redux-thunk` 拓展了 Redux 的 `dispatch` 方法，使得可以返回一个函数，而不是一个 action 对象。
+- 该函数可以执行异步操作，在操作完成后再 dispatch 一个 action。
+
+#### **优点**
+
+- 简单易用，直接在 `action creators` 中处理异步操作。
+- 适合简单的异步请求和状态管理。
+
+#### **缺点**
+
+- 对于复杂的异步流（如多个并行任务、依赖任务等），代码可能会变得较为混乱和难以维护。
+- 不提供强大的错误处理机制。
+
+#### **使用场景**
+
+- 适用于简单的异步操作，特别是当异步操作比较简单，或者只有少量异步操作时。
+- 适合小型应用，或者需要简单异步操作的场景。
+
+---
+
+### 2. **Redux-Saga**
+
+#### **概述**
+
+`redux-saga` 是一个更强大的中间件，专门用于处理 Redux 中的副作用（如异步操作）。它使用 ES6 的 `generator` 函数来描述异步流程，使得异步操作的管理更加清晰和可预测。
+
+#### **工作原理**
+
+- `redux-saga` 利用 `generator` 函数的暂停与恢复特性，通过 `yield` 来控制副作用流程。
+- `redux-saga` 允许你编写更复杂的异步逻辑，并且可以通过 `takeEvery`、`takeLatest`、`call` 等 effect 来管理异步流程。
+
+#### **优点**
+
+- 可以处理复杂的异步操作（如多个并行请求、依赖请求、错误处理等）。
+- 更具可读性和可维护性，尤其适合复杂的业务逻辑。
+- 强大的错误处理机制和取消任务的功能。
+
+#### **缺点**
+
+- 学习曲线较陡，需要了解 `generator` 函数和 Redux-Saga 的特性。
+- 配置和实现可能较为复杂，尤其对于初学者。
+
+#### **使用场景**
+
+- 适用于复杂的异步操作，尤其是多个并行任务、任务依赖、错误处理和流程控制等复杂场景。
+- 适合大型应用，或者异步操作较为复杂的场景，如多个异步请求并行、串行等。
+- 适用于需要高度控制副作用流程的应用。
+
+---
+
+### 3. **对比总结**
+
+| 特性             | **Redux-Thunk**                              | **Redux-Saga**                                         |
+| ---------------- | -------------------------------------------- | ------------------------------------------------------ |
+| **实现方式**     | 通过返回函数来处理异步操作                   | 使用 `generator` 函数描述异步操作流程                  |
+| **简单性**       | 简单，易于上手                               | 较为复杂，需要掌握 `generator` 函数和 `saga` 特性      |
+| **异步处理能力** | 适合简单的异步操作，多个异步操作管理比较困难 | 强大的异步控制能力，适合处理复杂的异步流程             |
+| **错误处理**     | 错误处理较为简单，通常由 `catch` 来捕获      | 强大的错误处理机制，支持恢复、重试和异常处理           |
+| **并发处理**     | 不适合处理并发任务                           | 通过 `takeEvery` 和 `takeLatest` 等机制，支持并发处理  |
+| **取消操作**     | 没有内置的取消机制                           | 可以通过 `cancel` effect 来取消任务                    |
+| **使用场景**     | 适合简单的异步请求和状态管理                 | 适合复杂的异步流程管理，多个任务、依赖任务、并行任务等 |
+
+---
+
+### 4. **总结**
+
+- **Redux-Thunk**：适用于简单的异步操作，特别是当异步操作较为直接和不复杂时。
+- **Redux-Saga**：适用于复杂的异步操作，能够灵活控制副作用流程，特别适合处理多个并行、串行、任务依赖等复杂的业务逻辑。
+
+## 26.React useState, useEffect 的实现原理
+
+### `useState` 的实现原理
+
+`useState` 是用于在函数组件中管理状态的 Hook。它的实现原理依赖于 React 的 **Fiber 架构** 和 **Hooks 列表**。
+
+#### 1. 状态存储
+
+- 每个函数组件都会有一个与之关联的 **Hooks 列表**。在首次渲染时，React 会创建一个新的空列表，来存储该组件的所有 Hook 的状态和相关信息。
+- 当你调用 `useState(initialState)` 时，React 会将 `initialState` 存储在这个 Hooks 列表中，并返回当前状态和更新状态的函数。
+- 在组件重新渲染时，React 会从 Hooks 列表中取出之前保存的状态值。如果是首次渲染，状态值就是传给 `useState` 的初始值。
+
+#### 2. 状态更新
+
+- `useState` 返回的 `setState` 函数用于更新状态，并触发组件的重新渲染。
+- React 会比较新旧状态值，只有在状态变化时才会重新渲染组件。
+- `setState` 不会立即更新状态，而是将状态更新放入更新队列，等待下次渲染周期来处理。
+
+#### 3. 更新流程
+
+- React 使用 **Fiber 树** 来管理组件，每个组件是一个 Fiber 节点。React 会遍历 Fiber 树，更新与 `useState` 相关的状态，并决定是否需要重新渲染。
+- 在渲染过程中，React 会根据 Fiber 节点中的状态值，判断是否需要重新渲染组件。
+
+---
+
+### `useEffect` 的实现原理
+
+`useEffect` 用于处理副作用（side effects），如数据获取、订阅或手动 DOM 操作。它的实现原理依赖于 React 的 **Fiber 架构** 和调度机制。
+
+#### 1. 副作用函数的调用
+
+- `useEffect` 接受一个回调函数，这个回调函数包含副作用逻辑。副作用函数会在渲染后异步执行，不会阻塞渲染过程。
+- React 会将副作用函数注册到组件的 Fiber 节点中，确保它在每次渲染后执行。
+
+#### 2. 依赖数组
+
+- `useEffect` 可以接受第二个参数——**依赖数组**（`dependencies`），它决定副作用函数的执行时机。
+  - 如果依赖数组为空 `[]`，副作用函数仅在组件挂载和卸载时执行一次。
+  - 如果数组中包含依赖，副作用函数只有在这些依赖发生变化时才会重新执行。
+
+#### 3. 副作用的清理
+
+- `useEffect` 可以返回一个清理函数（cleanup function），用于在副作用重新执行前或组件卸载时清理副作用。
+- 清理函数用于移除事件监听器、取消订阅、清理定时器等操作。
+
+#### 4. 调度和执行
+
+- React 会在每次渲染后执行副作用函数。副作用函数的执行是 **异步** 的，确保渲染过程不被阻塞。
+- 副作用函数会被放入一个任务队列，等待 DOM 更新完成后异步执行。
+
+#### 5. 依赖的变化和更新
+
+- React 会比较 `useEffect` 的依赖数组，在每次渲染时，如果依赖发生变化，副作用函数会重新执行。如果依赖没有变化，副作用函数就不会执行，从而避免不必要的副作用。
+
+---
+
+### 结合 React Fiber
+
+React 的 Fiber 架构是其新的渲染引擎，使得 React 更加高效，特别是在异步渲染和任务调度方面。Fiber 在 `useState` 和 `useEffect` 中扮演了重要角色。
+
+- **Fiber 树**：React 将每个组件作为 Fiber 节点，渲染时将状态和副作用信息附加到 Fiber 节点上，确保状态和副作用在组件渲染过程中正确更新。
+- **异步渲染**：React 能够异步地处理组件更新，避免阻塞 UI 渲染。`useEffect` 中的副作用函数会在渲染后异步执行，确保渲染不会受到阻塞。
+
+---
+
+### 总结
+
+- **`useState` 的实现原理**：基于 React 的 Fiber 架构，React 将状态存储在组件的 Fiber 节点中，状态更新触发组件的重新渲染。
+- **`useEffect` 的实现原理**：副作用函数在组件渲染后异步执行，React 会根据依赖数组判断副作用是否需要重新执行，并支持副作用的清理功能。
+
+## 27. 为什么 React Hooks 需要再顶层调用？不能放到条件语句当中
+
+从源码的角度来说的话，`React` 会在内部创建一个名为`Hooks`的数据结构来追踪每个组件的状态。
+在函数组件中调用 Hook 时，`React` 会根据 Hook 的类型将其添加到当前组件的 `Hooks 链表`中。然后，`React` 会将这些 `Hooks` 存储在` Fiber` 节点的`memoizedState`字段中，以便在下一次渲染时使用。
+如果你在代码中多次调用同一个 ` Hook``，React ` 会根据`Hooks`的顺序将其添加到当前组件的 `Hooks 链表`中。这样，`React `就可以确定哪个状态应该与哪个组件关联，并且能够正确地更新 UI。
