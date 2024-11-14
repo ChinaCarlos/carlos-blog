@@ -55,6 +55,7 @@ export default defineConfig({
           { text: "HTML", link: "/interview/HTML/index" },
           { text: "CSS", link: "/interview/CSS/prev" },
           { text: "JavaScript", link: "/interview/JavaScript/prev" },
+          { text: "Typescript", link: "/interview/Typescript/index" },
           { text: "浏览器网络篇", link: "/interview/Network/index" },
           { text: "前端工程化", link: "/interview/FrontendEngineering/index" },
           { text: "Vue2/3框架", link: "/interview/Vue/index" },
