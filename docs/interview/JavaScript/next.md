@@ -244,6 +244,22 @@ Function.prototype.myBind = function (context, ...args1) {
 };
 ```
 
+另外一种写法：
+
+```javascript
+Function.prototype.myBind = function (context, ...args) {
+  context = context === undefined || context === null ? globalThis : window;
+  const _this = this;
+  return function bondFunction(...args1) {
+    if (this instanceof bondFunction) {
+      return new this(...args, ...args1);
+    } else {
+      return _this.apply(context, [...args, ...args1]);
+    }
+  };
+};
+```
+
 ## 10. 实现`flatten`数组扁平化
 
 有很多中方法：
@@ -2032,6 +2048,103 @@ Hi This is Hank!
 Eat supper
 
 ```
+
+### 实现思路
+
+LazyMan 需要实现一种任务链，能够按顺序或优先级依次执行，支持以下功能：
+
+1. sayHi：立即输出 Hi! This is ${name}!
+
+2. eat：立即输出 Eat ${food}~
+
+3. sleep：延迟一段时间后输出 Wake up after ${seconds}
+
+4. sleepFirst：优先延迟执行，并在等待之后继续执行其他任务
+
+```javascript
+class LazyManClass {
+  constructor(name) {
+    this.tasks = [];
+    this.sayHi(name);
+    // 开始执行任务队列
+    setTimeout(() => {
+      this.next();
+    }, 0);
+  }
+
+  // 向任务队列添加任务
+  next() {
+    const task = this.tasks.shift();
+    if (task) task();
+  }
+
+  // Hi 方法立即执行
+  sayHi(name) {
+    this.tasks.push(() => {
+      console.log(`Hi! This is ${name}!`);
+      this.next();
+    });
+    return this;
+  }
+
+  // Eat 方法
+  eat(food) {
+    this.tasks.push(() => {
+      console.log(`Eat ${food}~`);
+      this.next();
+    });
+    return this;
+  }
+
+  // sleep 方法，延迟一定时间再执行下一个任务
+  sleep(seconds) {
+    this.tasks.push(() => {
+      setTimeout(() => {
+        console.log(`Wake up after ${seconds}`);
+        this.next();
+      }, seconds * 1000);
+    });
+    return this;
+  }
+
+  // sleepFirst 方法，优先延迟执行的任务，插入队列最前面
+  sleepFirst(seconds) {
+    this.tasks.unshift(() => {
+      setTimeout(() => {
+        console.log(`Wake up after ${seconds}`);
+        this.next();
+      }, seconds * 1000);
+    });
+    return this;
+  }
+}
+
+// 外部调用的接口函数
+function LazyMan(name) {
+  return new LazyManClass(name);
+}
+```
+
+### 核心实现步骤
+
+1. 任务队列：
+
+   - 使用 tasks 数组来存储所有要执行的任务（每个任务都是一个函数）。
+   - 任务队列的处理逻辑允许按顺序执行，同时支持任务优先级。
+
+2. 任务调度：
+
+   - 在 LazyMan 构造函数中，通过 setTimeout 触发 next 方法，从而开始执行任务队列中的任务。
+   - next 方法负责取出并执行队列中的任务，每个任务执行完毕后调用 next() 来执行下一个任务。
+
+3. 链式调用：
+
+   - 每个方法都返回 this，允许链式调用并将任务依次加入 tasks 队列。
+
+4. sleep 和 sleepFirst 方法：
+
+   - sleep 将延迟任务添加到队列末尾。
+   - sleepFirst 将延迟任务插入到队列最前面，保证优先执行。
 
 ## 49. `Proxy` 实现对象属性的拦截
 
