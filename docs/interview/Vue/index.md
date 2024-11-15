@@ -283,6 +283,12 @@ Vue 3 通过按需递归代理的机制，使得响应式系统能够动态生�
 | **自定义渲染器**         | 仅支持 DOM 渲染                                                                | 支持自定义渲染器，可以在非 DOM 环境（如移动端）使用 Vue                                            |
 | **支持的浏览器**         | 支持 IE 9+                                                                     | 不支持 IE 11，仅支持现代浏览器                                                                     |
 
+### 其他：
+
+- `cacheHandler` 事件监听缓存
+- `hoistStatic` 静态节点提升
+- `Fragments` Vue3 中不在要求模版的跟节点必须是只能有一个节点。跟节点和和 render 函数返回的可以是纯文字、数组、单个节点，如果是数组，会自动转化为 Fragments
+
 ## 9. 介绍一下 nextTick
 
 vue 中数据是同步更新的，视图是异步更新。所有在我们同步代码中修改了数据，是无法访问更新后的 DOM。所以官方就提供了 nextTick。vue 中响应式数据改变，不会立即更新 DOM，而是更新了 vnode,等下一次事件循环才一次性去更新 DOM。
@@ -497,6 +503,10 @@ Vue 通过对组件的 `created`、`mounted`、`destroyed` 等生命周期钩子
 
 - **Tab 页面切换**：当用户在多个 Tab 之间切换时，可以通过 `keep-alive` 缓存已经访问过的 Tab 页面，避免每次切换时重新加载数据。
 - **表单填写**：对于较长的表单填写，可以保持表单的输入状态，避免用户每次返回时丢失已填内容。
+
+#### 优先级规则
+
+在 `keep-alive` 中，`exclude` 的优先级高于 `include`。
 
 ### 4. **总结**
 
@@ -1189,3 +1199,244 @@ export default {
 | --------- | ---------------- | -------------------------------------- |
 | `$route`  | 获取当前路由信息 | 读取路由参数、路径、查询、哈希等       |
 | `$router` | 路由跳转和控制   | 实现编程式导航、跳转到其他路由、回退等 |
+
+## 41. v-model 是否破坏了 Vue 的单项数据流？
+
+`v-model` 并不会破坏 Vue 的单项数据流。Vue 的单项数据流指的是：**父组件通过 `props` 将数据传递给子组件，而子组件通过事件将数据的变化通知父组件**。`v-model` 只是这种数据流模式的语法糖，并没有改变数据流动的方向。
+
+### `v-model` 如何保持单项数据流？
+
+在 Vue 3 中，`v-model` 的实现机制基于 `props` 和 `events` 的双向绑定，具体通过以下两个步骤来实现父子组件的数据同步：
+
+1. **父组件传递数据到子组件**：父组件通过 `v-model` 绑定，将数据传递给子组件。子组件通过 `modelValue` 属性接收该数据。
+
+2. **子组件通过事件通知父组件更新数据**：当子组件中的数据发生变化时，通过触发 `update:modelValue` 事件，将更新的数据传递回父组件。父组件接收到这个事件后，更新自身的数据，再次通过 `props` 将更新后的数据传递给子组件。
+
+### `v-model` 对单项数据流的影响
+
+`v-model` 依然遵循 Vue 的单项数据流设计：
+
+- **数据流动方向**：数据始终是从父组件传递到子组件。
+- **更新流动方向**：数据更新是通过事件的方式从子组件传递到父组件，再由父组件更新数据并传递回子组件。
+
+##### 父组件
+
+```vue
+<!-- 父组件 -->
+<template>
+  <ChildComponent v-model="parentData" />
+</template>
+
+<script setup>
+import { ref } from "vue";
+import ChildComponent from "./ChildComponent.vue";
+
+const parentData = ref("Initial Value");
+</script>
+```
+
+##### 子组件
+
+```vue
+<template>
+  <input :value="modelValue" @input="updateValue" />
+</template>
+
+<script setup>
+import { defineProps, defineEmits } from "vue";
+
+const props = defineProps({ modelValue: String });
+const emit = defineEmits();
+
+function updateValue(event) {
+  emit("update:modelValue", event.target.value);
+}
+</script>
+```
+
+在这个例子中，父组件的数据通过 v-model 传给子组件，子组件只通过 emit 事件请求父组件更新数据，并不会直接修改父组件的数据，从而保持了单项数据流的特性。
+
+### 结论
+
+`v-model` 的设计确保了 Vue 的单项数据流不会被破坏。它将父到子的 `props` 传递和子到父的事件通知机制封装成了更简洁的语法，提升了代码的可读性和维护性。在使用 `v-model` 时，Vue 依然保持了父子组件之间数据流动的方向和控制，从而不会破坏单项数据流的特性。
+
+## 42. Vue `ref` 的实现原理
+
+在 Vue 3 中，`ref` 是用于实现响应式数据的一种 API。它通过封装数据、依赖收集、追踪变化，实现了自动更新视图的效果。Vue 3 的响应式系统使用了 **Proxy** 代理，`ref` 依赖于 Proxy 以及 Vue 的响应式系统来实现。
+
+### 1. `ref` 的定义与结构
+
+- `ref` 是一个可以封装任意数据的响应式对象，它会将原始数据包装在一个带 `.value` 属性的对象中，方便读取和修改。
+- 通过 `ref` 创建的对象会自动追踪对 `.value` 的访问和修改，从而在数据发生变化时触发视图更新。
+
+### 2. `ref` 的创建过程
+
+- `ref` 函数接受一个初始值作为参数，并返回一个包含 `.value` 属性的对象。内部会为这个对象创建依赖追踪对象（dep），用于记录依赖该 `ref` 的所有副作用函数。
+- 在读取 `.value` 时触发依赖收集（track），在写入 `.value` 时触发依赖更新（trigger）。
+
+### 3. 响应式追踪与依赖收集
+
+- Vue 会在每个 `ref` 实例上创建依赖追踪对象，用于记录哪些地方依赖了该 `ref` 的值。
+- 当读取 `.value` 时，会触发“依赖收集”，将当前活跃的副作用函数添加到依赖追踪对象中。
+- 当 `.value` 被修改时，会触发“依赖触发”，通知依赖的副作用函数重新执行，从而更新视图。
+
+### 4. 使用 Proxy 实现响应性
+
+- Vue 使用 `Proxy` 来监听 `.value` 的读取和修改，通过 `get` 捕获器实现依赖收集，通过 `set` 捕获器通知依赖更新。
+- 这种基于 `Proxy` 的机制确保了 `ref` 能够实时追踪和触发数据变化。
+
+### 5. 对象类型与原始类型的差异
+
+- 当 `ref` 包装的是对象类型时，会通过 `reactive` 自动将对象内部的属性也转换为响应式。
+- 当 `ref` 包装的是原始数据类型（如数字、字符串）时，只会对 `.value` 属性进行响应式追踪。
+
+### 6. `ref` 的自动解包（Unwrapping）
+
+- 在 Vue 模板中，`ref` 会自动解包（unwrapping），因此在模板中直接使用变量名即可，不需要 `.value`。
+- 在 JavaScript 中，仍需要通过 `.value` 访问 `ref` 的值。
+
+### 7. `toRefs` 与 `reactive` 的配合
+
+- `toRefs` 可以将 `reactive` 对象的属性转换为 `ref`，确保解构时响应性不会丢失。
+- `ref` 和 `reactive` 的配合使用提升了 Vue 3 的响应式系统的灵活性。
+
+### 8. `ref` 实现的核心源码（简化示例）
+
+```typescript
+function ref(value) {
+  const dep = new Set();
+
+  return {
+    get value() {
+      track(dep); // 依赖收集
+      return value;
+    },
+    set value(newValue) {
+      if (newValue !== value) {
+        value = newValue;
+        trigger(dep); // 触发依赖更新
+      }
+    },
+  };
+}
+```
+
+`ref` 的实现依赖于` Vue 3` 的响应式系统，使用 `Proxy` 和依赖追踪机制来实现响应性。它在读取` .value` 时追踪依赖，在写入 `.value` 时触发更新，确保了数据变动时视图可以自动响应变化。
+
+## 43. Vue 3 `reactive` 的实现原理
+
+Vue 3 中的 `reactive` 是一个用于将对象转换为响应式的核心 API。`reactive` 的实现基于 JavaScript 的 **Proxy** 对象，通过代理原始对象，追踪属性的读取和写入操作，以实现响应式数据的依赖收集和触发更新。
+
+### 1. `reactive` 的基本工作原理
+
+- `reactive` 接受一个对象（可以是嵌套对象）作为参数，并返回该对象的代理对象。
+- 代理对象在数据访问和更新时，会自动触发 Vue 的依赖收集和通知更新机制，从而在数据变化时更新相关的视图。
+
+### 2. Proxy 实现数据劫持
+
+- Vue 使用 `Proxy` 来劫持对对象属性的访问和修改。
+- `reactive` 会创建一个 Proxy 代理对象，并在 `get` 捕获器中进行依赖收集（追踪哪些地方使用了该数据），在 `set` 捕获器中进行依赖触发（通知依赖该数据的地方进行更新）。
+
+### 3. 响应式追踪与依赖收集
+
+- 在 Vue 的响应式系统中，每个响应式对象的每个属性都维护一个 **依赖集合**（Dep），用于记录所有依赖该属性的 **副作用函数**（effect）。
+- 当一个属性被读取时，Vue 会将当前活跃的副作用函数添加到这个属性的依赖集合中。
+- 当属性被修改时，Vue 会触发所有相关依赖集合中的副作用函数，使它们重新执行以更新视图。
+
+### 4. 深度响应性
+
+- `reactive` 会递归地将嵌套对象也转换为响应式对象。
+- Vue 在 Proxy 的 `get` 捕获器中进行检查，如果属性的值是对象且尚未代理过，会递归调用 `reactive` 使其也成为响应式对象。
+
+### 5. Track 和 Trigger 的实现
+
+- **Track（追踪）**：当 `reactive` 对象的属性被访问时，Vue 会通过 `track` 函数将当前副作用函数注册到这个属性的依赖集合中。
+- **Trigger（触发）**：当 `reactive` 对象的属性被更新时，Vue 会通过 `trigger` 函数触发该属性的依赖集合中的副作用函数，确保视图能够随数据的变动而更新。
+
+### 6. `reactive` 的核心源码（简化示例）
+
+```typescript
+function reactive(target) {
+  return new Proxy(target, {
+    get(target, key, receiver) {
+      track(target, key); // 依赖收集
+      const result = Reflect.get(target, key, receiver);
+      if (typeof result === "object" && result !== null) {
+        return reactive(result); // 递归使嵌套对象响应式
+      }
+      return result;
+    },
+    set(target, key, value, receiver) {
+      const oldValue = target[key];
+      const result = Reflect.set(target, key, value, receiver);
+      if (oldValue !== value) {
+        trigger(target, key); // 触发依赖更新
+      }
+      return result;
+    },
+  });
+}
+```
+
+### 7. reactive 与 ref 的区别
+
+- reactive 用于将对象转为深度响应式对象，其属性可以是任何类型。
+- ref 用于处理原始类型或单一值，且会将数据封装在 .value 属性中。
+
+## 44. Vue 3 `computed` 的实现原理
+
+在 Vue 3 中，`computed` 是用于创建基于其他响应式数据的 **派生数据** 的 API。`computed` 的实现依赖于 **响应式依赖追踪系统**，结合 **缓存机制** 和 **延迟求值**，确保在依赖数据不变的情况下避免不必要的计算。
+
+### 1. `computed` 的基本概念
+
+- `computed` 接受一个 getter 函数（或带有 `get` 和 `set` 的对象）用于定义计算属性。
+- `computed` 属性基于依赖数据变化自动更新，并在依赖数据不变时缓存上次的计算结果。
+
+### 2. `computed` 的核心机制
+
+`computed` 是通过 **副作用函数（effect）** 和 **缓存机制** 实现的。Vue 为每个 `computed` 属性创建一个副作用函数，并利用 `ReactiveEffect` 类管理依赖收集和更新逻辑。
+
+- **依赖收集**：`computed` 会在首次访问时自动追踪依赖的数据属性，将这些依赖添加到计算属性的追踪列表中。
+- **依赖更新**：当依赖数据发生变化时，`computed` 会标记为“脏”状态，在下次访问时重新计算。
+
+### 3. `computed` 的延迟求值与缓存
+
+- **延迟求值**：`computed` 采用 **lazy evaluation**（惰性求值），即仅在 `computed` 属性首次被访问时，才会执行其内部的 getter 函数进行计算。
+- **缓存机制**：在依赖数据未发生变化时，`computed` 会直接返回缓存的上一次计算结果。只有在依赖变化后才标记为“脏”，并在下一次访问时重新计算。
+
+### 4. Track 与 Trigger
+
+- **Track（追踪依赖）**：`computed` 属性的 getter 中访问依赖数据时，Vue 的响应式系统会自动将依赖添加到 `computed` 的依赖集合中。
+- **Trigger（触发更新）**：当依赖数据发生变化时，Vue 会触发更新，将 `computed` 标记为“脏”，下次访问时触发重新计算。
+
+### 5. `computed` 的核心源码实现（简化示例）
+
+```typescript
+function computed(getter) {
+  let value;
+  let dirty = true; // 标记是否需要重新计算
+  const effect = new ReactiveEffect(() => {
+    value = getter(); // 重新计算
+    dirty = false; // 重置为非“脏”状态
+  });
+
+  return {
+    get value() {
+      if (dirty) {
+        effect.run(); // 如果是“脏”状态，则重新计算
+      }
+      track(effect); // 收集依赖
+      return value;
+    },
+  };
+}
+```
+
+### 6. `computed` 与 `watch` 的区别
+
+- **`computed`**：用于计算和缓存依赖其他响应式数据的值，适用于派生数据。依赖不变时，返回缓存结果。
+- **`watch`**：用于侦听数据的变化并执行副作用逻辑，适合处理非派生性的业务逻辑。
+
+### 总结
+
+Vue 3 中 `computed` 的实现依赖于响应式系统，通过 **依赖追踪** 和 **延迟求值** 优化性能，结合缓存机制确保在依赖不变的情况下避免重复计算。这使得 `computed` 成为了 Vue 3 中处理派生数据的高效工具。
