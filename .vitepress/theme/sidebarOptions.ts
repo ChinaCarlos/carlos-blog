@@ -39,6 +39,18 @@ export const sideBarData = [
   },
   {
     documentRootPath: "/docs",
+    scanStartPath: "interview/Algorithm",
+    resolvePath: "interview/Algorithm/",
+    useTitleFromFileHeading: true,
+    useTitleFromFrontmatter: true,
+    frontmatterTitleFieldName: "title",
+    hyphenToSpace: true,
+    underscoreToSpace: true,
+    collapsed: false,
+    collapseDepth: 2,
+  },
+  {
+    documentRootPath: "/docs",
     scanStartPath: "interview/JavaScript",
     resolvePath: "interview/JavaScript/",
     useTitleFromFileHeading: true,

@@ -1,10 +1,10 @@
 ---
-title: 前端面试 数据结构与算法
+title: 数据结构概念
 tags: front interview
 theme: solarized-dark
 ---
 
-# 前端面试 数据结构与算法
+# 数据结构概念
 
 ## 1. 常见的数据结构有哪些？
 
