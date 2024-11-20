@@ -199,24 +199,207 @@ function maxProfit(prices) {
 
 ```javascript
 function longestPalindrome(s) {
+  // 初始化左右边界，表示当前找到的最长回文子串的起始和结束位置
   let l = 0;
   let r = 0;
-
+  // 遍历字符串，以每个字符为中心尝试扩展回文
   for (let i = 0; i < s.length; i++) {
-    helper(i, i);
-    helper(i, i + 1);
+    helper(i, i); // 情况 1：回文子串长度为奇数（以 i 为中心）
+    helper(i, i + 1); // 情况 2：回文子串长度为偶数（以 i 和 i+1 为中心）
   }
-
+  // 辅助函数，用于扩展回文子串的左右边界
   function helper(m, n) {
-    while (m >= 0 && n < s.length && s[m] == s[n]) {
-      m--;
-      n++;
+    // 当左右指针范围内的字符相等时，继续向外扩展
+    while (m >= 0 && n < s.length && s[m] === s[n]) {
+      m--; // 左指针向左移动
+      n++; // 右指针向右移动
     }
+    // 如果当前回文子串的长度大于之前记录的最长回文子串长度
     if (n - m > r - l) {
-      r = n;
-      l = m;
+      r = n; // 更新右边界
+      l = m; // 更新左边界
     }
   }
+  // 返回最长回文子串，通过 slice 提取范围 [l+1, r)
   return s.slice(l + 1, r);
+}
+```
+
+## 11. 爬楼梯
+
+#### 1. 正常递归求解，但是时间空间复杂度很差
+
+```javascript
+function climbStairs(n) {
+  if (n <= 2) return n;
+  return climbStairs(n - 1) + climbStairs(n - 2);
+}
+```
+
+#### 2. 利用数组缓存值
+
+```javascript
+function climbStairs(n) {
+  let result = [1, 2];
+  for (let i = 2; i < n; i++) {
+    result[i] = result[i - 1] + result[i - 2];
+  }
+  return result.pop();
+}
+```
+
+#### 3. 动态规划求解
+
+```javascript
+function climbStairs(n) {
+  if (n <= 2) return n;
+  let a = 1;
+  let b = 2;
+  let sum = 0;
+  for (let i = 2; i < n; i++) {
+    sum = a + b;
+    a = b;
+    b = sum;
+  }
+  return sum;
+}
+```
+
+## 12. 三数之和
+
+```javascript
+function threeSum(nums) {
+  // 如果数组为空或长度小于等于2，不可能组成三元组，直接返回
+  if (!nums || nums.length <= 2) return nums;
+  // 将数组排序，便于后续双指针查找
+  nums.sort((a, b) => a - b);
+  // 定义结果数组，用于存放满足条件的三元组
+  let result = [];
+  // 遍历数组，固定第一个数 nums[i]
+  for (let i = 0; i < nums.length; i++) {
+    // 如果 nums[i] > 0，后面的数都大于 0，三数之和不可能为 0，直接退出循环
+    if (nums[i] > 0) break;
+    // 如果当前数和前一个数相同，跳过，避免重复三元组
+    if (i > 0 && nums[i] === nums[i - 1]) continue;
+    // 定义左右指针
+    let L = i + 1; // 左指针初始化为当前数之后的第一个数
+    let R = nums.length - 1; // 右指针初始化为数组最后一个数
+    // 开始双指针查找
+    while (L < R) {
+      // 计算三数之和
+      const sum = nums[i] + nums[L] + nums[R];
+      if (sum === 0) {
+        // 如果三数之和为 0，将三元组加入结果数组
+        result.push([nums[i], nums[L], nums[R]]);
+        // 跳过重复的右指针值，避免重复三元组
+        while (L < R && nums[R] === nums[R - 1]) {
+          R--;
+        }
+        // 跳过重复的左指针值，避免重复三元组
+        while (L < R && nums[L] === nums[L + 1]) {
+          L++;
+        }
+        // 左指针右移，右指针左移，继续检查其他可能的三元组
+        L++;
+        R--;
+      } else if (sum > 0) {
+        // 如果三数之和大于 0，说明右指针的值过大，右指针左移
+        R--;
+      } else {
+        // 如果三数之和小于 0，说明左指针的值过小，左指针右移
+        L++;
+      }
+    }
+  }
+  // 返回结果数组
+  return result;
+}
+```
+
+## 13. 环形链表
+
+```javascript
+function hasCycle(head) {
+  // 定义两个指针，slow 和 fast，均初始化为链表的头节点
+  let slow = head;
+  let fast = head;
+  // 当快指针和快指针的下一个节点不为空时，继续循环
+  while (fast && fast.next) {
+    // 慢指针每次移动一步
+    slow = slow.next;
+    // 快指针每次移动两步
+    fast = fast.next.next;
+    // 如果快慢指针相遇，说明链表中存在环
+    if (slow === fast) return true;
+  }
+  // 如果循环结束，说明快指针到达链表末尾，没有环
+  return false;
+}
+```
+
+## 14. 二叉树的层序遍历
+
+```javascript
+function levelOrder(root) {
+  // 如果根节点为空，返回空数组，表示没有任何层级
+  if (!root) return [];
+  // 初始化结果数组，用于存储每一层的节点值
+  let result = [];
+  // 使用队列实现层序遍历，初始队列包含根节点
+  let queue = [root];
+  // 当队列不为空时，持续处理队列中的节点
+  while (queue.length) {
+    // 用于存储当前层的节点值
+    let levelNodes = [];
+    // 获取当前层的节点数量
+    let levelNodeSize = queue.length;
+    // 遍历当前层的所有节点
+    for (let i = 0; i < levelNodeSize; i++) {
+      // 从队列中取出一个节点
+      const node = queue.shift();
+      // 将该节点的值加入当前层的结果中
+      levelNodes.push(node.val);
+      // 如果左子节点存在，将其加入队列
+      if (node.left) queue.push(node.left);
+      // 如果右子节点存在，将其加入队列
+      if (node.right) queue.push(node.right);
+    }
+    // 将当前层的节点值加入最终结果中
+    result.push(levelNodes);
+  }
+  // 返回结果数组，包含所有层的节点值
+  return result;
+}
+```
+
+## 15. 路径总和
+
+#### 1. 通过递归
+
+```javascript
+function hasPathSum(root, targetSum) {
+  if (!root) return false;
+  if (!root.left && !root.right && root.val === targetSum) return true;
+  const nextTargetSum = targetSum - root.val;
+  return (
+    hasPathSum(root.left, nextTargetSum) ||
+    hasPathSum(root.right, nextTargetSum)
+  );
+}
+```
+
+#### 2. 通过 `BFS`
+
+```javascript
+function hasPathSum(root, targetSum) {
+  if (!root) return false;
+  let queue = [[root, root.val]];
+  while (queue.length) {
+    const [node, currentSum] = queue.shift();
+    if (!node.left && !node.right && currentSum === targetSum) return true;
+    if (node.left) queue.push([node.left, node.left.val + currentSum]);
+    if (node.right) queue.push([node.right, node.right.val + currentSum]);
+  }
+  return false;
 }
 ```
