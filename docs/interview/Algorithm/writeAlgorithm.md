@@ -403,3 +403,29 @@ function hasPathSum(root, targetSum) {
   return false;
 }
 ```
+
+## 16. 全排列
+
+```javascript
+function permute(nums) {
+  const result = [];
+  const visited = new Set();
+  function dfs(paths) {
+    if (paths.length === nums.length) {
+      result.push([...paths]);
+    }
+    for (let i = 0; i < nums.length; i++) {
+      if (visited.has(nums[i])) continue;
+      visited.add(nums[i]);
+      paths.push(nums[i]);
+      dfs(paths);
+      visited.delete(nums[i]);
+      paths.pop();
+    }
+  }
+  dfs([]);
+  return result;
+}
+
+```
+
