@@ -527,3 +527,35 @@ function permute(nums) {
 }
 ```
 
+## 17. 搜索二维矩阵 II
+
+```javascript
+function searchMatrix(matrix, target) {
+  // 获取矩阵的行数和列数
+  let m = matrix.length;
+  let n = matrix[0].length;
+
+  // 从矩阵的右上角开始搜索，初始化行索引和列索引
+  let i = 0; // 行索引，从第一行开始
+  let j = n - 1; // 列索引，从最后一列开始
+
+  // 循环条件：行索引不越界且列索引不越界
+  while (i < m && j >= 0) {
+    // 如果当前元素等于目标值，返回 true
+    if (matrix[i][j] === target) {
+      return true;
+    } 
+    // 如果当前元素小于目标值，说明目标值在当前元素的下方，移动到下一行
+    else if (matrix[i][j] < target) {
+      i++;
+    } 
+    // 如果当前元素大于目标值，说明目标值在当前元素的左边，移动到前一列
+    else {
+      j--;
+    }
+  }
+
+  // 如果循环结束仍未找到目标值，返回 false
+  return false;
+}
+```
