@@ -10,15 +10,24 @@ theme: solarized-dark
 
 ```javascript
 function twoSum(nums, target) {
+  // 如果数组长度小于等于 1，则无法找到两数之和，直接返回空数组
   if (nums.length <= 1) return [];
+  // 创建一个 Map 用来存储数组中的值及其对应的索引
   const map = new Map();
+  // 遍历数组，查找是否存在符合条件的两个数
   for (let i = 0; i < nums.length; i++) {
-    if (map.has(target - nums[i])) {
-      return [map.get(target - nums[i]), i];
+    // 计算目标值与当前值的差
+    const complement = target - nums[i];
+    // 检查 Map 中是否存在这个差值
+    if (map.has(complement)) {
+      // 如果存在，返回该差值对应的索引和当前索引
+      return [map.get(complement), i];
     } else {
+      // 如果不存在，将当前值和索引存入 Map
       map.set(nums[i], i);
     }
   }
+  // 如果遍历结束仍未找到符合条件的两个数，返回空数组
   return [];
 }
 ```
@@ -27,12 +36,18 @@ function twoSum(nums, target) {
 
 ```javascript
 function maxSubArray(nums) {
+  // 初始化 prev 为 0，表示当前子数组的最大和
   let prev = 0;
+  // 初始化 max 为数组的第一个元素，表示全局最大子数组的和
   let max = nums[0];
+  // 遍历数组的每个元素，逐步更新最大子数组的和
   nums.forEach((value) => {
+    // 更新当前子数组的最大和，选择加上当前值或从当前值重新开始
     prev = Math.max(prev + value, value);
+    // 更新全局最大子数组的和
     max = Math.max(prev, max);
   });
+  // 返回全局最大子数组的和
   return max;
 }
 ```
@@ -41,14 +56,22 @@ function maxSubArray(nums) {
 
 ```javascript
 function reverseList(head) {
+  // 初始化 prev 为 null，表示反转后的链表的初始节点
   let prev = null;
+  // 初始化 current 为 head，表示当前处理的节点
   let current = head;
+  // 遍历链表，直到所有节点被反转
   while (current) {
+    // 保存当前节点的下一个节点，防止后续操作导致链表断裂
     const next = current.next;
+    // 将当前节点的 next 指向前一个节点，实现反转
     current.next = prev;
+    // 更新 prev 为当前节点，用于下一次迭代
     prev = current;
+    // 更新 current 为下一个节点，继续迭代
     current = next;
   }
+  // 返回反转后的链表头节点
   return prev;
 }
 ```
@@ -57,20 +80,29 @@ function reverseList(head) {
 
 ```javascript
 function compareVersion(version1, version2) {
+  // 将版本号通过 '.' 分隔为数组
   const arr1 = version1.split(".");
   const arr2 = version2.split(".");
+  // 计算两个版本号数组的最大长度，确保比较过程中不会漏掉任何部分
   let maxLength = Math.max(arr1.length, arr2.length);
+  // 遍历版本号数组的每一部分进行比较
   for (let i = 0; i < maxLength; i++) {
-    if (Number(arr1[i]) > Number(arr2[i])) {
+    // 取出当前版本号的第 i 部分，若超出长度则视为 0
+    const num1 = Number(arr1[i] || 0);
+    const num2 = Number(arr2[i] || 0);
+    // 如果第 i 部分的数字 num1 大于 num2，返回 1，表示 version1 大
+    if (num1 > num2) {
       return 1;
     }
-    if (Number(arr1[i]) < Number(arr2[i])) {
+    // 如果第 i 部分的数字 num1 小于 num2，返回 -1，表示 version2 大
+    if (num1 < num2) {
       return -1;
     }
-    if (i === maxLength - 1) {
-      return 0;
-    }
+    // 如果两个数字相等，继续比较下一部分
+    // 在循环结束后，如果所有部分相等，返回 0 表示两个版本号相同
   }
+  // 如果遍历完所有部分未提前返回，说明两个版本号完全相等
+  return 0;
 }
 ```
 
@@ -78,14 +110,26 @@ function compareVersion(version1, version2) {
 
 ```javascript
 function mergeSortArray(nums1, m, nums2, n) {
-  let i = m - 1;
-  let j = n - 1;
-  let k = m + n - 1;
+  // 初始化三个指针
+  let i = m - 1; // 指向 nums1 有效数字的最后一个位置
+  let j = n - 1; // 指向 nums2 的最后一个位置
+  let k = m + n - 1; // 指向 nums1 最后一个位置（包括预留的空位）
+
+  // 主循环：将 nums2 和 nums1 中的数字从大到小依次放到 nums1 的末尾
   while (i >= 0 || j >= 0) {
-    if (i < 0) nums1[k--] = nums2[j--];
-    if (j < 0) nums1[k--] = nums1[i--];
-    if (nums1[i] < nums2[j]) nums1[k--] = nums2[j--];
-    else nums1[k--] = nums1[i--];
+    if (i < 0) {
+      // 如果 nums1 用完了，只需将 nums2 的剩余部分填入 nums1
+      nums1[k--] = nums2[j--];
+    } else if (j < 0) {
+      // 如果 nums2 用完了，只需将 nums1 的剩余部分保持原位
+      nums1[k--] = nums1[i--];
+    } else if (nums1[i] < nums2[j]) {
+      // 如果 nums1 当前数字小于 nums2 当前数字，将 nums2 的数字填入
+      nums1[k--] = nums2[j--];
+    } else {
+      // 如果 nums1 当前数字大于等于 nums2 当前数字，将 nums1 的数字填入
+      nums1[k--] = nums1[i--];
+    }
   }
 }
 ```
@@ -94,17 +138,26 @@ function mergeSortArray(nums1, m, nums2, n) {
 
 ```javascript
 function lengthOfLongestSubstring(s) {
+  // 初始化 max，用来记录最长无重复子串的长度
   let max = 0;
+  // 初始化 startIndex，用来记录当前无重复子串的起始索引
   let startIndex = 0;
+  // 初始化 map，用来存储字符及其最近出现的位置
   let map = new Map();
 
+  // 遍历字符串的每一个字符
   for (let i = 0; i < s.length; i++) {
+    // 如果当前字符已经在 map 中存在，说明出现重复
     if (map.has(s[i])) {
-      startIndex = map.get(s[i]) + 1;
+      // 更新起始索引为重复字符上次出现位置的下一位
+      startIndex = Math.max(map.get(s[i]) + 1, startIndex);
     }
+    // 更新最长无重复子串的长度
     max = Math.max(i - startIndex + 1, max);
+    // 将当前字符及其索引存入 map
     map.set(s[i], i);
   }
+  // 返回最长无重复子串的长度
   return max;
 }
 ```
@@ -113,20 +166,27 @@ function lengthOfLongestSubstring(s) {
 
 ```javascript
 function validParenthesis(s) {
+  // 创建一个映射，用于匹配右括号对应的左括号
   const map = {
     "}": "{",
     "]": "[",
     ")": "(",
   };
+  // 用栈来存储遇到的左括号
   const stack = [];
 
+  // 遍历字符串的每个字符
   for (let i = 0; i < s.length; i++) {
+    // 如果栈不为空，并且栈顶元素是与当前字符对应的左括号
     if (stack.length && stack[stack.length - 1] === map[s[i]]) {
+      // 如果匹配成功，弹出栈顶元素
       stack.pop();
     } else {
+      // 如果不匹配，当前字符是一个左括号，将其入栈
       stack.push(s[i]);
     }
   }
+  // 如果栈为空，说明所有括号都有匹配，返回 true；否则返回 false
   return !stack.length;
 }
 ```
@@ -185,12 +245,19 @@ console.log(lru.get(4)); // 返回 4
 
 ```javascript
 function maxProfit(prices) {
+  // 初始化最小价格为第一个价格，最大利润为 0
   let minPrice = prices[0];
   let maxProfit = 0;
+
+  // 从第二个价格开始遍历
   for (let i = 1; i < prices.length; i++) {
+    // 更新最小价格为当前价格和已有的最小价格之间的较小者
     minPrice = Math.min(prices[i], minPrice);
+    // 计算当前利润并更新最大利润
     maxProfit = Math.max(maxProfit, prices[i] - minPrice);
   }
+
+  // 返回最大利润
   return maxProfit;
 }
 ```
@@ -378,12 +445,19 @@ function levelOrder(root) {
 
 ```javascript
 function hasPathSum(root, targetSum) {
+  // 如果根节点为空，直接返回 false，因为没有路径
   if (!root) return false;
+
+  // 如果当前节点是叶子节点，并且路径和等于目标和，返回 true
   if (!root.left && !root.right && root.val === targetSum) return true;
+
+  // 更新目标和，减去当前节点的值
   const nextTargetSum = targetSum - root.val;
+
+  // 递归调用，分别检查左子树和右子树
   return (
-    hasPathSum(root.left, nextTargetSum) ||
-    hasPathSum(root.right, nextTargetSum)
+    hasPathSum(root.left, nextTargetSum) || // 检查左子树
+    hasPathSum(root.right, nextTargetSum)   // 检查右子树
   );
 }
 ```
@@ -392,14 +466,22 @@ function hasPathSum(root, targetSum) {
 
 ```javascript
 function hasPathSum(root, targetSum) {
+  // 如果根节点为空，直接返回 false，因为没有路径
   if (!root) return false;
+  // 初始化队列，队列中的元素为 [节点, 当前路径和]
   let queue = [[root, root.val]];
+  // 遍历队列，直到队列为空
   while (queue.length) {
+    // 从队列中取出当前节点和当前路径和
     const [node, currentSum] = queue.shift();
+    // 如果当前节点是叶子节点，并且路径和等于目标和，返回 true
     if (!node.left && !node.right && currentSum === targetSum) return true;
+    // 如果左子节点存在，将左子节点和更新后的路径和加入队列
     if (node.left) queue.push([node.left, node.left.val + currentSum]);
+    // 如果右子节点存在，将右子节点和更新后的路径和加入队列
     if (node.right) queue.push([node.right, node.right.val + currentSum]);
   }
+  // 如果队列遍历完成，仍未找到符合条件的路径，返回 false
   return false;
 }
 ```
@@ -408,24 +490,40 @@ function hasPathSum(root, targetSum) {
 
 ```javascript
 function permute(nums) {
+  // 用来存储所有的排列结果
   const result = [];
+  // 用来记录已访问的元素，防止重复选择
   const visited = new Set();
+
+  // 深度优先搜索递归函数
   function dfs(paths) {
+    // 当路径长度等于输入数组的长度时，说明找到了一个排列
     if (paths.length === nums.length) {
-      result.push([...paths]);
+      result.push([...paths]); // 将当前路径加入结果
+      return;
     }
+
+    // 遍历 nums 中的每个元素
     for (let i = 0; i < nums.length; i++) {
+      // 如果当前元素已经被访问过，则跳过
       if (visited.has(nums[i])) continue;
+
+      // 标记当前元素为已访问
       visited.add(nums[i]);
+      // 将当前元素添加到路径中
       paths.push(nums[i]);
+      // 递归调用，继续生成下一个元素
       dfs(paths);
+      // 回溯：撤销选择
       visited.delete(nums[i]);
-      paths.pop();
+      paths.pop(); // 移除最后一个元素
     }
   }
+
+  // 从空路径开始进行深度优先搜索
   dfs([]);
+  // 返回所有的排列结果
   return result;
 }
-
 ```
 
