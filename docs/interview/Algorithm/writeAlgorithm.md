@@ -559,3 +559,94 @@ function searchMatrix(matrix, target) {
   return false;
 }
 ```
+## 18. 旋转图像
+
+#### 1. 先水平翻转，在沿对角线翻转
+```javascript
+function rotate(matrix) {
+  const n = matrix.length; // 矩阵的大小（n x n）
+  
+  // 第一步：上下翻转矩阵
+  for (let i = 0; i < Math.floor(n / 2); i++) { // 遍历矩阵的前一半行（上下对称行）
+    for (let j = 0; j < n; j++) { // 遍历每一行中的所有列
+      // 交换当前行 `i` 和对称行 `n - i - 1` 的元素
+      [matrix[i][j], matrix[n - i - 1][j]] = [
+        matrix[n - i - 1][j],
+        matrix[i][j],
+      ];
+    }
+  }
+
+  // 第二步：沿主对角线（左上到右下）翻转矩阵
+  for (let i = 0; i < n; i++) { // 遍历矩阵的每一行
+    for (let j = 0; j < i; j++) { // 遍历主对角线左下方的元素
+      // 交换对称位置的元素，使矩阵沿主对角线翻转
+      [matrix[i][j], matrix[j][i]] = [matrix[j][i], matrix[i][j]];
+    }
+  }
+
+  return matrix; // 返回翻转后的矩阵
+}
+```
+
+#### 2. 原地旋转
+
+```javascript
+function rotate(matrix) {
+  const n = matrix.length; // 矩阵的边长（n x n）
+  
+  // 遍历矩阵的每个"块"并进行旋转
+  // 外层循环：控制行的遍历范围（只需遍历前一半的行）
+  for (let i = 0; i < Math.floor(n / 2); ++i) { 
+    // 内层循环：控制列的遍历范围（每行只需遍历左半部分或包含中轴）
+    for (let j = 0; j < Math.floor((n + 1) / 2); ++j) { 
+      const temp = matrix[i][j]; // 暂存当前元素（左上角）
+      
+      // 四元素旋转，依次将对应位置的值赋到目标位置
+      matrix[i][j] = matrix[n - j - 1][i]; // 左下角 -> 左上角
+      matrix[n - j - 1][i] = matrix[n - i - 1][n - j - 1]; // 右下角 -> 左下角
+      matrix[n - i - 1][n - j - 1] = matrix[j][n - i - 1]; // 右上角 -> 右下角
+      matrix[j][n - i - 1] = temp; // 左上角（暂存值） -> 右上角
+    }
+  }
+
+  return matrix; // 返回旋转后的矩阵
+}
+```
+
+## 19.螺旋矩阵
+
+```javascript
+function spiralOrder(matrix) {
+  if (matrix.length == 0) return []; // 如果矩阵为空，直接返回空数组
+  let result = []; // 用于存储按螺旋顺序的结果
+  let left = 0; // 左边界的初始值
+  let bottom = matrix.length - 1; // 底边界的初始值
+  let top = 0; // 上边界的初始值
+  let right = matrix[0].length - 1; // 右边界的初始值
+
+  // 开始遍历，条件是边界范围有效
+  while (left <= right && top <= bottom) {
+    // 从左到右遍历当前顶边
+    for (let i = left; i <= right; i++) result.push(matrix[top][i]);
+    top++; // 顶边向下收缩
+
+    // 从上到下遍历当前右边
+    for (let i = top; i <= bottom; i++) result.push(matrix[i][right]);
+    right--; // 右边向左收缩
+
+    // 如果边界越界，跳出循环
+    if (left > right || top > bottom) break;
+
+    // 从右到左遍历当前底边
+    for (let i = right; i >= left; i--) result.push(matrix[bottom][i]);
+    bottom--; // 底边向上收缩
+
+    // 从下到上遍历当前左边
+    for (let i = bottom; i >= top; i--) result.push(matrix[i][left]);
+    left++; // 左边向右收缩
+  }
+
+  return result; // 返回结果数组
+}
+```
