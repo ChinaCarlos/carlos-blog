@@ -919,7 +919,7 @@ class EventEmitter {
   once(type, callback) {
     const fn = (...args) => {
       callback(...args);
-      this.off(type, callback);
+      this.off(type, fn);
     };
     this.on(type, fn);
   }
