@@ -258,7 +258,6 @@ white-space: nowrap;
 多行文档溢出
 
 ```css
-overflow: hidden;
 display: -webkit-box;
 -webkit-box-orient: vertical;
 -webkit-box-line-clamp: 3;
