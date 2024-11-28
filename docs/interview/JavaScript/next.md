@@ -252,7 +252,7 @@ Function.prototype.myBind = function (context, ...args) {
   const _this = this;
   return function bondFunction(...args1) {
     if (this instanceof bondFunction) {
-      return new this(...args, ...args1);
+      return new _this(...args, ...args1);
     } else {
       return _this.apply(context, [...args, ...args1]);
     }
