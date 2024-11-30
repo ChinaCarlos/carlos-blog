@@ -24,7 +24,7 @@ hero:
       link: https://carlosme.fun/interview/HTML/
     - theme: alt
       text: 支持一下
-      link: /api-examples
+      link: /pages/support
 
 features:
   - title: 什么是PWA渐进式应用？
