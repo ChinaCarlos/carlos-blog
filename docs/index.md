@@ -14,14 +14,14 @@ hero:
       text: FAST PWA SDK API
       link: https://github.com/ChinaCarlos/lerna-workspace-template/tree/dev/packages/fast-pwa-sdk
     - theme: alt
-      text: PWA 应用案例
-      link: /markdown-examples
+      text: 我的掘金
+      link: https://juejin.cn/user/3544481218693597/posts
     - theme: alt
       text: 我的博客
-      link: /api-examples
+      link: https://carlosme.fun/blog/vitepress.html
     - theme: alt
       text: 前端面经
-      link: /api-examples
+      link: https://carlosme.fun/interview/HTML/
     - theme: alt
       text: 支持一下
       link: /api-examples
