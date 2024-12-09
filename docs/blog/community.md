@@ -1,6 +1,9 @@
 # **如何设计一个社区平台 ？**
 
 ![image.png](https://raw.githubusercontent.com/ChinaCarlos/carlos-blog/main/docs/blog/images/community.jpg)
+
+---
+
 面试中和面试官谈到岗位的工作职责主要负责社区，那么如何设计一个社区平台？设计一个社区平台需要综合考虑`功能需求`、`技术架构`、`用户体验`、`安全性`以及`运营策略`等方面。以下是详细设计方案：
 
 ## **一、功能需求**
