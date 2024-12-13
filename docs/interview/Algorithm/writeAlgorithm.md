@@ -1267,31 +1267,6 @@ function maxDepth(root) {
 }
 ```
 
-## 37. 二叉树的直径
-
-```javascript
-function diameterOfBinaryTree(root) {
-  let maxDiameter = 0; // 用于保存最大直径
-
-  // 递归计算树的深度并更新最大直径
-  function depth(node) {
-    if (!node) return 0; // 空节点深度为0
-
-    const leftDepth = depth(node.left); // 左子树的深度
-    const rightDepth = depth(node.right); // 右子树的深度
-
-    // 更新最大直径：当前节点的直径为左子树深度 + 右子树深度
-    maxDiameter = Math.max(maxDiameter, leftDepth + rightDepth);
-
-    // 当前节点的深度是左子树和右子树深度的最大值加1
-    return Math.max(leftDepth, rightDepth) + 1;
-  }
-
-  depth(root); // 从根节点开始递归计算
-  return maxDiameter; // 返回最终的最大直径
-}
-```
-
 ## 38. 最长连续序列
 
 ```javascript
@@ -1377,5 +1352,30 @@ function restoreIpAddresses(s) {
 
   backtrack(0, []); // 从第 0 个字符开始回溯
   return result;
+}
+```
+
+## 41. 二叉树的直径
+
+```javascript
+function diameterOfBinaryTree(root) {
+  let maxDiameter = 0; // 用于保存最大直径
+
+  // 递归计算树的深度并更新最大直径
+  function depth(node) {
+    if (!node) return 0; // 空节点深度为0
+
+    const leftDepth = depth(node.left); // 左子树的深度
+    const rightDepth = depth(node.right); // 右子树的深度
+
+    // 更新最大直径：当前节点的直径为左子树深度 + 右子树深度
+    maxDiameter = Math.max(maxDiameter, leftDepth + rightDepth);
+
+    // 当前节点的深度是左子树和右子树深度的最大值加1
+    return Math.max(leftDepth, rightDepth) + 1;
+  }
+
+  depth(root); // 从根节点开始递归计算
+  return maxDiameter; // 返回最终的最大直径
 }
 ```
