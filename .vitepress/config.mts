@@ -62,10 +62,6 @@ export default defineConfig({
           { text: "React框架", link: "/interview/React/index" },
           { text: "算法&数据结构", link: "/interview/Algorithm/dataStructure" },
           { text: "PWA应用", link: "/interview/PWA/index" },
-          {
-            text: "场景设计题",
-            link: "/interview/ScenarioQuestion/community",
-          },
           { text: "微前端", link: "/interview/MicroFrontEnd/index" },
         ],
       },

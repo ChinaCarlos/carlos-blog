@@ -457,7 +457,7 @@ function hasPathSum(root, targetSum) {
   // 递归调用，分别检查左子树和右子树
   return (
     hasPathSum(root.left, nextTargetSum) || // 检查左子树
-    hasPathSum(root.right, nextTargetSum)   // 检查右子树
+    hasPathSum(root.right, nextTargetSum) // 检查右子树
   );
 }
 ```
@@ -544,11 +544,11 @@ function searchMatrix(matrix, target) {
     // 如果当前元素等于目标值，返回 true
     if (matrix[i][j] === target) {
       return true;
-    } 
+    }
     // 如果当前元素小于目标值，说明目标值在当前元素的下方，移动到下一行
     else if (matrix[i][j] < target) {
       i++;
-    } 
+    }
     // 如果当前元素大于目标值，说明目标值在当前元素的左边，移动到前一列
     else {
       j--;
@@ -559,16 +559,20 @@ function searchMatrix(matrix, target) {
   return false;
 }
 ```
+
 ## 18. 旋转图像
 
 #### 1. 先水平翻转，在沿对角线翻转
+
 ```javascript
 function rotate(matrix) {
   const n = matrix.length; // 矩阵的大小（n x n）
-  
+
   // 第一步：上下翻转矩阵
-  for (let i = 0; i < Math.floor(n / 2); i++) { // 遍历矩阵的前一半行（上下对称行）
-    for (let j = 0; j < n; j++) { // 遍历每一行中的所有列
+  for (let i = 0; i < Math.floor(n / 2); i++) {
+    // 遍历矩阵的前一半行（上下对称行）
+    for (let j = 0; j < n; j++) {
+      // 遍历每一行中的所有列
       // 交换当前行 `i` 和对称行 `n - i - 1` 的元素
       [matrix[i][j], matrix[n - i - 1][j]] = [
         matrix[n - i - 1][j],
@@ -578,8 +582,10 @@ function rotate(matrix) {
   }
 
   // 第二步：沿主对角线（左上到右下）翻转矩阵
-  for (let i = 0; i < n; i++) { // 遍历矩阵的每一行
-    for (let j = 0; j < i; j++) { // 遍历主对角线左下方的元素
+  for (let i = 0; i < n; i++) {
+    // 遍历矩阵的每一行
+    for (let j = 0; j < i; j++) {
+      // 遍历主对角线左下方的元素
       // 交换对称位置的元素，使矩阵沿主对角线翻转
       [matrix[i][j], matrix[j][i]] = [matrix[j][i], matrix[i][j]];
     }
@@ -594,14 +600,14 @@ function rotate(matrix) {
 ```javascript
 function rotate(matrix) {
   const n = matrix.length; // 矩阵的边长（n x n）
-  
+
   // 遍历矩阵的每个"块"并进行旋转
   // 外层循环：控制行的遍历范围（只需遍历前一半的行）
-  for (let i = 0; i < Math.floor(n / 2); ++i) { 
+  for (let i = 0; i < Math.floor(n / 2); ++i) {
     // 内层循环：控制列的遍历范围（每行只需遍历左半部分或包含中轴）
-    for (let j = 0; j < Math.floor((n + 1) / 2); ++j) { 
+    for (let j = 0; j < Math.floor((n + 1) / 2); ++j) {
       const temp = matrix[i][j]; // 暂存当前元素（左上角）
-      
+
       // 四元素旋转，依次将对应位置的值赋到目标位置
       matrix[i][j] = matrix[n - j - 1][i]; // 左下角 -> 左上角
       matrix[n - j - 1][i] = matrix[n - i - 1][n - j - 1]; // 右下角 -> 左下角
@@ -648,5 +654,728 @@ function spiralOrder(matrix) {
   }
 
   return result; // 返回结果数组
+}
+```
+
+## 20. 颜色转化
+
+```javascript
+const HexToRgb = (hex) => {
+  const hexRegExp = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i; // 定义正则表达式，匹配3位或6位的十六进制颜色值
+  if (!hexRegExp.test(hex)) return null; // 如果输入的hex格式不正确，返回null
+
+  let hexChar = hex.slice(1); // 去掉颜色字符串中的‘#’符号
+
+  if (hexChar.length === 3) {
+    // 如果是3位的简写形式，扩展成6位
+    hexChar = hexChar
+      .split("") // 将字符串分割为单字符数组
+      .map((char) => char + char) // 每个字符重复一次
+      .join(""); // 重新拼接成字符串
+  }
+
+  const r = parseInt(hexChar.slice(0, 2), 16); // 提取并将前两位转换为红色分量
+  const g = parseInt(hexChar.slice(2, 4), 16); // 提取并将中间两位转换为绿色分量
+  const b = parseInt(hexChar.slice(4, 6), 16); // 提取并将后两位转换为蓝色分量
+
+  return `rgb(${r},${g},${b})`; // 返回RGB颜色格式的字符串
+};
+
+console.log(HexToRgb("#fff")); // 测试短格式十六进制颜色
+console.log(HexToRgb("#eeeeee")); // 测试长格式十六进制颜色
+console.log(HexToRgb("#ff5733")); // 测试标准长格式十六进制颜色
+
+const rgbToHex = (r, g, b) => {
+  if (r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255) {
+    // 检查RGB每个分量是否在有效范围内
+    throw Error("Invalid RGB values"); // 如果超出范围，抛出错误
+  }
+
+  const toHex = (num) => {
+    return num.toString(16).padStart(2, "0"); // 将数字转换为两位的十六进制字符串
+  };
+
+  return `#${toHex(r)}${toHex(g)}${toHex(b)}`; // 拼接并返回十六进制颜色字符串
+};
+
+console.log(rgbToHex(0, 0, 0)); // 测试黑色RGB转十六进制
+```
+
+## 21. 二叉树的右视图
+
+```javascript
+function rightSideView(root) {
+  let result = []; // 存储右视图的节点值
+  const queue = [root]; // 初始化队列，用于层序遍历
+  while (queue.length && root) { // 当队列不为空且根节点存在时，继续遍历
+    const size = queue.length; // 当前层的节点数量
+    for (let i = 0; i < size; i++) { // 遍历当前层的所有节点
+      const node = queue.shift(); // 从队列中取出当前节点
+      if (node.left) { // 如果当前节点有左子节点，将其加入队列
+        queue.push(node.left);
+      }
+      if (node.right) { // 如果当前节点有右子节点，将其加入队列
+        queue.push(node.right);
+      }
+      if (i === size - 1) { // 如果是当前层的最后一个节点
+        result.push(node.val); // 将该节点的值加入结果数组
+      }
+    }
+  }
+  return result; // 返回右视图的节点值数组
+}
+// 递归解法
+function rightSideView(root) {
+  const result = []; // 存储右视图的节点值
+  function dfs(node, deepPath) {
+    if (!node) return null; // 如果当前节点为空，直接返回
+    if (deepPath === result.length) { // 如果当前深度尚未有值，则记录该节点的值
+      result.push(node.val);
+    }
+    dfs(node.right, deepPath + 1); // 优先递归遍历右子树
+    dfs(node.left, deepPath + 1); // 然后递归遍历左子树
+  }
+  dfs(root, 0); // 从根节点开始深度优先遍
+
+```
+
+## 22. 二叉树的最近公共祖先
+
+```javascript
+function lowestCommonAncestor(root, p, q) {
+  if (!root || p === root || q === root) return root; // 如果当前节点为空，或等于p或q，则直接返回当前节点
+
+  const left = lowestCommonAncestor(root.left, p, q); // 在左子树中查找p和q的最近公共祖先
+  const right = lowestCommonAncestor(root.right, p, q); // 在右子树中查找p和q的最近公共祖先
+
+  if (left && right) return root; // 如果p和q分别位于当前节点的左右子树，则当前节点为最近公共祖先
+
+  return left || right; // 如果仅在某一侧找到p或q，则返回该侧的节点；否则返回null
+}
+```
+
+## 23. 二叉树最大宽度
+
+```javascript
+function widthOfBinaryTree(root) {
+  if (!root) return 0; // 如果根节点为空，宽度为0
+
+  let maxWidth = 0; // 用于存储二叉树的最大宽度
+  let queue = [[root, 0]]; // 初始化队列，存储节点和其对应的索引，根节点索引为0
+
+  while (queue.length) {
+    // 当队列不为空时，继续遍历
+    const size = queue.length; // 当前层的节点数量
+    let startIndex = queue[0][1]; // 当前层的起始索引
+    let endIndex = startIndex; // 当前层的终止索引，初始为起始索引
+    for (let i = 0; i < size; i++) {
+      // 遍历当前层的所有节点
+      const [node, index] = queue.shift(); // 从队列中取出当前节点和其索引
+      endIndex = index; // 更新终止索引为当前节点的索引
+
+      if (node.left) queue.push([node.left, 2 * index]); // 左子节点的索引为2 * index
+      if (node.right) queue.push([node.right, 2 * index + 1]); // 右子节点的索引为2 * index + 1
+    }
+    const currentWidth = endIndex - startIndex + 1; // 计算当前层的宽度
+    maxWidth = Math.max(currentWidth, maxWidth); // 更新最大宽度
+  }
+
+  return maxWidth; // 返回二叉树的最大宽度
+}
+```
+
+## 24. 翻转二叉树
+
+```javascript
+// 1. 递归实现
+function invertTree(root) {
+  if (!root) return null; // 如果节点为空，返回null
+
+  const temp = root.left; // 暂存左子树
+  root.left = root.right; // 将右子树赋值给左子树
+  root.right = temp; // 将原来的左子树赋值给右子树
+
+  invertTree(root.left); // 递归翻转左子树
+  invertTree(root.right); // 递归翻转右子树
+
+  return root; // 返回翻转后的根节点
+}
+// 2. 迭代队列实现
+function invertTree(root) {
+  if (!root) return null; // 如果节点为空，返回null
+
+  let queue = [root]; // 初始化队列，存储待处理节点
+
+  while (queue.length) {
+    // 当队列不为空时，继续处理
+    const node = queue.shift(); // 从队列中取出当前节点
+
+    const temp = node.left; // 暂存左子树
+    node.left = node.right; // 将右子树赋值给左子树
+    node.right = temp; // 将原来的左子树赋值给右子树
+
+    if (node.left) queue.push(node.left); // 如果左子树存在，加入队列
+    if (node.right) queue.push(node.right); // 如果右子树存在，加入队列
+  }
+
+  return root; // 返回翻转后的根节点
+}
+```
+
+## 25. 合并两个有序链表
+
+```javascript
+// 方法 1：递归实现
+function mergeTwoLists(list1, list2) {
+  if (!list1) return list2; // 如果 list1 为空，返回 list2
+  if (!list2) return list1; // 如果 list2 为空，返回 list1
+
+  if (list1.val < list2.val) {
+    // 如果 list1 的节点值小于 list2 的节点值
+    list1.next = mergeTwoLists(list1.next, list2); // 递归合并 list1 的下一个节点和 list2
+    return list1; // 返回当前的 list1 节点
+  } else {
+    // 如果 list2 的节点值小于或等于 list1 的节点值
+    list2.next = mergeTwoLists(list1, list2.next); // 递归合并 list1 和 list2 的下一个节点
+    return list2; // 返回当前的 list2 节点
+  }
+}
+
+// 方法 2：迭代实现
+function mergeTwoLists2(list1, list2) {
+  let link = { val: -1, next: null }; // 创建一个虚拟头节点，用于简化操作
+  let current = link; // 指针指向当前处理的节点位置
+
+  while (list1 && list2) {
+    // 当 list1 和 list2 都不为空时，继续比较
+    if (list1.val < list2.val) {
+      // 如果 list1 的节点值小于 list2 的节点值
+      current.next = list1; // 将 list1 的当前节点接到结果链表中
+      list1 = list1.next; // 移动 list1 的指针到下一个节点
+    } else {
+      // 如果 list2 的节点值小于或等于 list1 的节点值
+      current.next = list2; // 将 list2 的当前节点接到结果链表中
+      list2 = list2.next; // 移动 list2 的指针到下一个节点
+    }
+    current = current.next; // 移动结果链表的指针到最新的节点
+  }
+
+  current.next = list1 ?? list2; // 将剩余的 list1 或 list2 接到结果链表的末尾
+  return link.next; // 返回结果链表的头节点（跳过虚拟头节点）
+}
+```
+
+## 26. 合并 K 个升序链表
+
+```javascript
+function mergeKLists(lists) {
+  if (!lists.length) return null; // 如果链表数组为空，返回 null
+
+  // 合并两个有序链表的递归函数
+  const mergeTowList = (list1, list2) => {
+    if (!list1) return list2; // 如果第一个链表为空，返回第二个链表
+    if (!list2) return list1; // 如果第二个链表为空，返回第一个链表
+
+    if (list1.val < list2.val) {
+      // 如果 list1 的当前值小于 list2
+      list1.next = mergeTowList(list1.next, list2); // 递归合并 list1 的下一个节点和 list2
+      return list1; // 返回 list1 作为结果链表的当前节点
+    } else {
+      // 如果 list2 的当前值小于或等于 list1
+      list2.next = mergeTowList(list1, list2.next); // 递归合并 list1 和 list2 的下一个节点
+      return list2; // 返回 list2 作为结果链表的当前节点
+    }
+  };
+
+  // 分治法合并链表的函数
+  const merge = (lists, left, right) => {
+    if (left === right) return lists[left]; // 如果左右边界相等，直接返回对应链表
+    const mid = Math.floor((left + right) / 2); // 找到中点
+    const l1 = merge(lists, left, mid); // 递归合并左半部分
+    const l2 = merge(lists, mid + 1, right); // 递归合并右半部分
+
+    return mergeTowList(l1, l2); // 合并左右两部分
+  };
+
+  return merge(lists, 0, lists.length - 1); // 调用分治合并函数，范围从 0 到链表数组的长度减 1
+}
+```
+
+## 26. 和为 K 的子数组
+
+```javascript
+function subarraySum(nums, k) {
+  let count = 0; // 用于记录满足条件的子数组数量
+  let prefixSums = new Map(); // 用于存储前缀和及其出现的次数
+  let prefixSum = 0; // 当前的前缀和
+
+  prefixSums.set(0, 1); // 初始化，前缀和为0出现一次，用于处理子数组本身等于k的情况
+
+  for (const num of nums) {
+    // 遍历数组
+    prefixSum += num; // 更新当前前缀和
+
+    if (prefixSums.has(prefixSum - k)) {
+      // 检查是否存在满足条件的前缀和
+      count += prefixSums.get(prefixSum - k); // 累加满足条件的前缀和出现次数
+    }
+
+    prefixSums.set(prefixSum, (prefixSums.get(prefixSum) || 0) + 1); // 更新当前前缀和的出现次数
+  }
+
+  return count; // 返回满足条件的子数组数量
+}
+```
+
+## 27. 缺失的第一个正数
+
+```javascript
+// 方法 1：标记法实现
+
+var firstMissingPositive = function (nums) {
+  if (nums.indexOf(1) === -1) return 1; // 如果数组中没有1，则返回1
+
+  // 将所有小于等于0或大于数组长度的值替换为1
+  for (let i = 0; i < nums.length; i++) {
+    if (nums[i] <= 0 || nums[i] > nums.length) {
+      nums[i] = 1;
+    }
+  }
+
+  // 使用负数标记数组中的数是否出现过
+  for (let i = 0; i < nums.length; i++) {
+    const index = Math.abs(nums[i]) - 1; // 获取对应的索引
+    nums[index] = -Math.abs(nums[index]); // 将对应索引的值设为负数，表示出现过
+  }
+
+  // 找到第一个值为正数的位置，其索引+1即为结果
+  for (let i = 0; i < nums.length; i++) {
+    if (nums[i] > 0) {
+      return i + 1;
+    }
+  }
+
+  // 如果所有位置都被标记为负数，返回数组长度+1
+  return nums.length + 1;
+};
+
+//  2：原地哈希实现
+
+function firstMissingPositive(nums) {
+  const n = nums.length; // 数组长度
+
+  if (!nums.includes(1)) return 1; // 如果数组中没有1，直接返回1
+
+  // 将所有不合法的数（小于等于0或大于数组长度）替换为1
+  for (let i = 0; i < nums.length; i++) {
+    while (nums[i] > 0 && nums[i] <= n && nums[i] !== nums[nums[i] - 1]) {
+      const temp = nums[i]; // 暂存当前值
+      nums[i] = nums[temp - 1]; // 将值交换到正确位置
+      nums[temp - 1] = temp; // 完成交换
+    }
+  }
+
+  // 遍历数组，找到第一个不匹配的值，其索引+1即为结果
+  for (let i = 0; i < nums.length; i++) {
+    if (nums[i] !== i + 1) {
+      return i + 1;
+    }
+  }
+
+  // 如果所有位置都匹配，返回数组长度+1
+  return nums.length + 1;
+}
+```
+
+## 28. 删除有序数组中的重复项
+
+```javascript
+function removeDuplicates(nums) {
+  let slow = 0; // 慢指针，用于标记当前没有重复的元素的最后位置
+  let fast = 1; // 快指针，用于遍历数组
+
+  // 遍历数组，快指针逐步向前移动
+  while (fast <= nums.length - 1) {
+    if (nums[slow] !== nums[fast]) {
+      // 如果慢指针和快指针指向的值不同
+      nums[slow + 1] = nums[fast]; // 将快指针指向的元素移动到慢指针后面
+      slow++; // 慢指针向前移动一位
+    }
+    fast++; // 快指针向前移动一位
+  }
+
+  return nums.slice(0, slow + 1); // 返回去重后的数组
+}
+```
+
+## 29. Z 字形变换
+
+```javascript
+function convert(s, numRows) {
+  if (numRows <= 1) return s; // 如果行数小于等于1，返回原字符串
+
+  let row = 0; // 当前所在行
+  let down = true; // 方向标志，true 表示向下，false 表示向上
+
+  let result = new Array(numRows).fill(""); // 创建一个包含 numRows 个空字符串的数组，用于存储每行的字符
+
+  for (let i = 0; i < s.length; i++) {
+    // 遍历输入字符串
+    result[row] += s[i]; // 将当前字符添加到当前行的对应位置
+
+    if (down) {
+      // 如果是向下遍历
+      row++; // 向下移动到下一行
+    } else {
+      // 如果是向上遍历
+      row--; // 向上移动到上一行
+    }
+
+    if (row === 0) {
+      // 如果到达第一行
+      down = true; // 切换为向下遍历
+    }
+    if (row === numRows - 1) {
+      // 如果到达最后一行
+      down = false; // 切换为向上遍历
+    }
+  }
+
+  return result.join(""); // 将所有行的字符串合并成一个结果并返回
+}
+```
+
+## 30. 最长公共前缀
+
+```javascript
+function longestCommonPrefix(strs) {
+  if (!strs.length || !strs) return ""; // 如果输入数组为空或为 null，返回空字符串
+
+  let prefix = strs[0]; // 以第一个字符串作为初始前缀
+
+  for (let i = 1; i < strs.length; i++) {
+    // 遍历剩余的字符串
+    // 当当前字符串不以当前前缀开始时，缩短前缀
+    while (strs[i].indexOf(prefix) !== 0) {
+      prefix = prefix.slice(0, -1); // 删除前缀的最后一个字符
+      if (!prefix) return ""; // 如果前缀为空，则返回空字符串
+    }
+  }
+
+  return prefix; // 返回最长公共前缀
+}
+```
+
+## 31. 删除字符串中的所有相邻重复项
+
+```javascript
+function removeDuplicates(s) {
+  let stack = []; // 创建一个栈，用于存储不重复的字符
+
+  for (let i = 0; i < s.length; i++) {
+    // 遍历字符串中的每个字符
+    if (s[i] === stack[stack.length - 1]) {
+      // 如果当前字符与栈顶字符相同，表示找到了一对相邻的重复字符
+      stack.pop(); // 弹出栈顶元素（删除这对重复字符）
+    } else {
+      stack.push(s[i]); // 如果当前字符不重复，推入栈中
+    }
+  }
+
+  return stack.join(""); // 将栈中的字符连接成一个新的字符串并返回
+}
+
+console.log(removeDuplicates("abbaca")); // 输出 "ca"
+```
+
+## 32. 删除字符串中的所有相邻重复项 II
+
+```javascript
+function removeDuplicates(s, k) {
+  const stack = []; // 用于存储字符
+  const countStack = []; // 用于存储字符的计数
+  let i = 0;
+
+  while (i < s.length) {
+    // 遍历字符串的每个字符
+    if (stack[stack.length - 1] === s[i]) {
+      // 如果栈顶字符与当前字符相同
+      stack.push(s[i]); // 将当前字符压入栈
+      countStack[countStack.length - 1] = countStack[countStack.length - 1] + 1; // 更新栈顶字符的计数
+      if (countStack[countStack.length - 1] === k) {
+        // 如果栈顶字符的计数达到k
+        for (let j = 0; j < k; j++) {
+          // 移除栈顶k个字符
+          stack.pop();
+        }
+        countStack.pop(); // 同时也移除计数栈的计数
+      }
+    } else {
+      // 如果栈顶字符与当前字符不同
+      stack.push(s[i]); // 将当前字符压入栈
+      countStack.push(1); // 计数栈中该字符的计数为1
+    }
+    i++; // 移动到下一个字符
+  }
+
+  return stack.join(""); // 返回去除重复字符后的结果字符串
+}
+```
+
+## 33. 盛最多水的容器
+
+```javascript
+function maxArea(height) {
+  let left = 0; // 初始化左指针，指向数组的起始位置
+  let right = height.length - 1; // 初始化右指针，指向数组的末尾位置
+  let currentMaxArea = 0; // 用于存储当前的最大水量
+
+  while (left < right) {
+    // 当左指针小于右指针时，继续计算
+    // 计算当前容器的水量，更新最大水量
+    currentMaxArea = Math.max(
+      currentMaxArea,
+      (right - left) * Math.min(height[left], height[right])
+    );
+
+    // 如果左边的高度小于右边的高度，则移动左指针，试图找到更大的高度
+    if (height[left] < height[right]) {
+      left++;
+    } else {
+      // 否则，移动右指针，试图找到更大的高度
+      right--;
+    }
+  }
+
+  return currentMaxArea; // 返回最终计算得到的最大水量
+}
+```
+
+## 34. 最大子序和
+
+```javascript
+function maxSubArray(nums) {
+  let maxSum = nums[0]; // 初始化最大和为数组的第一个元素
+  let currentSum = nums[0]; // 当前子数组的和初始化为第一个元素
+
+  for (let i = 1; i < nums.length; i++) {
+    currentSum = Math.max(nums[i], currentSum + nums[i]); // 计算当前子数组的最大和
+    maxSum = Math.max(maxSum, currentSum); // 更新全局最大和
+  }
+
+  return maxSum; // 返回最大子序和
+}
+```
+
+## 35. 接雨水
+
+```javascript
+function trap(height) {
+  if (!height || height.length < 3) return 0; // 如果数组为空或长度小于3，无法接水
+
+  let left = 0; // 左指针
+  let right = height.length - 1; // 右指针
+  let leftMax = height[left]; // 左侧最大高度
+  let rightMax = height[right]; // 右侧最大高度
+  let waterTrapped = 0; // 初始化接水量
+
+  while (left < right) {
+    if (height[left] < height[right]) {
+      // 如果左边的柱子较低
+      if (height[left] >= leftMax) {
+        // 更新左侧最大高度
+        leftMax = height[left];
+      } else {
+        // 否则，计算接水量
+        waterTrapped += leftMax - height[left];
+      }
+      left++; // 移动左指针
+    } else {
+      // 如果右边的柱子较低
+      if (height[right] >= rightMax) {
+        // 更新右侧最大高度
+        rightMax = height[right];
+      } else {
+        // 否则，计算接水量
+        waterTrapped += rightMax - height[right];
+      }
+      right--; // 移动右指针
+    }
+  }
+
+  return waterTrapped; // 返回接到的水量
+}
+```
+
+## 36. N 皇后
+
+```javascript
+function solveNQueens(n) {
+  const result = [];
+  const board = Array.from({ length: n }, () => Array(n).fill(".")); // 初始化棋盘
+  const cols = new Set(); // 存储列冲突
+  const diag1 = new Set(); // 存储主对角线冲突
+  const diag2 = new Set(); // 存储副对角线冲突
+
+  function backtrack(row) {
+    if (row === n) {
+      // 如果所有行都已填充皇后，找到一个解
+      result.push(board.map((row) => row.join("")));
+      return;
+    }
+
+    for (let col = 0; col < n; col++) {
+      // 检查当前列和两个对角线是否有冲突
+      if (cols.has(col) || diag1.has(row - col) || diag2.has(row + col)) {
+        continue;
+      }
+
+      // 放置皇后
+      board[row][col] = "Q";
+      cols.add(col);
+      diag1.add(row - col);
+      diag2.add(row + col);
+
+      // 递归尝试在下一行放置皇后
+      backtrack(row + 1);
+
+      // 回溯，撤销当前选择
+      board[row][col] = ".";
+      cols.delete(col);
+      diag1.delete(row - col);
+      diag2.delete(row + col);
+    }
+  }
+
+  backtrack(0); // 从第0行开始
+  return result; // 返回所有解
+}
+```
+
+## 37. 二叉树的最大深度
+
+```javascript
+function maxDepth(root) {
+  if (!root) return 0; // 如果根节点为空，深度为0
+
+  // 递归计算左子树和右子树的深度，取较大的值
+  const leftDepth = maxDepth(root.left);
+  const rightDepth = maxDepth(root.right);
+
+  // 当前树的最大深度是左子树和右子树深度的最大值加1
+  return Math.max(leftDepth, rightDepth) + 1;
+}
+```
+
+## 37. 二叉树的直径
+
+```javascript
+function diameterOfBinaryTree(root) {
+  let maxDiameter = 0; // 用于保存最大直径
+
+  // 递归计算树的深度并更新最大直径
+  function depth(node) {
+    if (!node) return 0; // 空节点深度为0
+
+    const leftDepth = depth(node.left); // 左子树的深度
+    const rightDepth = depth(node.right); // 右子树的深度
+
+    // 更新最大直径：当前节点的直径为左子树深度 + 右子树深度
+    maxDiameter = Math.max(maxDiameter, leftDepth + rightDepth);
+
+    // 当前节点的深度是左子树和右子树深度的最大值加1
+    return Math.max(leftDepth, rightDepth) + 1;
+  }
+
+  depth(root); // 从根节点开始递归计算
+  return maxDiameter; // 返回最终的最大直径
+}
+```
+
+## 38. 最长连续序列
+
+```javascript
+function longestConsecutive(nums) {
+  if (nums.length === 0) return 0;
+
+  const numSet = new Set(nums); // 使用集合来存储数组元素，查找复杂度为 O(1)
+
+  let longest = 0;
+
+  for (let num of numSet) {
+    // 只有当 `num - 1` 不在集合中时，才是可能的序列的起始元素
+    if (!numSet.has(num - 1)) {
+      let currentNum = num;
+      let currentLength = 1;
+
+      // 尝试扩展序列
+      while (numSet.has(currentNum + 1)) {
+        currentNum++;
+        currentLength++;
+      }
+
+      // 更新最长连续序列的长度
+      longest = Math.max(longest, currentLength);
+    }
+  }
+
+  return longest;
+}
+```
+
+## 39. 只出现一次的数字
+
+```javascript
+function singleNumber(nums) {
+  let result = 0;
+  for (let num of nums) {
+    result ^= num; // 将所有元素进行异或
+  }
+  return result;
+}
+```
+
+## 40. 复原 IP 地址
+
+```javascript
+function restoreIpAddresses(s) {
+  const result = [];
+
+  // 判断某个子字符串是否是有效的 IP 地址段
+  const isValid = (str) => {
+    if (str.length > 1 && str[0] === "0") return false; // 不能有前导零
+    const num = Number(str);
+    return num >= 0 && num <= 255; // 必须在 0 到 255 之间
+  };
+
+  // 回溯函数
+  const backtrack = (start, path) => {
+    // 如果已经分割成 4 段且遍历完所有字符，则是一个有效的 IP 地址
+    if (path.length === 4 && start === s.length) {
+      result.push(path.join("."));
+      return;
+    }
+
+    // 如果已经分割成 4 段但还没遍历完字符，说明无效
+    if (path.length === 4) return;
+
+    // 尝试每一段长度为 1 到 3 的子串
+    for (let len = 1; len <= 3; len++) {
+      const segment = s.substring(start, start + len);
+      if (start + len > s.length) break;
+
+      if (isValid(segment)) {
+        path.push(segment); // 选择当前段
+        backtrack(start + len, path); // 继续递归分割剩余部分
+        path.pop(); // 撤销选择
+      }
+    }
+  };
+
+  // 如果输入字符串长度不在 4 到 12 之间，直接返回空数组
+  if (s.length < 4 || s.length > 12) return result;
+
+  backtrack(0, []); // 从第 0 个字符开始回溯
+  return result;
 }
 ```
