@@ -1442,3 +1442,52 @@ console.log(window.customProperty); // "This is a custom property"
 | `Merge`        | 合并多个类型，属性重复时后面的类型会覆盖前面的类型 |
 | `Intersection` | 将多个类型合并成一个类型，包含所有属性             |
 | `Overwrite`    | 用类型 `U` 中的字段覆盖类型 `T` 中的相应字段       |
+
+## 34. typescript 代码实现题
+
+```typescript
+// ReadOnly 实现
+type MyReadOnly<T> = {
+  readonly [P in keyof T]: T[P];
+};
+
+type Info = {
+  name: string;
+  age: number;
+};
+
+type myonly = MyReadOnly<Info>;
+
+
+// Pick 实现
+type User = {
+  name: string;
+  age: number;
+};
+
+
+type MyPick <T, K extends keyof T> {
+  [P in K] : T[P]
+}
+
+type myPick = MyPick<User, 'name'>
+
+
+// Omit 实现
+type MyOmit<T, K extends keyof T> = {
+  [P in keyof T as P extends K ? never : P]: T[P];
+};
+
+type Foot = {
+  name: string;
+  price: number;
+};
+
+type GreatFoot = MyOmit<Foot, "name">;
+
+// Exclude 实现
+type MyExclude<T, U> = T extends U ? never : T;
+
+type test = MyExclude<string | number | boolean, boolean>;
+
+```
